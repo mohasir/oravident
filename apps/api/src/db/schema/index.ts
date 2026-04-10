@@ -1,2 +1,22 @@
-// Database schema exports go here
-// This file is currently empty to start fresh
+export { clinics } from "./clinics.ts";
+export { branches } from "./branches.ts";
+export { permissions } from "./permissions.ts";
+export { roles } from "./roles.ts";
+export { rolePermissions } from "./role_permissions.ts";
+export { users } from "./users.ts";
+export { workers } from "./workers.ts";
+export { workerBranches } from "./worker_branches.ts";
+export { branchSchedules } from "./branch_schedules.ts";
+export { workerSchedules } from "./worker_schedules.ts";
+export { scheduleBlocks } from "./schedule_blocks.ts";
+export { patients } from "./patients.ts";
+export { services } from "./services.ts";
+export { branchServices } from "./branch_services.ts";
+export { appointmentStatuses } from "./appointment_statuses.ts";
+export { appointments } from "./appointments.ts";
+export { notifications } from "./notifications.ts";
+export { communicationTemplates } from "./communication_templates.ts";
+export { appNotifications } from "./app_notifications.ts";
+export { appNotificationReads } from "./app_notification_reads.ts";
+export { appointmentStatusHistory } from "./appointment_status_history.ts";
+export { userSessions } from "./user_sessions.ts";

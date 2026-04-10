@@ -1,13 +1,14 @@
-// Main seeder entry point
-// Import individual seeders and execute them in order
+import { seedSuperAdmin } from "./super-admin.ts";
+import { seedAppointmentStatuses } from "./appointment-statuses.ts";
+import { seedMainDemo } from "./main-demo.ts";
 
 async function main() {
   console.log('🌱 Starting database seeding...');
   
   try {
-    // Example:
-    // await seedClinics();
-    // await seedUsers();
+    await seedAppointmentStatuses();
+    await seedSuperAdmin();
+    await seedMainDemo();
     
     console.log('✅ Seeding completed successfully');
   } catch (error) {

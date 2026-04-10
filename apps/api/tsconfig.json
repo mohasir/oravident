@@ -20,7 +20,9 @@
       "@commands/*": ["src/commands/*"],
       "@fixtures/*": ["src/fixtures/*"],
       "@seeds/*": ["src/db/seeds/*"]
-    }
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
