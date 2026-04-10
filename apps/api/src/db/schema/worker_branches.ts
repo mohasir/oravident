@@ -10,7 +10,7 @@ export const workerBranches = pgTable("worker_branches", {
   branchId: uuid("branch_id").notNull().references(() => branches.id, { onDelete: "cascade" }),
   isPrimary: boolean("is_primary").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => [
   uniqueIndex("worker_branch_idx").on(table.workerId, table.branchId),
 ]);

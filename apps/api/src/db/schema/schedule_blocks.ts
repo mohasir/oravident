@@ -12,4 +12,5 @@ export const scheduleBlocks = pgTable("schedule_blocks", {
   endAt: timestamp("end_at", { withTimezone: true }).notNull(),
   reason: varchar("reason", { length: 200 }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 });

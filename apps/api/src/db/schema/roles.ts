@@ -11,7 +11,7 @@ export const roles = pgTable("roles", {
   isSystem: boolean("is_system").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => [
   uniqueIndex("role_clinic_name_idx").on(table.clinicId, table.name)
 ]);

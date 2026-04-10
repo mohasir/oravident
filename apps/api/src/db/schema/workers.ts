@@ -14,7 +14,7 @@ export const workers = pgTable("workers", {
   idNumber: varchar("id_number", { length: DB_LIMITS.ID_NUMBER }),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => [
   uniqueIndex("worker_clinic_user_idx").on(table.clinicId, table.userId),
 ]);

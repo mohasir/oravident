@@ -1,0 +1,20 @@
+import { pgTable, uuid, text, timestamp, pgEnum, integer, index } from "drizzle-orm/pg-core";
+import { appointments } from "./appointments.ts";
+import { appointmentStatuses } from "./appointment_statuses.ts";
+import { users } from "./users.ts";
+
+export const actionSourceEnum = pgEnum("action_source", ["WEB_ADMIN", "MOBILE_IOS", "MOBILE_ANDROID", "WHATSAPP", "SYSTEM"]);
+
+export const appointmentStatusHistory = pgTable("appointment_status_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  appointmentId: uuid("appointment_id").notNull().references(() => appointments.id, { onDelete: "cascade" }),
+  statusId: uuid("status_id").notNull().references(() => appointmentStatuses.id, { onDelete: "restrict" }),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+  appointmentVersion: integer("appointment_version").notNull().default(1),
+  source: actionSourceEnum("source").notNull(),
+  notes: text("notes"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("appointment_history_id_idx").on(table.appointmentId),
+  index("appointment_history_created_idx").on(table.createdAt),
+]);

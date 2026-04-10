@@ -18,3 +18,5 @@ export { notifications } from "./notifications.ts";
 export { communicationTemplates } from "./communication_templates.ts";
 export { appNotifications } from "./app_notifications.ts";
 export { appNotificationReads } from "./app_notification_reads.ts";
+export { appointmentStatusHistory } from "./appointment_status_history.ts";
+export { userSessions } from "./user_sessions.ts";

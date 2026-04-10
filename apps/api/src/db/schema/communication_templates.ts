@@ -10,5 +10,5 @@ export const communicationTemplates = pgTable("communication_templates", {
   messageBody: text("message_body"),
   isEnabled: boolean("is_enabled").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 });

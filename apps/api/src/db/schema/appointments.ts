@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, numeric, boolean } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, numeric, boolean, integer, index } from "drizzle-orm/pg-core";
 import { clinics } from "./clinics.ts";
 import { branches } from "./branches.ts";
 import { patients } from "./patients.ts";
@@ -20,11 +20,18 @@ export const appointments = pgTable("appointments", {
   notes: text("notes"),
   price: numeric("price", { precision: 10, scale: 2 }).notNull().default("0"),
   discountAmount: numeric("discount_amount", { precision: 10, scale: 2 }).default("0"),
+  taxAmount: numeric("tax_amount", { precision: 10, scale: 2 }).default("0"),
   cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
   cancelledBy: uuid("cancelled_by").references(() => users.id, { onDelete: "set null" }),
   cancelReason: text("cancel_reason"),
   createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+  version: integer("version").default(1).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
+}, (table) => [
+  index("appointments_clinic_idx").on(table.clinicId),
+  index("appointments_patient_idx").on(table.patientId),
+  index("appointments_branch_idx").on(table.branchId),
+  index("appointments_starts_at_idx").on(table.startsAt),
+]);

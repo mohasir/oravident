@@ -14,10 +14,11 @@ export const branches = pgTable("branches", {
   address: text("address").notNull(),
   latitude: decimal("latitude", { precision: 10, scale: 7 }),
   longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  color: varchar("color", { length: DB_LIMITS.COLOR_HEX }),
   settings: jsonb("settings").default({}),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => [
   uniqueIndex("clinic_slug_idx").on(table.clinicId, table.slug)
 ]);
