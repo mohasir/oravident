@@ -1,0 +1,22 @@
+import { ErrorCodes } from "@/core/errors/index.ts";
+
+type DeepValueOf<T> = T extends Record<string, unknown> ? { 
+  [K in keyof T]: DeepValueOf<T[K]> 
+}[keyof T] : T;
+
+export type ErrorCodeType = DeepValueOf<typeof ErrorCodes>;
+export type ApiResponseErrorDetails = Record<string, string[]>;
+
+export interface ApiResponseError {
+  statusCode: number;
+  errorCode: ErrorCodeType;
+  message: string;
+  details?: ApiResponseErrorDetails;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  errors?: ApiResponseError;
+  meta?: Record<string, unknown>;
+}
