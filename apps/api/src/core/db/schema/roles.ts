@@ -1,10 +1,10 @@
 import {pgTable, uuid, varchar, text, boolean, timestamp, uniqueIndex} from "drizzle-orm/pg-core";
 import {clinics} from "./clinics.ts";
-import { DB_LIMITS } from "./constants.ts";
+import { DB_LIMITS } from "../constants.ts";
 
 export const roles = pgTable("roles", {
   id: uuid("id").primaryKey().defaultRandom(),
-  clinicId: uuid("clinic_id").notNull().references(() => clinics.id, { onDelete: "restrict" }),
+  clinicId: uuid("clinic_id").references(() => clinics.id, { onDelete: "cascade" }),
   name: varchar("name", { length: DB_LIMITS.SHORT_NAME }).notNull(),
   displayName: varchar("display_name", { length: DB_LIMITS.SHORT_NAME }),
   description: text("description"),

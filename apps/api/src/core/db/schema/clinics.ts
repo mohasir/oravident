@@ -1,5 +1,5 @@
 import {pgTable, uuid, varchar, jsonb, boolean, timestamp} from "drizzle-orm/pg-core";
-import { DB_LIMITS } from "./constants.ts";
+import { DB_LIMITS } from "../constants.ts";
 
 export const clinics = pgTable("clinics", {
   id: uuid("id").primaryKey().defaultRandom(),

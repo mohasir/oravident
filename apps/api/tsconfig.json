@@ -6,20 +6,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@config/*": ["src/config/*"],
-      "@db/*": ["src/db/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@services/*": ["src/services/*"],
+      "@core/*": ["src/core/*"],
+      "@common/*": ["src/common/*"],
+      "@modules/*": ["src/modules/*"],
       "@routes/*": ["src/routes/*"],
-      "@validators/*": ["src/validators/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types/*": ["src/types/*"],
-      "@constants/*": ["src/constants/*"],
-      "@helpers/*": ["src/helpers/*"],
+      "@middlewares/*": ["src/middlewares/*"],
       "@commands/*": ["src/commands/*"],
-      "@fixtures/*": ["src/fixtures/*"],
-      "@seeds/*": ["src/db/seeds/*"]
+      "@channels/*": ["src/channels/*"],
+      "@jobs/*": ["src/jobs/*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true

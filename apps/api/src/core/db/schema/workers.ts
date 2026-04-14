@@ -2,7 +2,7 @@ import { pgTable, uuid, varchar, boolean, timestamp, uniqueIndex } from "drizzle
 import { clinics } from "./clinics.ts";
 import { users } from "./users.ts";
 import { roles } from "./roles.ts";
-import { DB_LIMITS } from "./constants.ts";
+import { DB_LIMITS } from "../constants.ts";
 
 export const workers = pgTable("workers", {
   id: uuid("id").primaryKey().defaultRandom(),

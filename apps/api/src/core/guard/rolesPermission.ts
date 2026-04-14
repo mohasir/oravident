@@ -1,0 +1,58 @@
+import { ROLES } from "./roles.ts";
+import { PERMISSIONS } from "./permissions.ts";
+
+export const RolesPermissions = [
+  {
+    role: ROLES.SUPERADMIN,
+    // SuperAdmin has absolute control over the platform
+    permissions: Object.values(PERMISSIONS)
+  },
+  {
+    role: ROLES.ADMIN,
+    permissions: [
+      ...Object.values(PERMISSIONS).filter(p => !p.includes('-role') && !p.includes(PERMISSIONS.DELETE_CLINIC))
+    ]
+  },
+  {
+    role: ROLES.DOCTOR,
+    permissions: [
+      // Read-only Access (Catalogs)
+    PERMISSIONS.LIST_CLINIC, PERMISSIONS.GET_CLINIC,
+      PERMISSIONS.LIST_SERVICE, PERMISSIONS.GET_SERVICE,
+      PERMISSIONS.LIST_BRANCH, PERMISSIONS.GET_BRANCH,
+      PERMISSIONS.LIST_WORKER, PERMISSIONS.GET_WORKER,
+      
+      // Own schedule/availability (Can view and update their own schedule)
+      PERMISSIONS.LIST_SCHEDULE, PERMISSIONS.GET_SCHEDULE, PERMISSIONS.UPDATE_SCHEDULE,
+
+      // Patients (View medical history and edit)
+      PERMISSIONS.LIST_PATIENT, PERMISSIONS.GET_PATIENT, PERMISSIONS.UPDATE_PATIENT,
+      
+      // Appointments (Create, view, update)
+      PERMISSIONS.LIST_APPOINTMENT, PERMISSIONS.GET_APPOINTMENT, PERMISSIONS.UPDATE_APPOINTMENT, PERMISSIONS.CREATE_APPOINTMENT,
+
+      // Notifications
+      PERMISSIONS.LIST_NOTIFICATION, PERMISSIONS.GET_NOTIFICATION, PERMISSIONS.UPDATE_NOTIFICATION,
+    ]
+  },
+  {
+    role: ROLES.RECEPTIONIST,
+    permissions: [
+      // Read-only Access (Operational)
+      PERMISSIONS.LIST_CLINIC, PERMISSIONS.GET_CLINIC,
+      PERMISSIONS.LIST_SERVICE, PERMISSIONS.GET_SERVICE,
+      PERMISSIONS.LIST_BRANCH, PERMISSIONS.GET_BRANCH,
+      PERMISSIONS.LIST_WORKER, PERMISSIONS.GET_WORKER,
+      PERMISSIONS.LIST_SCHEDULE, PERMISSIONS.GET_SCHEDULE,
+
+      // Patients (Absolute owners of front-desk data entry)
+      PERMISSIONS.CREATE_PATIENT, PERMISSIONS.LIST_PATIENT, PERMISSIONS.GET_PATIENT, PERMISSIONS.UPDATE_PATIENT,
+
+      // Appointments (Full calendar control, including cancellations/deletions)
+      PERMISSIONS.CREATE_APPOINTMENT, PERMISSIONS.LIST_APPOINTMENT, PERMISSIONS.GET_APPOINTMENT, PERMISSIONS.UPDATE_APPOINTMENT, PERMISSIONS.DELETE_APPOINTMENT,
+      
+      // Notifications
+      PERMISSIONS.LIST_NOTIFICATION, PERMISSIONS.GET_NOTIFICATION, PERMISSIONS.UPDATE_NOTIFICATION,
+    ]
+  }
+];
