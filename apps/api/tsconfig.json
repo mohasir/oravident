@@ -16,7 +16,8 @@
       "@jobs/*": ["src/jobs/*"]
     },
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "experimentalDecorators": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

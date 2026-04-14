@@ -14,9 +14,11 @@ export interface ApiResponseError {
   details?: ApiResponseErrorDetails;
 }
 
+export type ApiResponseMeta = Record<string, unknown>;
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
   errors?: ApiResponseError;
-  meta?: Record<string, unknown>;
+  meta?: ApiResponseMeta;
 }

@@ -2,6 +2,7 @@ import { pgTable, uuid, varchar, text, integer, date, boolean, timestamp } from 
 import { clinics } from "./clinics.ts";
 import { branches } from "./branches.ts";
 import { DB_LIMITS } from "../constants.ts";
+import { genderEnum } from "../enums.ts";
 
 export const patients = pgTable("patients", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -15,7 +16,7 @@ export const patients = pgTable("patients", {
   email: varchar("email", { length: DB_LIMITS.EMAIL }),
   phone: varchar("phone", { length: DB_LIMITS.PHONE }).notNull(),
   dateOfBirth: date("date_of_birth"),
-  gender: varchar("gender", { length: 20 }),
+  gender: genderEnum("gender"),
   address: text("address"),
   medicalNotes: text("medical_notes"),
   totalAppointments: integer("total_appointments").default(0).notNull(),

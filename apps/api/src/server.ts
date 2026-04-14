@@ -8,8 +8,8 @@ import { notFoundMiddleware } from './middlewares/notFound.ts';
 import { errorHandlerMiddleware } from './middlewares/errorHandler.ts';
 
 // Load OpenAPI
-const openapiPath = path.join(process.cwd(), 'openapi.yaml');
-const openapiDocument = YAML.load(openapiPath);
+// const openapiPath = path.join(process.cwd(), 'openapi.yaml');
+// const openapiDocument = YAML.load(openapiPath);
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -17,7 +17,7 @@ const port = process.env.PORT || 3001;
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapiDocument));
+// app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapiDocument));
 
 import v1Router from '@/routes/v1/index.ts';
 

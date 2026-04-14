@@ -2,10 +2,15 @@ export const ErrorCodes = {
   system: {
     ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
     INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
+    CONFLICT: 'CONFLICT',
   },
   auth: {
     UNAUTHORIZED: 'UNAUTHORIZED',
     INVALID_TOKEN: 'INVALID_TOKEN',
+    FORBIDDEN: 'FORBIDDEN',
+  },
+  validation: {
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
   }
 
 } as const;

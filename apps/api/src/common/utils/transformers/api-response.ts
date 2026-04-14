@@ -1,6 +1,6 @@
-import { ApiResponse, ApiResponseError } from "@/common/types/response.ts";
+import { ApiResponse, ApiResponseError, ApiResponseMeta } from "@/common/types/response.ts";
 
-export const successResponse = <T>(data: T, meta?: ApiResponse<T>['meta']): ApiResponse<T> => {
+export const successResponse = <T>(data: T, meta?: ApiResponseMeta): ApiResponse<T> => {
   return { 
     success: true, 
     data, 
