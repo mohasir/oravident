@@ -1,10 +1,11 @@
 import { ApiError, ErrorCodes } from "@/core/errors/index.ts";
-import { errorResponse } from "@/common/utils/transformers/api-response.ts";
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { ENV } from "@/core/config/env.ts";
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (
+  req: Request, res: Response, next: NextFunction
+) => {
   try{
 
     const authHeader =  req.headers.authorization;
@@ -14,14 +15,19 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     if(!token){
       throw new ApiError('No token provider', 401, ErrorCodes.auth.UNAUTHORIZED);
     }
+    const payload = jwt.verify(token, ENV.JWT_ACCESS_SECRET) as JwtPayload;
 
-    const payload = jwt.verify(token, ENV.JWT_SECRET) as JwtPayload;
+    req.user = {
+      id: payload.id,
+      roleId: payload.role,
+    }
 
-    const user = await userService.findById(payload.userId);
-    const tenant = await tenantService.findById(payload.tenantId);
+    req.tenant = {
+      id: payload.tenantId
+    }
 
-    req.user = user;
-    req.tenant = tenant;
+    /* const user = await userService.findById(payload.userId);
+    const tenant = await tenantService.findById(payload.tenantId); */
 
     next();
 

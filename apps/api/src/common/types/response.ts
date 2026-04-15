@@ -10,7 +10,6 @@ export type ApiResponseErrorDetails = Record<string, string[]>;
 export interface ApiResponseError {
   statusCode: number;
   errorCode: ErrorCodeType;
-  message: string;
   details?: ApiResponseErrorDetails;
 }
 
@@ -18,6 +17,7 @@ export type ApiResponseMeta = Record<string, unknown>;
 
 export interface ApiResponse<T> {
   success: boolean;
+  message: string;
   data?: T;
   errors?: ApiResponseError;
   meta?: ApiResponseMeta;

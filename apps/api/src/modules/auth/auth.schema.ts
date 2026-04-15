@@ -27,10 +27,20 @@ export const passwordMatchRefine = (data: confirmPasswordType, ctx: z.Refinement
   }
 };
 
-
 export const loginSchema = z.object({
   email: z.email(),
   password: z.string().min(1).max(100),
+});
+
+export const sessionMetaSchema = z.object({
+  userAgent: z.string().optional().nullable(),
+  ipAddress: z.string().optional().nullable(),
+});
+
+export const userSessionSchema = sessionMetaSchema.extend({
+  userId: z.string(),
+  token: z.string(),
+  expiresAt: z.date(),
 });
 
 export const inviteWorkerSchema = z.object({
@@ -79,7 +89,6 @@ export const updateProfileSchema = z.object({
   calendarColor: z.string().regex(/^#[0-9A-F]{6}$/i).optional(),
 });
 
-
 export const forgotPasswordSchema = z.object({
   email: z.email(),
 });
@@ -89,3 +98,15 @@ export const resetPasswordSchema = confirmPasswordSchema.extend({}).superRefine(
 export const changePasswordSchema = confirmPasswordSchema.extend({
   currentPassword: z.string().min(1).max(100),
 }).superRefine(passwordMatchRefine);
+
+// --- DTO Types ---
+export type LoginDTO = z.infer<typeof loginSchema>;
+export type UserSessionsDTO = z.infer<typeof userSessionSchema>;
+export type SessionMetaDTO = z.infer<typeof sessionMetaSchema>;
+export type InviteWorkerDTO = z.infer<typeof inviteWorkerSchema>;
+export type AcceptInvitationDTO = z.infer<typeof acceptInvitationSchema>;
+export type RegisterDTO = z.infer<typeof registerSchema>;
+export type UpdateProfileDTO = z.infer<typeof updateProfileSchema>;
+export type ForgotPasswordDTO = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;
+export type ChangePasswordDTO = z.infer<typeof changePasswordSchema>;

@@ -7,23 +7,23 @@ export abstract class BaseController {
   
   // --- Success Responses ---
 
-  public ok<T>(res: Response, data: T) {
-    return res.status(200).json(successResponse(data));
+  public ok<T>(res: Response, message: string, data: T) {
+    return res.status(200).json(successResponse(message, data));
   }
 
-  public created<T>(res: Response, data: T) {
-    return res.status(201).json(successResponse(data));
+  public created<T>(res: Response, message: string, data: T) {
+    return res.status(201).json(successResponse(message, data));
   }
 
   public noContent(res: Response) {
     return res.status(204).send();
   }
 
-  public paginated<T>(res: Response, data: T[], meta: ApiResponseMeta) {
-    return res.status(200).json(successResponse(data, meta));
+  public paginated<T>(res: Response, message: string, data: T[], meta: ApiResponseMeta) {
+    return res.status(200).json(successResponse(message, data, meta));
   }
 
-  // --- Semantic Error Helpers (Developer Friendly) ---
+  // --- Semantic Error Helpers ---
 
   public unauthorized(developerMessage = 'Unauthorized access', errorCode: ErrorCodeType = ErrorCodes.auth.UNAUTHORIZED) {
     throw new ApiError(developerMessage, 401, errorCode);

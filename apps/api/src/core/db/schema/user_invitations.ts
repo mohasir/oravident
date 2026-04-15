@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, varchar, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { clinics } from "./clinics.ts";
 import { roles } from "./roles.ts";
 import { DB_LIMITS } from "../constants.ts";
@@ -13,4 +13,6 @@ export const userInvitations = pgTable("user_invitations", {
   acceptedAt: timestamp("accepted_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
-});
+}, (table) => [
+  uniqueIndex('clinic_email_idx').on(table.clinicId, table.email)
+]);

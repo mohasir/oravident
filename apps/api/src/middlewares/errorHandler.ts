@@ -8,7 +8,7 @@ export const errorHandlerMiddleware = (err: unknown, _req: Request, res: Respons
 
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json(
-      errorResponse(err)
+      errorResponse(err.message, err)
     );
   }
 
@@ -27,11 +27,8 @@ export const errorHandlerMiddleware = (err: unknown, _req: Request, res: Respons
     console.error("Critical error not handled:", err);
   }
 
+  const fallbackError = new ApiError("Internal server error", 500, responseErrorCode);
   return res.status(500).json(
-    errorResponse(new ApiError(
-      "Error server",
-      500,
-      responseErrorCode,
-    ))
+    errorResponse(fallbackError.message, fallbackError)
   );
 };
