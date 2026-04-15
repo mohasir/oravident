@@ -1,7 +1,7 @@
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 import { Request, Response, NextFunction } from 'express';
-import { clinicsService } from '@/modules/clinics/clinics.service.ts';
+import { clinicService } from '@/bootstrap/container.ts';
 
 export const tenantMiddleware = async (
   req: Request, res: Response, next: NextFunction
@@ -14,7 +14,7 @@ export const tenantMiddleware = async (
       throw new ApiError('No tenant provided', 401, ErrorCodes.auth.UNAUTHORIZED);
     }
 
-    await clinicsService.validateTenant(tenantId);
+    await clinicService.validateTenant(tenantId);
 
     next();
 

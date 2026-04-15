@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
 import app from '@/app.ts';
-import { authController } from '../auth.controller.ts';
+import { authController } from '@/bootstrap/container.ts';
 
 const VALID_UUID = '550e8400-e29b-41d4-a716-446655440000';
 
 // Mock del controlador para evitar tocar DB/Servicios y no romper las rutas de Express
-vi.mock('../auth.controller.ts', () => ({
+vi.mock('@/bootstrap/container.ts', () => ({
   authController: {
     login: vi.fn(),
     register: vi.fn(),

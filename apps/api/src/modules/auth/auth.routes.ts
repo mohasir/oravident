@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validateSchema } from '@/middlewares/validateSchema.ts';
 import { protect } from '@/middlewares/protect.ts';
-import { authController } from '@modules/auth/auth.controller.ts';
+import { authController } from '@/bootstrap/container.ts';
 import { 
   loginSchema, 
   registerSchema, 

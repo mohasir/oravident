@@ -1,6 +1,6 @@
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
-import { ClinicsRepository, clinicsRepository } from './clinics.repository.ts';
+import { ClinicsRepository } from './clinics.repository.ts';
 
 export class ClinicService {
 
@@ -20,5 +20,3 @@ export class ClinicService {
     }
   }
 }
-
-export const clinicsService = new ClinicService(clinicsRepository);

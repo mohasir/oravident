@@ -2,10 +2,6 @@ import { Request, Response } from 'express';
 import { BaseController } from '@/core/shared/BaseController.ts';
 import { AuthService } from '@modules/auth/auth.service.ts';
 import { CatchAsync } from '@/core/shared/decorators/CatchAsync.ts';
-import { userRepository } from '@modules/users/users.repository.ts';
-import { userInvitationsRepository } from '@modules/auth/userInvitations.repository.ts';
-import { rolesRepository } from '@modules/roles/roles.repository.ts';
-import { userSessionsRepository } from '@modules/auth/userSessions.repository.ts';
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 
@@ -100,11 +96,3 @@ export class AuthController extends BaseController {
     return this.ok(res, 'Logged out successfully', null);
   }
 }
-
-const authService = new AuthService(
-  userRepository, 
-  rolesRepository,
-  userSessionsRepository,
-  userInvitationsRepository,
-);
-export const authController = new AuthController(authService);
