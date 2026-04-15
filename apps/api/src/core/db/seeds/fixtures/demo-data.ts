@@ -4,7 +4,7 @@ export const DEMO_CLINIC = {
   name: "Demo",
   slug: "demo",
   email: "contact@demo.com",
-  timeZone: "America/Managua",
+  timezone: "America/Managua",
 };
 
 export const DEMO_BRANCH = {
@@ -17,18 +17,42 @@ export const DEMO_BRANCH = {
 export const DEMO_USERS = [
   {
     email: "admin@demo.com",
-    passwordHash: "mocked-hash-admin",
-    metadata: { roleName: ROLES.ADMIN, prefix: "Lic.", specialty: "" }
+    password: "password123",
+    metadata: { 
+      roleName: ROLES.ADMIN, 
+      prefix: "Lic.", 
+      specialty: "",
+      firstName: "Admin",
+      lastName: "Demo",
+      phone: "+50588888888",
+      gender: "OTHER" as const
+    }
   },
   {
     email: "doctor@demo.com",
-    passwordHash: "mocked-hash-doctor",
-    metadata: { roleName: ROLES.DOCTOR, prefix: "Dr.", specialty: "Odontología General" }
+    password: "password123",
+    metadata: { 
+      roleName: ROLES.DOCTOR, 
+      prefix: "Dr.", 
+      specialty: "Odontología General",
+      firstName: "Juan",
+      lastName: "Pérez",
+      phone: "+50577777777",
+      gender: "MALE" as const
+    }
   },
   {
     email: "reception@demo.com",
-    passwordHash: "mocked-hash-reception",
-    metadata: { roleName: ROLES.RECEPTIONIST, prefix: "", specialty: "" }
+    password: "password123",
+    metadata: { 
+      roleName: ROLES.RECEPTIONIST, 
+      prefix: "Srta.", 
+      specialty: "",
+      firstName: "María",
+      lastName: "López",
+      phone: "+50566666666",
+      gender: "FEMALE" as const
+    }
   }
 ];
 

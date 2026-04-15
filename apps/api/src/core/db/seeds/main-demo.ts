@@ -3,6 +3,7 @@ import { clinics, services, branches, users, workers, roles, branchSchedules, wo
 import { DEMO_CLINIC, DEMO_SERVICES, DEMO_BRANCH, DEMO_USERS, DEMO_BRANCH_SCHEDULES, DEMO_WORKER_SCHEDULES } from "./fixtures/demo-data.ts";
 import { isNull } from "drizzle-orm";
 import { ROLES } from "../../guard/roles.ts";
+import bcrypt from "bcryptjs";
 
 export async function seedMainDemo() {
   console.log("🏥 Seeding Complete Demo Environment...");
@@ -45,9 +46,15 @@ export async function seedMainDemo() {
 
     // 4. Users & Workers
     for (const userData of DEMO_USERS) {
-      const { metadata, ...userPayload } = userData;
+      const { metadata, password, ...userBase } = userData;
       
-      const [user] = await tx.insert(users).values(userPayload).returning();
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
+      const [user] = await tx.insert(users).values({
+        ...userBase,
+        passwordHash: hashedPassword
+      }).returning();
+      
       if (!user) throw new Error(`Failed to insert User: ${userData.email}`);
       
       const targetRole = globalRoles.find(r => r.name === metadata.roleName);
@@ -56,6 +63,10 @@ export async function seedMainDemo() {
         clinicId: clinic.id,
         userId: user.id,
         roleId: targetRole!.id,
+        firstName: metadata.firstName,
+        lastName: metadata.lastName,
+        phone: metadata.phone,
+        gender: metadata.gender,
         prefix: metadata.prefix,
         specialty: metadata.specialty
       }).returning();

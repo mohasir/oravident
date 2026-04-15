@@ -1,9 +1,8 @@
-import { pgTable, uuid, text, timestamp, pgEnum, integer, index } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, timestamp, integer, index } from "drizzle-orm/pg-core";
 import { appointments } from "./appointments.ts";
 import { appointmentStatuses } from "./appointment_statuses.ts";
 import { users } from "./users.ts";
-
-export const actionSourceEnum = pgEnum("action_source", ["WEB_ADMIN", "MOBILE_IOS", "MOBILE_ANDROID", "WHATSAPP", "SYSTEM"]);
+import { actionSourceEnum } from "../enums.ts";
 
 export const appointmentStatusHistory = pgTable("appointment_status_history", {
   id: uuid("id").primaryKey().defaultRandom(),
