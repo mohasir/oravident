@@ -49,11 +49,13 @@ export class AuthController extends BaseController {
   }
 
   async forgotPassword(req: Request, res: Response) {
-    return this.ok(res, 'Reset link sent', null);
+    await this.authService.forgotPassword(req.body);
+    return this.ok(res, 'If the email is registered, you will receive a reset link shortly', null);
   }
 
   async resetPassword(req: Request, res: Response) {
-    return this.ok(res, 'Password reset successful', null);
+    await this.authService.resetPassword(req.body);
+    return this.ok(res, 'Password updated successfully', null);
   }
 
   async changePassword(req: Request, res: Response) {

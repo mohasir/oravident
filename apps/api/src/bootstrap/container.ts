@@ -13,6 +13,8 @@ import { RolesRepository } from '@modules/roles/roles.repository.ts';
 import { ClinicsRepository } from '@modules/clinics/clinics.repository.ts';
 import { UserInvitationsRepository } from '@modules/auth/userInvitations.repository.ts';
 import { UserSessionsRepository } from '@modules/auth/userSessions.repository.ts';
+import { AuthRepository } from '@modules/auth/auth.repository.ts';
+import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.repository.ts';
 
 
 // ─── Services ---
@@ -29,13 +31,17 @@ export const rolesRepository = new RolesRepository(db);
 export const clinicsRepository = new ClinicsRepository(db);
 export const userInvitationsRepository = new UserInvitationsRepository(db);
 export const userSessionsRepository = new UserSessionsRepository(db);
+export const authRepository = new AuthRepository(db);
+export const userPasswordResetsRepository = new UserPasswordResetsRepository(db);
 
 // 2. Instanciar Servicios
 export const authService = new AuthService(
   userRepository,
+  authRepository,
   rolesRepository,
   userSessionsRepository,
   userInvitationsRepository,
+  userPasswordResetsRepository,
 );
 
 export const clinicService = new ClinicService(clinicsRepository);

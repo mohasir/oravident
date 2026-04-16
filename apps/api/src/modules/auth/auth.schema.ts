@@ -103,7 +103,9 @@ export const forgotPasswordSchema = z.object({
   }),
 });
 
-export const resetPasswordSchema = confirmPasswordSchema.extend({}).superRefine(passwordMatchRefine);
+export const resetPasswordSchema = confirmPasswordSchema.extend({
+  token: z.string(),
+}).superRefine(passwordMatchRefine);
 
 export const changePasswordSchema = confirmPasswordSchema.extend({
   currentPassword: z.string().min(1).max(100),
