@@ -6,5 +6,5 @@ export const ACTIONS = {
   DELETE: 'delete',
 } as const;
 
-export type Action    = (typeof ACTIONS)[keyof typeof ACTIONS];
-export type ActionKey = keyof typeof ACTIONS;
+export type ActionType    = (typeof ACTIONS)[keyof typeof ACTIONS];
+export type ActionKeyType = keyof typeof ACTIONS;

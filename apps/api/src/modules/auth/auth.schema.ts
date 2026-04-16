@@ -28,8 +28,10 @@ export const passwordMatchRefine = (data: confirmPasswordType, ctx: z.Refinement
 };
 
 export const loginSchema = z.object({
-  email: z.email("Invalid email format"),
-  password: z.string()
+  email: z.email({
+    error: (issue) => issue.code === "invalid_type" ? "Email is required" : "Invalid email format",
+  }),
+  password: z.string({ error: "Password is required" })
     .nonempty("Password is required")
     .max(DB_LIMITS.PASSWORD),
 }).strict();
@@ -46,8 +48,12 @@ export const userSessionSchema = sessionMetaSchema.extend({
 });
 
 export const inviteWorkerSchema = z.object({
-  email: z.email("Invalid email format").max(DB_LIMITS.EMAIL),
-  roleId: z.uuid("Invalid Role ID format"),
+  email: z.email({
+    error: (issue) => issue.code === "invalid_type" ? "Email is required" : "Invalid email format",
+  }).max(DB_LIMITS.EMAIL),
+  roleId: z.uuid({
+    error: (issue) => issue.code === "invalid_type" ? "Role ID is required" : "Invalid Role ID format",
+  }),
 }).strict();
 
 export const acceptInvitationSchema = confirmPasswordSchema.extend({
@@ -71,11 +77,11 @@ export const registerSchema = confirmPasswordSchema.extend({
   idNumber: z.string().max(DB_LIMITS.ID_NUMBER).optional().nullable(),
   licenseNumber: z.string().max(DB_LIMITS.SHORT_NAME).optional().nullable(),
   dateOfBirth: z.string().optional().nullable(),
-  gender: z.enum(Genders, { errorMap: () => ({ message: "Invalid gender selection" }) }),
+  gender: z.enum(Genders, { error: "Invalid gender selection" }),
   prefix: z.string().max(20).optional().nullable(),
   specialty: z.string().max(DB_LIMITS.NAME).optional().nullable(),
   calendarColor: z.string().regex(/^#[0-9A-F]{6}$/i, "Invalid color format").optional(),
-  contractType: z.enum(ContractTypes, { error_map: () => ({ message: "Invalid contract type" }) }).optional(),
+  contractType: z.enum(ContractTypes, { error: "Invalid contract type" }).optional(),
 }).strict().superRefine(passwordMatchRefine);
 
 export const updateProfileSchema = z.object({
@@ -92,7 +98,9 @@ export const updateProfileSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z.email({
+    error: (issue) => issue.code === "invalid_type" ? "Email is required" : "Invalid email format",
+  }),
 });
 
 export const resetPasswordSchema = confirmPasswordSchema.extend({}).superRefine(passwordMatchRefine);

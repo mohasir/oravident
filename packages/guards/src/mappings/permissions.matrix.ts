@@ -1,9 +1,8 @@
-import { ACTIONS, type Action } from './actions.ts';
-import { RESOURCES, type Resource } from './resources.ts';
+import { ACTIONS, RESOURCES, type ActionType, type ResourceType } from '../constants/index.ts';
 
 export type PermissionsMatrixItem = {
-  resource: Resource;
-  actions: readonly Action[];
+  resource: ResourceType;
+  actions: readonly ActionType[];
 };
 
 const {CREATE, LIST, GET, UPDATE, DELETE} = ACTIONS;

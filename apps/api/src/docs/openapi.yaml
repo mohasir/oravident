@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: DentSaaS API
+  description: API for multi-tenant Dental Clinic Management System
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development server
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessToken
+    refreshToken:
+      type: apiKey
+      in: cookie
+      name: refreshToken
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+        data:
+          type: object
+          nullable: true
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+        errors:
+          type: object
+          properties:
+            statusCode:
+              type: integer
+            errorCode:
+              type: string
+            details:
+              type: object
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    AccessTokenResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+        data:
+          type: object
+          properties:
+            accessToken: { type: string }
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      description: Returns accessToken in JSON and sets refreshToken in HttpOnly cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccessTokenResponse' }
+
+  /auth/refresh-token:
+    post:
+      tags: [Auth]
+      summary: Refresh Access Token
+      description: Validates refreshToken cookie and returns a new accessToken.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AccessTokenResponse' }
+        401:
+          description: Invalid or missing refresh token
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout
+      description: Revokes session in DB and clears cookies.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiResponse' }
+
+  /auth/invite-worker:
+    post:
+      tags: [Auth]
+      summary: Invite Worker
+      description: Creates a worker invitation linked to the current tenant.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, roleId]
+              properties:
+                email: { type: string, format: email }
+                roleId: { type: string, format: uuid }
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiResponse' }
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: "[WIP] Register"
+      description: Placeholder for clinic and admin registration.
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApiResponse' }

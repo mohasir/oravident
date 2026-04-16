@@ -1,7 +1,7 @@
 import { ApiError, ErrorCodes } from "@/core/errors/index.ts";
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { ENV } from "@/core/config/env.ts";
+import { verifyAccessToken } from "@/common/utils/jwt.ts";
+import { userRepository } from "@/bootstrap/container.ts";
 
 export const authMiddleware = async (
   req: Request, res: Response, next: NextFunction
@@ -15,19 +15,18 @@ export const authMiddleware = async (
     if(!token){
       throw new ApiError('No token provider', 401, ErrorCodes.auth.UNAUTHORIZED);
     }
-    const payload = jwt.verify(token, ENV.JWT_ACCESS_SECRET) as JwtPayload;
+    const payload = verifyAccessToken(token);
+
+    const user = await userRepository.findActiveUserWorkerById(payload.id);
+
+    if (!user) {
+      throw new ApiError('User inactive or not found', 401, ErrorCodes.auth.UNAUTHORIZED);
+    }
 
     req.user = {
-      id: payload.id,
-      roleId: payload.role,
+      token: payload,
+      clinicId: user.worker?.clinicId || undefined
     }
-
-    req.tenant = {
-      id: payload.tenantId
-    }
-
-    /* const user = await userService.findById(payload.userId);
-    const tenant = await tenantService.findById(payload.tenantId); */
 
     next();
 

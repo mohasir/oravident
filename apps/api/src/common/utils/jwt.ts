@@ -1,10 +1,13 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { ENV } from '@core/config/env.ts';
+import { PermissionType, RoleType } from '@repo/guards';
 
-interface PayloadAccessToken {
-  id: string,
-  email: string,
-  tenantId?: string,
+export interface PayloadAccessToken {
+  id: string;
+  email: string;
+  role: RoleType;
+  permissions: PermissionType[];
+  tenantId?: string;
 }
 
 interface PayloadRefreshToken {
@@ -19,7 +22,7 @@ export function signAccessToken(
 }
 
 export function verifyAccessToken(token: string) {
-  return jwt.verify(token, ENV.JWT_ACCESS_SECRET);
+  return jwt.verify(token, ENV.JWT_ACCESS_SECRET) as PayloadAccessToken
 }
 
 export function signRefreshToken(

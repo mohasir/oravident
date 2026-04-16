@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { validateSchema } from '@/middlewares/validateSchema.ts';
 import { protect } from '@/middlewares/protect.ts';
 import { authController } from '@/bootstrap/container.ts';
+import { guardMiddleware } from '@/middlewares/guard.ts';
+import { PERMISSIONS } from '@repo/guards';
 import { 
   loginSchema, 
   registerSchema, 
@@ -28,7 +30,13 @@ router.post('/logout', authController.logout);
 // --- Protected Routes ---
 router.use(protect);
 
-router.post('/invitations', validateSchema(inviteWorkerSchema), authController.inviteWorker);
+router.post(
+  '/invitations', 
+  guardMiddleware([PERMISSIONS.CREATE_WORKER]),
+  validateSchema(inviteWorkerSchema), 
+  authController.inviteWorker
+);
+
 router.post('/change-password', validateSchema(changePasswordSchema), authController.changePassword);
 router.put('/profile', validateSchema(updateProfileSchema), authController.updateProfile);
 

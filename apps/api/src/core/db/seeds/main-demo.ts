@@ -2,7 +2,7 @@ import { db } from "../index.ts";
 import { clinics, services, branches, users, workers, roles, branchSchedules, workerBranches, workerSchedules, branchServices } from "../schema/index.ts";
 import { DEMO_CLINIC, DEMO_SERVICES, DEMO_BRANCH, DEMO_USERS, DEMO_BRANCH_SCHEDULES, DEMO_WORKER_SCHEDULES } from "./fixtures/demo-data.ts";
 import { isNull } from "drizzle-orm";
-import { ROLES } from "../../guard/roles.ts";
+import { ROLES } from "@repo/guards";
 import bcrypt from "bcryptjs";
 
 export async function seedMainDemo() {

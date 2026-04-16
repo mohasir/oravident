@@ -51,4 +51,3 @@ export class UserSessionsRepository extends BaseRepository{
   }
 }
 
-export const userSessionsRepository = new UserSessionsRepository(db);

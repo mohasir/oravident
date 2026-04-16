@@ -1,4 +1,4 @@
-import { ErrorCodes } from "@/core/errors/index.ts";
+import { ErrorCodes } from "@/core/errors/ErrorCodes.ts";
 
 type DeepValueOf<T> = T extends Record<string, unknown> ? { 
   [K in keyof T]: DeepValueOf<T[K]> 

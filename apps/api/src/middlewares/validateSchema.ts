@@ -3,7 +3,7 @@ import { z, ZodError } from 'zod';
 import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
 
 export const validateSchema = <T extends z.ZodTypeAny>(schema: T) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       if (!req.body || Object.keys(req.body).length === 0) {
         throw new ApiError(
@@ -21,8 +21,12 @@ export const validateSchema = <T extends z.ZodTypeAny>(schema: T) => {
         const details: Record<string, string[]> = {};
         
         error.issues.forEach(err => {
+          if (err.code === "unrecognized_keys") {
+            details['unrecognizedKeys'] = (err as { keys: string[] }).keys;
+            return;
+          }
+
           const path = err.path.join('.') || 'body';
-          
           if (!details[path]) {
             details[path] = [];
           }

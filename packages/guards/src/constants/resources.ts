@@ -12,5 +12,5 @@ export const RESOURCES = {
   COMMUNICATION:  'communication',
 } as const;
 
-export type Resource    = (typeof RESOURCES)[keyof typeof RESOURCES];
-export type ResourceKey = keyof typeof RESOURCES;
+export type ResourceType    = (typeof RESOURCES)[keyof typeof RESOURCES];
+export type ResourceKeyType = keyof typeof RESOURCES;

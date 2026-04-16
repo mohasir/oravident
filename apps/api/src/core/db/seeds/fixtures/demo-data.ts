@@ -1,4 +1,4 @@
-import { ROLES } from "@/core/guard/roles.ts";
+import { ROLES } from "@repo/guards";
 
 export const DEMO_CLINIC = {
   name: "Demo",

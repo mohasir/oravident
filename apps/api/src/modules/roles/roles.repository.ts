@@ -83,4 +83,3 @@ export class RolesRepository extends BaseRepository {
   }
 }
 
-export const rolesRepository = new RolesRepository(db);

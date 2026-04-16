@@ -39,7 +39,7 @@ export class AuthController extends BaseController {
   }
 
   async inviteWorker(req: Request, res: Response) {
-    await this.authService.inviteWorker(req.body, req.tenant!.id);
+    await this.authService.inviteWorker(req.body, req.user!.clinicId!);
 
     return this.created(res, 'Invitation sent successfully', null);
   }

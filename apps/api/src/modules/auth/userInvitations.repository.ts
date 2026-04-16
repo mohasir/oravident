@@ -41,4 +41,3 @@ export class UserInvitationsRepository extends BaseRepository {
   }
 }
 
-export const userInvitationsRepository = new UserInvitationsRepository(db);

@@ -1,6 +1,6 @@
 import { db } from "@/core/db/index.ts";
 import { permissions } from "@/core/db/schema/permissions.ts";
-import { permissionsMatrix }  from '@/core/guard/index.ts';
+import { permissionsMatrix }  from '@repo/guards';
 
 async function syncPermissions() {
   console.log("🌱 Building permissions from matrix...");

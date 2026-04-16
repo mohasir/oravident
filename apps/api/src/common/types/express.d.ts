@@ -1,13 +1,12 @@
+import { PayloadAccessToken } from "../utils/jwt.ts";
+
 declare global {
   namespace Express {
     interface Request {
       user?: {
-        id: string;
-        roleId: string;
+        token: PayloadAccessToken;
+        clinicId?: string;
       }
-      tenant?: {
-        id: string;
-      };
     }
   }
 }

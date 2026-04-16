@@ -2,8 +2,8 @@ import { db } from "@/core/db/index.ts";
 import { roles } from "@/core/db/schema/roles.ts";
 import { permissions } from "@/core/db/schema/permissions.ts";
 import { rolePermissions } from "@/core/db/schema/role_permissions.ts";
-import { RolesPermissions } from "@/core/guard/rolesPermission.ts";
-import { isNull } from "drizzle-orm"; // Para buscar donde clinicId es Null
+import { rolesPermissionsMatrix } from "@repo/guards";
+import { isNull } from "drizzle-orm";
 
 async function syncRolePermissions() {
   console.log("🛡️  Starting Global Roles and Permissions sync...");
@@ -19,7 +19,7 @@ async function syncRolePermissions() {
     console.log("Creating/Verifying Global Roles (System Roles)...");
     const globalRoles = await db.select().from(roles).where(isNull(roles.clinicId));
     
-    for (const config of RolesPermissions) {
+    for (const config of rolesPermissionsMatrix) {
       let dbRole = globalRoles.find(role => role.name === config.role);
       
       if (!dbRole) {
@@ -40,7 +40,7 @@ async function syncRolePermissions() {
 
     const dataToInsert: { roleId: string; permissionId: string }[] = [];
 
-    for (const config of RolesPermissions) {
+    for (const config of rolesPermissionsMatrix) {
       
       const systemRole = globalRoles.find(role => role.name === config.role);
 

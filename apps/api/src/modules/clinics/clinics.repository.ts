@@ -24,4 +24,3 @@ export class ClinicsRepository extends BaseRepository {
   }
 }
 
-export const clinicsRepository = new ClinicsRepository(db);

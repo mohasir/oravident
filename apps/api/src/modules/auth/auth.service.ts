@@ -9,6 +9,7 @@ import bcrypt from 'bcryptjs';
 import { UserSessionsRepository } from '@modules/auth/userSessions.repository.ts';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '@/common/utils/jwt.ts';
 import { hashToken } from '@/common/utils/hash.ts';
+import { PermissionType, RoleType } from '@repo/guards';
 
 export class AuthService {
 
@@ -22,7 +23,7 @@ export class AuthService {
   async login(data: LoginDTO, meta: SessionMetaDTO) {
 
     // verify if user exist
-    const result = await this.userRepository.findUserWorkerByEmail(data.email);
+    const result = await this.userRepository.findActiveUserWorkerByEmail(data.email);
 
     
     if (!result) {
@@ -33,7 +34,7 @@ export class AuthService {
       );
     }
 
-    const {user, worker} = result;
+    const {user, worker, role, permissions} = result;
     
     // verify password
     const passwordVerified = await bcrypt.compare(data.password, user.passwordHash);
@@ -49,8 +50,10 @@ export class AuthService {
     const accessToken = signAccessToken({
       id: user.id,
       email: user.email,
-      tenantId: worker?.clinicId
-    }, '7h');
+      role: role?.name as RoleType,
+      permissions: permissions as PermissionType[],
+      tenantId: worker?.clinicId || undefined,
+    }, '30m');
 
     const refreshToken = signRefreshToken({
       id: user.id
@@ -93,7 +96,7 @@ export class AuthService {
       );
     }
 
-    const result = await this.userRepository.findUserWorkerById(payloadJWT.id);
+    const result = await this.userRepository.findActiveUserWorkerById(payloadJWT.id);
 
     if(!result){
       throw new ApiError(
@@ -103,13 +106,15 @@ export class AuthService {
       );
     };
 
-    const { user, worker } = result;
+    const { user, worker, role, permissions } = result;
 
     const accessToken = signAccessToken({
       id: user.id,
       email: user.email,
-      tenantId: worker?.clinicId
-    }, '7h');
+      role: role?.name as RoleType,
+      permissions: permissions as PermissionType[],
+      tenantId: worker?.clinicId || undefined,
+    }, '30m');
 
     return {accessToken}
 
@@ -141,7 +146,6 @@ export class AuthService {
         ErrorCodes.auth.EMAIL_ALREADY_EXISTS
       );
     }
-
 
     const invitationExists = await this.userInvitationsRepository.existsByEmail(data.email);
 

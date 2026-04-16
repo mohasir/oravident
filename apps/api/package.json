@@ -19,7 +19,8 @@
     "db:fresh": "npm run db:reset && npm run db:push && npm run db:permissions && npm run db:roles && npm run db:seed",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "check:circular": "madge --circular --extensions ts --ts-config tsconfig.json src/"
   },
   "keywords": [],
   "author": "",
@@ -39,7 +40,8 @@
     "postgres": "^3.4.9",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@repo/guards": "workspace:*"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
