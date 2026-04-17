@@ -2,16 +2,13 @@ import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 import { UserRepository } from '@modules/users/users.repository.ts';
 import { AuthRepository } from '@modules/auth/auth.repository.ts';
-import { UserInvitationsRepository } from '@modules/auth/userInvitations.repository.ts';
 import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.repository.ts';
 import {
   ForgotPasswordDTO,
-  InviteWorkerDTO,
   LoginDTO,
   ResetPasswordDTO,
   SessionMetaDTO,
 } from '@modules/auth/auth.schema.ts';
-import { RolesRepository } from '@modules/roles/roles.repository.ts';
 import bcrypt from 'bcryptjs';
 import { UserSessionsRepository } from '@modules/auth/userSessions.repository.ts';
 import {
@@ -21,14 +18,14 @@ import {
 } from '@/common/utils/jwt.ts';
 import { generateToken, hashToken } from '@/common/utils/hash.ts';
 import { PermissionType, RoleType } from '@repo/guards';
+import { ITransactionManager } from '@/core/db/TransactionManager.ts';
 
 export class AuthService {
   constructor(
+    private txManager: ITransactionManager,
     private userRepository: UserRepository,
     private authRepository: AuthRepository,
-    private roleRepository: RolesRepository,
     private userSessionsRepository: UserSessionsRepository,
-    private userInvitationsRepository: UserInvitationsRepository,
     private userPasswordResetsRepository: UserPasswordResetsRepository,
   ) {}
 
@@ -123,12 +120,18 @@ export class AuthService {
 
     // TODO: Enviar email con el token original (sin hashear)
     console.log(`Reset token for ${data.email}: ${token}`);
+
+    return {
+      token,
+    };
   }
 
   async resetPassword(data: ResetPasswordDTO) {
     const hashedToken = hashToken(data.token);
-    const resetRequest =
-      await this.userPasswordResetsRepository.findValidToken(hashedToken);
+    const resetRequest = await this.userPasswordResetsRepository.findOne({
+      token: hashedToken,
+      isValid: true,
+    });
 
     if (!resetRequest) {
       throw new ApiError(
@@ -138,19 +141,30 @@ export class AuthService {
       );
     }
 
-    const passwordHash = await bcrypt.hash(data.password, 10);
+    const newPasswordHash = await bcrypt.hash(data.password, 10);
 
-    await this.authRepository.updatePassword(resetRequest.userId, passwordHash);
-    await this.userPasswordResetsRepository.markAsUsed(resetRequest.id);
-
-    await this.userSessionsRepository.revokeAllByUserId(resetRequest.userId);
+    await this.txManager.run(async (tx) => {
+      await this.authRepository.updatePassword(
+        resetRequest.userId,
+        newPasswordHash,
+        tx,
+      );
+      await this.userPasswordResetsRepository.markAsUsed(resetRequest.id, tx);
+      await this.userSessionsRepository.revokeAllSessionsByUserId(
+        resetRequest.userId,
+        tx,
+      );
+    });
   }
 
   async refreshToken(refreshToken: string) {
     const payloadJWT = verifyRefreshToken(refreshToken);
 
     const hashedToken = hashToken(refreshToken);
-    const session = await this.userSessionsRepository.findByToken(hashedToken);
+    const session = await this.userSessionsRepository.findOne({
+      token: hashedToken,
+      isValid: true,
+    });
 
     if (!session) {
       throw new ApiError(
@@ -187,58 +201,5 @@ export class AuthService {
   async logout(refreshToken: string) {
     const hashedToken = hashToken(refreshToken);
     await this.userSessionsRepository.revokeByToken(hashedToken);
-  }
-
-  async inviteWorker(data: InviteWorkerDTO, clinicId: string) {
-    const isValidRole = await this.roleRepository.isValidRoleForClinic(
-      data.roleId,
-      clinicId,
-    );
-
-    if (!isValidRole) {
-      throw new ApiError(
-        'The role does not belong to this clinic or is not available',
-        422,
-        ErrorCodes.auth.EMAIL_ALREADY_EXISTS,
-      );
-    }
-
-    const userExists = await this.authRepository.userExists({
-      email: data.email,
-    });
-
-    if (userExists) {
-      throw new ApiError(
-        'User is already registered in the system',
-        409,
-        ErrorCodes.auth.EMAIL_ALREADY_EXISTS,
-      );
-    }
-
-    const invitationExists = await this.userInvitationsRepository.existsByEmail(
-      data.email,
-    );
-
-    if (invitationExists) {
-      throw new ApiError(
-        'There is already a pending invitation for this email',
-        409,
-        ErrorCodes.auth.INVITATION_PENDING,
-      );
-    }
-
-    const rawToken = generateToken();
-    const hashedToken = hashToken(rawToken);
-
-    const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 48); // add 48 horas
-
-    await this.userInvitationsRepository.create({
-      email: data.email,
-      roleId: data.roleId,
-      token: hashedToken,
-      expiresAt: expiresAt,
-      clinicId: clinicId,
-    });
   }
 }

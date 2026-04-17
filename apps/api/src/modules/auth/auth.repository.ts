@@ -86,10 +86,12 @@ export class AuthRepository extends BaseRepository {
     return !!result;
   }
 
-  async updatePassword(userId: string, passwordHash: string) {
-    await this.db
-      .update(users)
-      .set({ passwordHash })
-      .where(eq(users.id, userId));
+  async updatePassword(
+    userId: string,
+    passwordHash: string,
+    tx?: Database,
+  ) {
+    const conn = tx ?? this.db;
+    await conn.update(users).set({ passwordHash }).where(eq(users.id, userId));
   }
 }
