@@ -6,14 +6,17 @@ import { BaseRepository } from '@/core/shared/BaseRepository.ts';
 import { rolePermissions } from '@/core/db/schema/role_permissions.ts';
 import { roles } from '@/core/db/schema/roles.ts';
 import { permissions } from '@/core/db/schema/permissions.ts';
-import { WorkerProfileRow, UserFilters } from '@modules/users/users.schema.ts';
+import {
+  WorkerProfileRowDTO,
+  UserFiltersDTO,
+} from '@modules/users/users.schema.ts';
 
 export class AuthRepository extends BaseRepository {
   constructor(db: Database) {
     super(db);
   }
 
-  private mapToUserWithPermissions(rows: WorkerProfileRow[]) {
+  private mapToUserWithPermissions(rows: WorkerProfileRowDTO[]) {
     if (!rows.length) return null;
     const firstRow = rows[0];
     if (!firstRow) return null;
@@ -31,14 +34,12 @@ export class AuthRepository extends BaseRepository {
     };
   }
 
-  async findUser(filters: UserFilters) {
-    const finalFilters = { isActive: true, ...filters };
-
+  async findUser(filters: UserFiltersDTO) {
     const conditions: (SQL | undefined)[] = [
-      finalFilters.id ? eq(users.id, finalFilters.id) : undefined,
-      finalFilters.email ? eq(users.email, finalFilters.email) : undefined,
-      finalFilters.isActive !== undefined
-        ? eq(users.isActive, finalFilters.isActive)
+      filters.id ? eq(users.id, filters.id) : undefined,
+      filters.email ? eq(users.email, filters.email) : undefined,
+      filters.isActive !== undefined
+        ? eq(users.isActive, filters.isActive)
         : undefined,
     ];
 
@@ -68,15 +69,18 @@ export class AuthRepository extends BaseRepository {
       .leftJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .where(and(...(conditions.filter(Boolean) as SQL[])));
 
-    return this.mapToUserWithPermissions(rows);
+    return this.mapToUserWithPermissions(rows as WorkerProfileRowDTO[]);
   }
 
-  async userExists(filters: UserFilters): Promise<boolean> {
+  async userExists(filters: UserFiltersDTO): Promise<boolean> {
     const result = await this.db.query.users.findFirst({
       where: (u, { eq, and }) => {
-        const conditions = (Object.keys(filters) as Array<keyof typeof u>)
-          .filter((key) => filters[key as keyof UserFilters] !== undefined)
-          .map((key) => eq(u[key], filters[key as keyof UserFilters]!));
+        const conditions = [];
+
+        if (filters.id) conditions.push(eq(u.id, filters.id));
+        if (filters.email) conditions.push(eq(u.email, filters.email));
+        if (filters.isActive !== undefined)
+          conditions.push(eq(u.isActive, filters.isActive));
 
         return conditions.length > 0 ? and(...conditions) : undefined;
       },
@@ -86,11 +90,7 @@ export class AuthRepository extends BaseRepository {
     return !!result;
   }
 
-  async updatePassword(
-    userId: string,
-    passwordHash: string,
-    tx?: Database,
-  ) {
+  async updatePassword(userId: string, passwordHash: string, tx?: Database) {
     const conn = tx ?? this.db;
     await conn.update(users).set({ passwordHash }).where(eq(users.id, userId));
   }

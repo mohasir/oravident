@@ -3,35 +3,35 @@ import { validateSchema } from '@/middlewares/validateSchema.ts';
 import { protect } from '@/middlewares/protect.ts';
 import { authController } from '@/bootstrap/container.ts';
 import {
-  loginSchema,
-  registerSchema,
-  forgotPasswordSchema,
-  resetPasswordSchema,
-  changePasswordSchema,
-  updateProfileSchema,
+  loginRequestSchema,
+  registerRequestSchema,
+  forgotPasswordRequestSchema,
+  resetPasswordRequestSchema,
+  changePasswordRequestSchema,
+  updateProfileRequestSchema,
 } from '@modules/auth/auth.schema.ts';
 
 const router: Router = Router();
 
 // --- Public Routes ---
 
-router.post('/login', validateSchema(loginSchema), authController.login);
+router.post('/login', validateSchema(loginRequestSchema), authController.login);
 router.post(
   '/register',
-  validateSchema(registerSchema),
+  validateSchema(registerRequestSchema),
   authController.register,
 );
 router.post(
   '/forgot-password',
-  validateSchema(forgotPasswordSchema),
+  validateSchema(forgotPasswordRequestSchema),
   authController.forgotPassword,
 );
 router.post(
   '/reset-password',
-  validateSchema(resetPasswordSchema),
+  validateSchema(resetPasswordRequestSchema),
   authController.resetPassword,
 );
-router.post('/refresh-token', authController.refreshToken);
+router.post('/refresh', authController.refreshToken);
 router.post('/logout', authController.logout);
 
 // --- Protected Routes ---
@@ -40,12 +40,12 @@ router.use(protect);
 
 router.post(
   '/change-password',
-  validateSchema(changePasswordSchema),
+  validateSchema(changePasswordRequestSchema),
   authController.changePassword,
 );
 router.put(
   '/profile',
-  validateSchema(updateProfileSchema),
+  validateSchema(updateProfileRequestSchema),
   authController.updateProfile,
 );
 

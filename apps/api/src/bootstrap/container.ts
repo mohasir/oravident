@@ -19,6 +19,8 @@ import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.r
 import { WorkersRepository } from '@modules/workers/workers.repository.ts';
 
 // ─── Services ---
+import { RolesService } from '@modules/roles/roles.service.ts';
+import { RolesController } from '@modules/roles/roles.controller.ts';
 import { AuthService } from '@modules/auth/auth.service.ts';
 import { AuthController } from '@modules/auth/auth.controller.ts';
 import { ClinicsController } from '@modules/clinics/clinics.controller.ts';
@@ -54,6 +56,7 @@ export const authService = new AuthService(
 );
 
 export const userInvitationsService = new UserInvitationsService(
+  transactionManager,
   userInvitationsRepository,
   authRepository,
   rolesRepository,
@@ -61,6 +64,7 @@ export const userInvitationsService = new UserInvitationsService(
 
 export const clinicService = new ClinicsService(clinicsRepository);
 export const workersService = new WorkersService(workersRepository);
+export const rolesService = new RolesService(rolesRepository);
 
 // Instanciar Controladores
 export const authController = new AuthController(authService);
@@ -69,3 +73,4 @@ export const userInvitationsController = new UserInvitationsController(
 );
 export const workersController = new WorkersController(workersService);
 export const clinicsController = new ClinicsController(clinicService);
+export const rolesController = new RolesController(rolesService);

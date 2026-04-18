@@ -1,45 +1,45 @@
 import { Database } from '@core/db/index.ts';
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
-import { UserFilters } from '@modules/users/users.schema.ts';
+import { UserFiltersDTO } from '@modules/users/users.schema.ts';
 import { users } from '@/core/db/schema/users.ts';
 import { workers } from '@/core/db/schema/workers.ts';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 
 export class UserRepository extends BaseRepository {
-  private readonly defaultUserFilters: UserFilters = { isActive: true };
-  private readonly defaultHiddenColumns = { passwordHash: false } as const;
-
   constructor(db: Database) {
     super(db);
   }
 
-  async findOne(filters: UserFilters) {
-    const finalFilters = { ...this.defaultUserFilters, ...filters };
-
+  async findOne(filters: UserFiltersDTO) {
     const result = await this.db.query.users.findFirst({
-      where: (userTable, { eq, and }) => {
-        const conditions = (
-          Object.keys(finalFilters) as Array<keyof typeof userTable>
-        )
-          .filter((key) => finalFilters[key as keyof UserFilters] !== undefined)
-          .map((key) =>
-            eq(userTable[key], finalFilters[key as keyof UserFilters]!),
-          );
+      where: (u, { eq, and }) => {
+        const conditions = [];
+
+        if (filters.id) conditions.push(eq(u.id, filters.id));
+        if (filters.email) conditions.push(eq(u.email, filters.email));
+        if (filters.isActive !== undefined)
+          conditions.push(eq(u.isActive, filters.isActive));
 
         return conditions.length > 0 ? and(...conditions) : undefined;
       },
-      columns: this.defaultHiddenColumns,
+      // By default we don't return passwordHash unless explicitly asked or handled by resource
+      columns: {
+        passwordHash: false,
+      },
     });
 
     return result;
   }
 
-  async exists(filters: UserFilters): Promise<boolean> {
+  async exists(filters: UserFiltersDTO): Promise<boolean> {
     const result = await this.db.query.users.findFirst({
       where: (u, { eq, and }) => {
-        const conditions = (Object.keys(filters) as Array<keyof typeof u>)
-          .filter((key) => filters[key as keyof UserFilters] !== undefined)
-          .map((key) => eq(u[key], filters[key as keyof UserFilters]!));
+        const conditions = [];
+
+        if (filters.id) conditions.push(eq(u.id, filters.id));
+        if (filters.email) conditions.push(eq(u.email, filters.email));
+        if (filters.isActive !== undefined)
+          conditions.push(eq(u.isActive, filters.isActive));
 
         return conditions.length > 0 ? and(...conditions) : undefined;
       },
@@ -47,6 +47,47 @@ export class UserRepository extends BaseRepository {
     });
 
     return !!result;
+  }
+
+  async findMany(
+    filters: UserFiltersDTO = {},
+    pagination?: { page: number; limit: number },
+  ) {
+    // 1. Get total count
+    const countResult = await this.db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where((u) => {
+        const conditions = [];
+        if (filters.id) conditions.push(eq(u.id, filters.id));
+        if (filters.email) conditions.push(eq(u.email, filters.email));
+        if (filters.isActive !== undefined)
+          conditions.push(eq(u.isActive, filters.isActive));
+
+        return conditions.length > 0 ? and(...conditions) : undefined;
+      });
+
+    const total = Number(countResult[0].count);
+
+    // 2. Get data
+    const data = await this.db.query.users.findMany({
+      where: (u, { eq, and }) => {
+        const conditions = [];
+        if (filters.id) conditions.push(eq(u.id, filters.id));
+        if (filters.email) conditions.push(eq(u.email, filters.email));
+        if (filters.isActive !== undefined)
+          conditions.push(eq(u.isActive, filters.isActive));
+
+        return conditions.length > 0 ? and(...conditions) : undefined;
+      },
+      orderBy: (u, { desc }) => [desc(u.createdAt)],
+      columns: { passwordHash: false },
+      ...(pagination
+        ? this.getPaginationConfig(pagination.page, pagination.limit)
+        : {}),
+    });
+
+    return { data, total };
   }
 
   async findActiveUserWorkerById(id: string) {

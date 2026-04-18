@@ -2,14 +2,14 @@ import { BaseRepository } from '@/core/shared/BaseRepository.ts';
 import { Database } from '@core/db/index.ts';
 import { userPasswordResets } from '@core/db/schema/user_password_resets.ts';
 import { eq, and, isNull, gt } from 'drizzle-orm';
-import { UserPasswordResetFilters } from '@modules/auth/auth.schema.ts';
+import { UserPasswordResetFiltersDTO } from '@modules/auth/auth.schema.ts';
 
 export class UserPasswordResetsRepository extends BaseRepository {
   constructor(db: Database) {
     super(db);
   }
 
-  async findOne(filters: UserPasswordResetFilters) {
+  async findOne(filters: UserPasswordResetFiltersDTO) {
     const result = await this.db.query.userPasswordResets.findFirst({
       where: (u, { eq, and, isNull, gt }) => {
         const conditions = [];
@@ -36,7 +36,7 @@ export class UserPasswordResetsRepository extends BaseRepository {
     return result;
   }
 
-  async exists(filters: UserPasswordResetFilters): Promise<boolean> {
+  async exists(filters: UserPasswordResetFiltersDTO): Promise<boolean> {
     const result = await this.db.query.userPasswordResets.findFirst({
       where: (u, { eq, and, isNull, gt }) => {
         const conditions = [];

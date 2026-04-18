@@ -3,8 +3,9 @@ import { validateSchema } from '@/middlewares/validateSchema.ts';
 import { protect } from '@/middlewares/protect.ts';
 import { userInvitationsController } from '@/bootstrap/container.ts';
 import {
-  sendInvitationSchema,
-  acceptInvitationSchema,
+  sendInvitationRequestSchema,
+  acceptInvitationRequestSchema,
+  validateInvitationRequestSchema,
 } from '@modules/userInvitations/userInvitations.schema.ts';
 
 const router: Router = Router();
@@ -12,12 +13,12 @@ const router: Router = Router();
 // --- Public Routes ---
 router.get(
   '/:token',
-  validateSchema(),
+  validateSchema(validateInvitationRequestSchema),
   userInvitationsController.validateInvitation,
 );
 router.post(
   '/:token/accept',
-  validateSchema(acceptInvitationSchema),
+  validateSchema(acceptInvitationRequestSchema),
   userInvitationsController.acceptInvitation,
 );
 
@@ -26,7 +27,7 @@ router.use(protect);
 
 router.post(
   '/',
-  validateSchema(sendInvitationSchema),
+  validateSchema(sendInvitationRequestSchema),
   userInvitationsController.sendInvitation,
 );
 

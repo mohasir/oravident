@@ -1,4 +1,4 @@
-import { PayloadAccessToken } from "../utils/jwt.ts";
+import { PayloadAccessToken } from '../utils/jwt.ts';
 
 declare global {
   namespace Express {
@@ -6,9 +6,9 @@ declare global {
       user?: {
         token: PayloadAccessToken;
         clinicId?: string;
-      }
+      };
     }
   }
 }
 
-export {}
+export {};

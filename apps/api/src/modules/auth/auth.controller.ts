@@ -4,6 +4,15 @@ import { AuthService } from '@modules/auth/auth.service.ts';
 import { CatchAsync } from '@/core/shared/decorators/CatchAsync.ts';
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
+import {
+  LoginRequest,
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  ChangePasswordRequest,
+  UpdateProfileRequest,
+} from './auth.schema.ts';
+import { validateRequest } from '@/common/utils/request.ts';
 
 @CatchAsync
 export class AuthController extends BaseController {
@@ -11,15 +20,15 @@ export class AuthController extends BaseController {
     super();
   }
 
-  async login(req: Request, res: Response) {
-    const data = req.body;
+  async login(req: LoginRequest, res: Response) {
+    const { body } = validateRequest(req);
 
     const meta = {
       userAgent: req.headers['user-agent'] as string,
       ipAddress: req.ip,
     };
 
-    const tokens = await this.authService.login(data, meta);
+    const tokens = await this.authService.login(body, meta);
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
@@ -33,25 +42,29 @@ export class AuthController extends BaseController {
     });
   }
 
-  async register(req: Request, res: Response) {
+  async register(req: RegisterRequest, res: Response) {
+    const { body } = validateRequest(req);
     return this.ok(res, 'Register successful', null);
   }
 
-  async forgotPassword(req: Request, res: Response) {
-    const data = await this.authService.forgotPassword(req.body);
+  async forgotPassword(req: ForgotPasswordRequest, res: Response) {
+    const { body } = validateRequest(req);
+    const result = await this.authService.forgotPassword(body);
     return this.ok(
       res,
       'If the email is registered, you will receive a reset link shortly',
-      data,
+      result,
     );
   }
 
-  async resetPassword(req: Request, res: Response) {
-    await this.authService.resetPassword(req.body);
+  async resetPassword(req: ResetPasswordRequest, res: Response) {
+    const { body } = validateRequest(req);
+    await this.authService.resetPassword(body);
     return this.ok(res, 'Password updated successfully', null);
   }
 
-  async changePassword(req: Request, res: Response) {
+  async changePassword(req: ChangePasswordRequest, res: Response) {
+    const { body } = validateRequest(req);
     return this.ok(res, 'Password changed successfully', null);
   }
 
@@ -81,7 +94,7 @@ export class AuthController extends BaseController {
     return this.ok(res, 'Logged out successfully', null);
   }
 
-  async updateProfile(req: Request, res: Response) {
+  async updateProfile(req: UpdateProfileRequest, res: Response) {
     return this.ok(res, 'Profile updated', null);
   }
 }

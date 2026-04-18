@@ -1,6 +1,6 @@
 import { Database, db } from '@/core/db/index.ts';
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
-import { UserSessionsDTO, UserSessionFilters } from '@modules/auth/auth.schema.ts';
+import { UserSessionsDTO, UserSessionFiltersDTO } from '@modules/auth/auth.schema.ts';
 import { userSessions } from '@/core/db/schema/user_sessions.ts';
 import { eq, and, isNull } from 'drizzle-orm';
 
@@ -9,7 +9,7 @@ export class UserSessionsRepository extends BaseRepository {
     super(db);
   }
 
-  async findOne(filters: UserSessionFilters) {
+  async findOne(filters: UserSessionFiltersDTO) {
     const result = await this.db.query.userSessions.findFirst({
       where: (u, { eq, and }) => {
         const conditions = [];
@@ -27,7 +27,7 @@ export class UserSessionsRepository extends BaseRepository {
     return result;
   }
 
-  async exists(filters: UserSessionFilters): Promise<boolean> {
+  async exists(filters: UserSessionFiltersDTO): Promise<boolean> {
     const result = await this.db.query.userSessions.findFirst({
       where: (u, { eq, and }) => {
         const conditions = [];

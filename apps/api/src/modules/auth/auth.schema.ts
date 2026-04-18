@@ -1,20 +1,22 @@
+import { z } from 'zod';
 import { DB_LIMITS } from '@/core/db/constants.ts';
 import { ContractTypes, Genders } from '@/core/db/enums.ts';
-import { z } from 'zod';
+import {
+  emailSchema,
+  passwordSchema,
+  createIdSchema,
+} from '@/common/schemas/common.schema.ts';
+import { TypedRequest } from '@/common/types/requests.ts';
 
-export const passwordSchema = z
-  .string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(100)
-  .regex(/[a-z]/, 'Must contain at least one lowercase letter')
-  .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
-  .regex(/[0-9]/, 'Must contain at least one number')
-  .regex(/[^a-zA-Z0-9]/, 'Must contain at least one special character');
+// ==========================================
+// 1. CORE DOMAIN SCHEMAS
+// ==========================================
 
 export const confirmPasswordSchema = z.object({
   password: passwordSchema,
   confirmPassword: passwordSchema,
 });
+
 type confirmPasswordType = z.infer<typeof confirmPasswordSchema>;
 
 export const passwordMatchRefine = (
@@ -32,15 +34,10 @@ export const passwordMatchRefine = (
 
 export const loginSchema = z
   .object({
-    email: z.email({
-      error: (issue) =>
-        issue.code === 'invalid_type'
-          ? 'Email is required'
-          : 'Invalid email format',
-    }),
+    email: emailSchema,
     password: z
       .string({ error: 'Password is required' })
-      .nonempty('Password is required')
+      .min(1, 'Password is required')
       .max(DB_LIMITS.PASSWORD),
   })
   .strict();
@@ -56,20 +53,13 @@ export const userSessionSchema = sessionMetaSchema.extend({
   expiresAt: z.date(),
 });
 
-
-
 export const registerSchema = confirmPasswordSchema
   .extend({
     // User Account Info
-    email: z
-      .string({ error: 'Email is required' })
-      .email('Invalid email format')
-      .max(DB_LIMITS.EMAIL),
+    email: emailSchema,
 
     // Worker Profile Info
-    roleId: z
-      .string({ error: 'Role ID is required' })
-      .uuid('Invalid Role ID format'),
+    roleId: createIdSchema('Role'),
     firstName: z
       .string({ error: 'First name is required' })
       .min(2, 'First name must be at least 2 characters')
@@ -118,12 +108,7 @@ export const updateProfileSchema = z.object({
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z.email({
-    error: (issue) =>
-      issue.code === 'invalid_type'
-        ? 'Email is required'
-        : 'Invalid email format',
-  }),
+  email: emailSchema,
 });
 
 export const resetPasswordSchema = confirmPasswordSchema
@@ -138,7 +123,57 @@ export const changePasswordSchema = confirmPasswordSchema
   })
   .superRefine(passwordMatchRefine);
 
-// --- DTO Types ---
+export const userSessionFiltersSchema = z
+  .object({
+    id: createIdSchema('id').optional(),
+    userId: createIdSchema('User').optional(),
+    token: z.string().optional(),
+    isValid: z.boolean().optional(),
+  })
+  .strict();
+
+export const userPasswordResetFiltersSchema = z
+  .object({
+    id: createIdSchema('id').optional(),
+    userId: createIdSchema('User').optional(),
+    token: z.string().optional(),
+    usedAt: z.date().optional().nullable(),
+    isValid: z.boolean().optional(),
+  })
+  .strict();
+
+// ==========================================
+// 2. API REQUEST SCHEMAS
+// ==========================================
+
+export const loginRequestSchema = {
+  body: loginSchema,
+};
+
+export const registerRequestSchema = {
+  body: registerSchema,
+};
+
+export const forgotPasswordRequestSchema = {
+  body: forgotPasswordSchema,
+};
+
+export const resetPasswordRequestSchema = {
+  body: resetPasswordSchema,
+};
+
+export const changePasswordRequestSchema = {
+  body: changePasswordSchema,
+};
+
+export const updateProfileRequestSchema = {
+  body: updateProfileSchema,
+};
+
+// ==========================================
+// 3. DTOs & DOMAIN TYPES
+// ==========================================
+
 export type LoginDTO = z.infer<typeof loginSchema>;
 export type UserSessionsDTO = z.infer<typeof userSessionSchema>;
 export type SessionMetaDTO = z.infer<typeof sessionMetaSchema>;
@@ -147,18 +182,26 @@ export type UpdateProfileDTO = z.infer<typeof updateProfileSchema>;
 export type ForgotPasswordDTO = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;
 export type ChangePasswordDTO = z.infer<typeof changePasswordSchema>;
+export type UserSessionFiltersDTO = z.infer<typeof userSessionFiltersSchema>;
+export type UserPasswordResetFiltersDTO = z.infer<
+  typeof userPasswordResetFiltersSchema
+>;
 
-export type UserSessionFilters = {
-  id?: string;
-  userId?: string;
-  token?: string;
-  isValid?: boolean;
-};
+// ==========================================
+// 4. TYPED REQUESTS
+// ==========================================
 
-export type UserPasswordResetFilters = {
-  id?: string;
-  userId?: string;
-  token?: string;
-  usedAt?: Date | null;
-  isValid?: boolean;
-};
+export type LoginRequest = TypedRequest<typeof loginRequestSchema>;
+export type RegisterRequest = TypedRequest<typeof registerRequestSchema>;
+export type ForgotPasswordRequest = TypedRequest<
+  typeof forgotPasswordRequestSchema
+>;
+export type ResetPasswordRequest = TypedRequest<
+  typeof resetPasswordRequestSchema
+>;
+export type ChangePasswordRequest = TypedRequest<
+  typeof changePasswordRequestSchema
+>;
+export type UpdateProfileRequest = TypedRequest<
+  typeof updateProfileRequestSchema
+>;

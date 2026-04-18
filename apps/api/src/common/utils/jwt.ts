@@ -1,6 +1,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { ENV } from '@core/config/env.ts';
 import { PermissionType, RoleType } from '@repo/guards';
+import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
 
 export interface PayloadAccessToken {
   id: string;
@@ -22,7 +23,16 @@ export function signAccessToken(
 }
 
 export function verifyAccessToken(token: string) {
-  return jwt.verify(token, ENV.JWT_ACCESS_SECRET) as PayloadAccessToken
+  try {
+    return jwt.verify(token, ENV.JWT_ACCESS_SECRET) as PayloadAccessToken;
+  } catch (error) {
+    throw new ApiError(
+      'Invalid or expired access token',
+      401,
+      ErrorCodes.auth.UNAUTHORIZED,
+      { originalError: error },
+    );
+  }
 }
 
 export function signRefreshToken(
@@ -33,5 +43,14 @@ export function signRefreshToken(
 }
 
 export function verifyRefreshToken(token: string) {
-  return jwt.verify(token, ENV.JWT_REFRESH_SECRET) as PayloadRefreshToken;
+  try {
+    return jwt.verify(token, ENV.JWT_REFRESH_SECRET) as PayloadRefreshToken;
+  } catch (error) {
+    throw new ApiError(
+      'Invalid or expired refresh token',
+      401,
+      ErrorCodes.auth.UNAUTHORIZED,
+      { originalError: error },
+    );
+  }
 }

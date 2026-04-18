@@ -1,10 +1,37 @@
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 import { WorkersRepository } from './workers.repository.ts';
-import { CreateWorkerDTO, UpdateWorkerDTO } from './workers.schema.ts';
+import {
+  CreateWorkerDTO,
+  UpdateWorkerDTO,
+  GetWorkersQueryDTO,
+} from './workers.schema.ts';
+import { PaginatedResponse } from '@/common/types/pagination.ts';
+import { Worker } from './workers.resource.ts';
 
 export class WorkersService {
   constructor(private workersRepository: WorkersRepository) {}
+
+  async getAllWorkers(
+    query: GetWorkersQueryDTO,
+  ): Promise<PaginatedResponse<Worker>> {
+    const { page, limit, ...filters } = query;
+
+    const { data, total } = await this.workersRepository.findMany(filters, {
+      page,
+      limit,
+    });
+
+    return {
+      items: data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 
   async createWorker(data: CreateWorkerDTO) {
     const workerExists = await this.workersRepository.exists({
@@ -20,7 +47,17 @@ export class WorkersService {
       );
     }
 
-    return this.workersRepository.create(data);
+    const result = await this.workersRepository.create(data);
+
+    if (!result) {
+      throw new ApiError(
+        'An unexpected error occurred while creating the worker',
+        500,
+        ErrorCodes.system.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return result;
   }
 
   async getWorkerById(id: string) {
@@ -36,23 +73,19 @@ export class WorkersService {
   }
 
   async updateWorker(id: string, data: UpdateWorkerDTO) {
-    const workerExists = await this.workersRepository.exists({
-      id,
-    });
+    await this.getWorkerById(id);
 
-    if (!workerExists) {
+    const result = await this.workersRepository.update(id, data);
+
+    if (!result) {
       throw new ApiError(
-        'Worker not found',
-        404,
-        ErrorCodes.auth.USER_NOT_FOUND,
+        'An unexpected error occurred while creating the worker',
+        500,
+        ErrorCodes.system.INTERNAL_SERVER_ERROR,
       );
     }
 
-    return this.workersRepository.update(id, data);
-  }
-
-  async getWorkersByClinic(clinicId: string) {
-    return this.workersRepository.findByClinicId(clinicId);
+    return result;
   }
 
   async deactiveWorker(id: string) {

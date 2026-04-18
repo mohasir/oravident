@@ -9,8 +9,11 @@ import {
   AcceptInvitationDTO,
 } from '@modules/userInvitations/userInvitations.schema.ts';
 
+import { ITransactionManager } from '@/core/db/TransactionManager.ts';
+
 export class UserInvitationsService {
   constructor(
+    private transactionManager: ITransactionManager,
     private userInvitationsRepository: UserInvitationsRepository,
     private authRepository: AuthRepository,
     private roleRepository: RolesRepository,
@@ -86,14 +89,12 @@ export class UserInvitationsService {
       );
     }
 
-    return {
-      email: invitation.email,
-      roleId: invitation.roleId,
-      clinicId: invitation.clinicId,
-    };
+    return invitation;
   }
 
-  async acceptInvitation(data: AcceptInvitationDTO) {
-    // Logic to accept the invitation
+  async acceptInvitation(token: string, data: AcceptInvitationDTO) {
+    return await this.transactionManager.run(async (tx) => {
+      // Logic to accept the invitation
+    });
   }
 }
