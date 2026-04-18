@@ -6,7 +6,7 @@ import {
   boolean,
   timestamp,
 } from 'drizzle-orm/pg-core';
-import { DB_LIMITS } from '../constants.ts';
+import { DB_LIMITS } from '@core/db/constants.ts';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -31,3 +31,11 @@ export const publicUserColumns = {
   createdAt: users.createdAt,
   updatedAt: users.updatedAt,
 };
+
+export type UserTable = typeof users;
+export type UserColumn = keyof UserSelect;
+export type UserPublic = Pick<UserSelect, keyof typeof publicUserColumns>;
+
+export type UserSelect = typeof users.$inferSelect;
+export type UserInsert = typeof users.$inferInsert;
+export type UserUpdate = Partial<Omit<UserInsert, 'id' | 'createdAt'>>;

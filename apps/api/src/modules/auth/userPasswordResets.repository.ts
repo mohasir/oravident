@@ -1,70 +1,41 @@
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
 import { Database } from '@core/db/index.ts';
-import { userPasswordResets } from '@core/db/schema/user_password_resets.ts';
+import {
+  userPasswordResets,
+  UserPasswordResetTable,
+  UserPasswordResetInsert,
+} from '@core/db/schema/user_password_resets.ts';
 import { eq, and, isNull, gt } from 'drizzle-orm';
 import { UserPasswordResetFiltersDTO } from '@modules/auth/auth.schema.ts';
 
-export class UserPasswordResetsRepository extends BaseRepository {
+export class UserPasswordResetsRepository extends BaseRepository<
+  UserPasswordResetTable,
+  UserPasswordResetFiltersDTO
+> {
   constructor(db: Database) {
-    super(db);
+    super(db, userPasswordResets);
   }
 
-  async findOne(filters: UserPasswordResetFiltersDTO) {
-    const result = await this.db.query.userPasswordResets.findFirst({
-      where: (u, { eq, and, isNull, gt }) => {
-        const conditions = [];
+  protected override applyFilters<
+    T extends import('drizzle-orm/pg-core').PgSelect,
+  >(qb: T, filters: UserPasswordResetFiltersDTO) {
+    const { isValid, ...rest } = filters;
 
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.userId) conditions.push(eq(u.userId, filters.userId));
-        if (filters.token) conditions.push(eq(u.token, filters.token));
-        
-        if (filters.usedAt === null) {
-          conditions.push(isNull(u.usedAt));
-        } else if (filters.usedAt) {
-          conditions.push(eq(u.usedAt, filters.usedAt));
-        }
+    super.applyFilters(qb, rest);
 
-        if (filters.isValid) {
-          conditions.push(isNull(u.usedAt));
-          conditions.push(gt(u.expiresAt, new Date()));
-        }
+    if (isValid) {
+      qb.where(
+        and(
+          isNull(userPasswordResets.usedAt),
+          gt(userPasswordResets.expiresAt, new Date()),
+        ),
+      );
+    }
 
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-    });
-
-    return result;
+    return qb;
   }
 
-  async exists(filters: UserPasswordResetFiltersDTO): Promise<boolean> {
-    const result = await this.db.query.userPasswordResets.findFirst({
-      where: (u, { eq, and, isNull, gt }) => {
-        const conditions = [];
-
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.userId) conditions.push(eq(u.userId, filters.userId));
-        if (filters.token) conditions.push(eq(u.token, filters.token));
-        
-        if (filters.usedAt === null) {
-          conditions.push(isNull(u.usedAt));
-        } else if (filters.usedAt) {
-          conditions.push(eq(u.usedAt, filters.usedAt));
-        }
-
-        if (filters.isValid) {
-          conditions.push(isNull(u.usedAt));
-          conditions.push(gt(u.expiresAt, new Date()));
-        }
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      columns: { id: true },
-    });
-
-    return !!result;
-  }
-
-  async create(values: typeof userPasswordResets.$inferInsert) {
+  async create(values: UserPasswordResetInsert) {
     const [newReset] = await this.db
       .insert(userPasswordResets)
       .values(values)

@@ -1,92 +1,53 @@
 import { Database } from '@core/db/index.ts';
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
 import { UserFiltersDTO } from '@modules/users/users.schema.ts';
-import { users } from '@/core/db/schema/users.ts';
+import {
+  users,
+  UserTable,
+  UserInsert,
+  UserUpdate,
+  publicUserColumns,
+} from '@/core/db/schema/users.ts';
 import { workers } from '@/core/db/schema/workers.ts';
-import { eq, and, sql } from 'drizzle-orm';
+import { eq, and, sql, desc } from 'drizzle-orm';
 
-export class UserRepository extends BaseRepository {
+export class UserRepository extends BaseRepository<UserTable, UserFiltersDTO> {
   constructor(db: Database) {
-    super(db);
+    super(db, users);
   }
 
   async findOne(filters: UserFiltersDTO) {
-    const result = await this.db.query.users.findFirst({
-      where: (u, { eq, and }) => {
-        const conditions = [];
+    const query = this.db.select(publicUserColumns).from(this.table).$dynamic();
+    this.applyFilters(query, filters);
 
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.email) conditions.push(eq(u.email, filters.email));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(u.isActive, filters.isActive));
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      // By default we don't return passwordHash unless explicitly asked or handled by resource
-      columns: {
-        passwordHash: false,
-      },
-    });
-
-    return result;
+    const [result] = await query.limit(1);
+    return result || null;
   }
 
-  async exists(filters: UserFiltersDTO): Promise<boolean> {
-    const result = await this.db.query.users.findFirst({
-      where: (u, { eq, and }) => {
-        const conditions = [];
-
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.email) conditions.push(eq(u.email, filters.email));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(u.isActive, filters.isActive));
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      columns: { id: true },
-    });
-
-    return !!result;
-  }
-
-  async findMany(
+  async findAll(
     filters: UserFiltersDTO = {},
     pagination?: { page: number; limit: number },
   ) {
-    // 1. Get total count
-    const countResult = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(users)
-      .where((u) => {
-        const conditions = [];
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.email) conditions.push(eq(u.email, filters.email));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(u.isActive, filters.isActive));
+    const countQuery = this.applyFilters(this.totalQuery(), filters);
+    const dataQuery = this.db
+      .select(publicUserColumns)
+      .from(this.table)
+      .$dynamic();
 
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      });
+    this.applyFilters(dataQuery, filters);
 
-    const total = Number(countResult[0].count);
+    if (pagination) {
+      this.withPagination(
+        dataQuery,
+        desc(users.createdAt),
+        pagination.page,
+        pagination.limit,
+      );
+    }
 
-    // 2. Get data
-    const data = await this.db.query.users.findMany({
-      where: (u, { eq, and }) => {
-        const conditions = [];
-        if (filters.id) conditions.push(eq(u.id, filters.id));
-        if (filters.email) conditions.push(eq(u.email, filters.email));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(u.isActive, filters.isActive));
+    const [totalCountResult, data] = await Promise.all([countQuery, dataQuery]);
 
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      orderBy: (u, { desc }) => [desc(u.createdAt)],
-      columns: { passwordHash: false },
-      ...(pagination
-        ? this.getPaginationConfig(pagination.page, pagination.limit)
-        : {}),
-    });
-
+    const total = Number(totalCountResult[0]?.count ?? 0);
     return { data, total };
   }
 
@@ -105,5 +66,19 @@ export class UserRepository extends BaseRepository {
       .limit(1);
 
     return rows[0];
+  }
+
+  async create(values: UserInsert) {
+    const [newUser] = await this.db.insert(users).values(values).returning();
+    return newUser;
+  }
+
+  async update(id: string, values: UserUpdate) {
+    const [updatedUser] = await this.db
+      .update(users)
+      .set({ ...values, updatedAt: new Date() })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
   }
 }

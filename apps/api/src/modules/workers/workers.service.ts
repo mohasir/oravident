@@ -6,30 +6,30 @@ import {
   UpdateWorkerDTO,
   GetWorkersQueryDTO,
 } from './workers.schema.ts';
-import { PaginatedResponse } from '@/common/types/pagination.ts';
-import { Worker } from './workers.resource.ts';
 
 export class WorkersService {
   constructor(private workersRepository: WorkersRepository) {}
 
-  async getAllWorkers(
-    query: GetWorkersQueryDTO,
-  ): Promise<PaginatedResponse<Worker>> {
+  async getAllWorkers(query: GetWorkersQueryDTO) {
     const { page, limit, ...filters } = query;
 
-    const { data, total } = await this.workersRepository.findMany(filters, {
-      page,
-      limit,
-    });
+    const isPaginated = page !== undefined && limit !== undefined;
+
+    const { data, total } = await this.workersRepository.findAll(
+      filters,
+      isPaginated ? { page, limit } : undefined,
+    );
 
     return {
       items: data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      ...(isPaginated && {
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      }),
     };
   }
 

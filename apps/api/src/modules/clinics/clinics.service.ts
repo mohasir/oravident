@@ -7,15 +7,13 @@ import {
   UpdateClinicDTO,
   GetClinicsQueryDTO,
 } from '@modules/clinics/clinics.schema.ts';
-import { Clinic } from './clinics.resource.ts';
-import { PaginatedResponse } from '@/common/types/pagination.ts';
 
 export class ClinicsService {
   private maxAttempts = 5;
 
   constructor(private clinicsRepository: ClinicsRepository) {}
 
-  async createClinic(data: CreateClinicDTO): Promise<Clinic> {
+  async createClinic(data: CreateClinicDTO) {
     const emailExists = await this.clinicsRepository.exists({
       email: data.email,
     });
@@ -42,7 +40,7 @@ export class ClinicsService {
     return result;
   }
 
-  async getClinicById(id: string): Promise<Clinic> {
+  async getClinicById(id: string) {
     const clinic = await this.clinicsRepository.findOne({ id });
     if (!clinic) {
       throw new ApiError(
@@ -54,28 +52,30 @@ export class ClinicsService {
     return clinic;
   }
 
-  async getAllClinics(
-    query: GetClinicsQueryDTO,
-  ): Promise<PaginatedResponse<Clinic>> {
+  async getAllClinics(query: GetClinicsQueryDTO) {
     const { page, limit, ...filters } = query;
 
-    const { data, total } = await this.clinicsRepository.findMany(filters, {
-      page,
-      limit,
-    });
+    const isPaginated = page !== undefined && limit !== undefined;
+
+    const { data, total } = await this.clinicsRepository.findAll(
+      filters,
+      isPaginated ? { page, limit } : undefined,
+    );
 
     return {
       items: data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      ...(isPaginated && {
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      }),
     };
   }
 
-  async updateClinic(id: string, data: UpdateClinicDTO): Promise<Clinic> {
+  async updateClinic(id: string, data: UpdateClinicDTO) {
     const clinic = await this.getClinicById(id);
     const updatePayload: UpdateClinicDTO & { slug?: string } = { ...data };
 

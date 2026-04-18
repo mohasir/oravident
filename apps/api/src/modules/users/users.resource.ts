@@ -1,8 +1,8 @@
-import { users } from '@/core/db/schema/users.ts';
+import { UserPublic } from '@/core/db/schema/users.ts';
 
-export type User = typeof users.$inferSelect;
+export type User = UserPublic;
 
-export const userResource = (user: Partial<User>) => {
+export const userResource = (user: User) => {
   return {
     id: user.id,
     email: user.email,
@@ -11,6 +11,6 @@ export const userResource = (user: Partial<User>) => {
   };
 };
 
-export const userCollectionResource = (usersArr: Partial<User>[]) => {
+export const userCollectionResource = (usersArr: User[]) => {
   return usersArr.map(userResource);
 };

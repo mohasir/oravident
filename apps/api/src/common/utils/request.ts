@@ -1,5 +1,5 @@
 import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
-import { TypedRequest } from '../types/requests.ts';
+import { TypedRequest } from '@common/types/requests.ts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validateRequest = <T extends TypedRequest<any>>(req: T) => {

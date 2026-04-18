@@ -1,4 +1,4 @@
-import { PayloadAccessToken } from '../utils/jwt.ts';
+import { PayloadAccessToken } from '@common/utils/jwt.ts';
 
 declare global {
   namespace Express {

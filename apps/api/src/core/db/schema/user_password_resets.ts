@@ -13,3 +13,12 @@ export const userPasswordResets = pgTable('user_password_resets', {
     .defaultNow()
     .notNull(),
 });
+
+export type UserPasswordResetTable = typeof userPasswordResets;
+export type UserPasswordResetColumn = keyof UserPasswordResetSelect;
+
+export type UserPasswordResetSelect = typeof userPasswordResets.$inferSelect;
+export type UserPasswordResetInsert = typeof userPasswordResets.$inferInsert;
+export type UserPasswordResetUpdate = Partial<
+  Omit<UserPasswordResetInsert, 'id' | 'createdAt'>
+>;

@@ -1,6 +1,6 @@
-import { clinics } from '@core/db/schema/clinics.ts';
+import { ClinicSelect } from '@core/db/schema/clinics.ts';
 
-export type Clinic = typeof clinics.$inferSelect;
+export type Clinic = ClinicSelect;
 
 export const clinicResource = (clinic: Clinic) => {
   return {

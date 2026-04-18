@@ -6,28 +6,31 @@ import {
   UpdateRoleDTO,
   GetRolesQueryDTO,
 } from './roles.schema.ts';
-import { PaginatedResponse } from '@/common/types/pagination.ts';
 import { Role } from './roles.resource.ts';
 
 export class RolesService {
   constructor(private rolesRepository: RolesRepository) {}
 
-  async getAllRoles(query: GetRolesQueryDTO): Promise<PaginatedResponse<Role>> {
+  async getAllRoles(query: GetRolesQueryDTO) {
     const { page, limit, ...filters } = query;
 
-    const { data, total } = await this.rolesRepository.findMany(filters, {
-      page,
-      limit,
-    });
+    const isPaginated = page !== undefined && limit !== undefined;
+
+    const { data, total } = await this.rolesRepository.findAll(
+      filters,
+      isPaginated ? { page, limit } : undefined,
+    );
 
     return {
       items: data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
+      ...(isPaginated && {
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      }),
     };
   }
 

@@ -1,6 +1,6 @@
-import { userInvitations } from '@/core/db/schema/user_invitations.ts';
+import { UserInvitationSelect } from '@/core/db/schema/user_invitations.ts';
 
-export type UserInvitation = typeof userInvitations.$inferSelect;
+export type UserInvitation = UserInvitationSelect;
 
 export const userInvitationResource = (invitation: UserInvitation) => {
   return {

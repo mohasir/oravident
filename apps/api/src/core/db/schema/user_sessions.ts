@@ -27,3 +27,12 @@ export const userSessions = pgTable('user_sessions', {
     .notNull()
     .$onUpdate(() => new Date()),
 });
+
+export type UserSessionTable = typeof userSessions;
+export type UserSessionColumn = keyof UserSessionSelect;
+
+export type UserSessionSelect = typeof userSessions.$inferSelect;
+export type UserSessionInsert = typeof userSessions.$inferInsert;
+export type UserSessionUpdate = Partial<
+  Omit<UserSessionInsert, 'id' | 'createdAt'>
+>;

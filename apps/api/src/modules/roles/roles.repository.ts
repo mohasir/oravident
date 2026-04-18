@@ -3,128 +3,40 @@ import {
   roles,
   rolePermissions,
   permissions,
+  RoleTable,
+  RoleInsert,
+  RoleUpdate,
 } from '@/core/db/schema/index.ts';
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
-import { eq, and, or, sql } from 'drizzle-orm';
+import { eq, and, or, desc } from 'drizzle-orm';
 import { RoleFiltersDTO } from './roles.schema.ts';
 
-export class RolesRepository extends BaseRepository {
+export class RolesRepository extends BaseRepository<RoleTable, RoleFiltersDTO> {
   constructor(db: Database) {
-    super(db);
+    super(db, roles);
   }
 
-  async findOne(filters: RoleFiltersDTO) {
-    const result = await this.db.query.roles.findFirst({
-      where: (r, { eq, and, isNull }) => {
-        const conditions = [];
-
-        if (filters.id) conditions.push(eq(r.id, filters.id));
-        if (filters.name) conditions.push(eq(r.name, filters.name));
-
-        if (filters.clinicId === null) {
-          conditions.push(isNull(r.clinicId));
-        } else if (filters.clinicId) {
-          conditions.push(eq(r.clinicId, filters.clinicId));
-        }
-
-        if (filters.isSystem !== undefined) {
-          conditions.push(eq(r.isSystem, filters.isSystem));
-        }
-
-        if (filters.isActive !== undefined) {
-          conditions.push(eq(r.isActive, filters.isActive));
-        }
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-    });
-
-    return result;
-  }
-
-  async exists(filters: RoleFiltersDTO): Promise<boolean> {
-    const result = await this.db.query.roles.findFirst({
-      where: (r, { eq, and, isNull }) => {
-        const conditions = [];
-
-        if (filters.id) conditions.push(eq(r.id, filters.id));
-        if (filters.name) conditions.push(eq(r.name, filters.name));
-
-        if (filters.clinicId === null) {
-          conditions.push(isNull(r.clinicId));
-        } else if (filters.clinicId) {
-          conditions.push(eq(r.clinicId, filters.clinicId));
-        }
-
-        if (filters.isSystem !== undefined) {
-          conditions.push(eq(r.isSystem, filters.isSystem));
-        }
-
-        if (filters.isActive !== undefined) {
-          conditions.push(eq(r.isActive, filters.isActive));
-        }
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      columns: { id: true },
-    });
-
-    return !!result;
-  }
-
-  async findMany(
+  async findAll(
     filters: RoleFiltersDTO = {},
     pagination?: { page: number; limit: number },
   ) {
-    // 1. Get total count
-    const countResult = await this.db
-      .select({ count: sql<number>`count(*)` })
-      .from(roles)
-      .where((r) => {
-        const conditions = [];
-        if (filters.id) conditions.push(eq(r.id, filters.id));
-        if (filters.name) conditions.push(eq(r.name, filters.name));
-        if (filters.clinicId === null) {
-          conditions.push(sql`${r.clinicId} IS NULL`);
-        } else if (filters.clinicId) {
-          conditions.push(eq(r.clinicId, filters.clinicId));
-        }
-        if (filters.isSystem !== undefined)
-          conditions.push(eq(r.isSystem, filters.isSystem));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(r.isActive, filters.isActive));
+    const countQuery = this.applyFilters(this.totalQuery(), filters);
+    const dataQuery = this.db.select().from(this.table).$dynamic();
 
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      });
+    this.applyFilters(dataQuery, filters);
 
-    const total = Number(countResult[0].count);
+    if (pagination) {
+      this.withPagination(
+        dataQuery,
+        desc(roles.createdAt),
+        pagination.page,
+        pagination.limit,
+      );
+    }
 
-    // 2. Get data
-    const data = await this.db.query.roles.findMany({
-      where: (r, { eq, and, isNull }) => {
-        const conditions = [];
-        if (filters.id) conditions.push(eq(r.id, filters.id));
-        if (filters.name) conditions.push(eq(r.name, filters.name));
+    const [totalCountResult, data] = await Promise.all([countQuery, dataQuery]);
 
-        if (filters.clinicId === null) {
-          conditions.push(isNull(r.clinicId));
-        } else if (filters.clinicId) {
-          conditions.push(eq(r.clinicId, filters.clinicId));
-        }
-
-        if (filters.isSystem !== undefined)
-          conditions.push(eq(r.isSystem, filters.isSystem));
-        if (filters.isActive !== undefined)
-          conditions.push(eq(r.isActive, filters.isActive));
-
-        return conditions.length > 0 ? and(...conditions) : undefined;
-      },
-      orderBy: (r, { desc }) => [desc(r.createdAt)],
-      ...(pagination
-        ? this.getPaginationConfig(pagination.page, pagination.limit)
-        : {}),
-    });
-
+    const total = Number(totalCountResult[0]?.count ?? 0);
     return { data, total };
   }
 
@@ -144,12 +56,12 @@ export class RolesRepository extends BaseRepository {
     return result.length > 0;
   }
 
-  async create(values: typeof roles.$inferInsert) {
+  async create(values: RoleInsert) {
     const [newRole] = await this.db.insert(roles).values(values).returning();
     return newRole;
   }
 
-  async update(id: string, values: Partial<typeof roles.$inferInsert>) {
+  async update(id: string, values: RoleUpdate) {
     const [updatedRole] = await this.db
       .update(roles)
       .set({ ...values, updatedAt: new Date() })

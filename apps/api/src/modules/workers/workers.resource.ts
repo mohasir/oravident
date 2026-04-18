@@ -1,6 +1,6 @@
-import { workers } from '@/core/db/schema/workers.ts';
+import { WorkerSelect } from '@/core/db/schema/workers.ts';
 
-export type Worker = typeof workers.$inferSelect;
+export type Worker = WorkerSelect;
 
 export const workerResource = (worker: Worker) => {
   return {

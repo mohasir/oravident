@@ -1,6 +1,6 @@
-import { roles } from '@/core/db/schema/roles.ts';
+import { RoleSelect } from '@/core/db/schema/roles.ts';
 
-export type Role = typeof roles.$inferSelect;
+export type Role = RoleSelect;
 
 export const roleResource = (role: Role) => {
   return {

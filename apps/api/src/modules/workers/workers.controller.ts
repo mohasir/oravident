@@ -44,18 +44,18 @@ export class WorkersController extends BaseController {
     const { params } = validateRequest(req);
     const { id } = params;
     const worker = await this.workersService.getWorkerById(id);
-    return this.ok(res, 'Worker retrieved successfully', workerResource(worker));
+    return this.ok(
+      res,
+      'Worker retrieved successfully',
+      workerResource(worker),
+    );
   }
 
   async updateWorker(req: UpdateWorkerRequest, res: Response) {
     const { params, body } = validateRequest(req);
     const { id } = params;
     const worker = await this.workersService.updateWorker(id, body);
-    return this.ok(
-      res,
-      'Worker updated successfully',
-      workerResource(worker),
-    );
+    return this.ok(res, 'Worker updated successfully', workerResource(worker));
   }
 
   async deactivateWorker(req: IdParamRequest, res: Response) {
