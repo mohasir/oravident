@@ -9,6 +9,7 @@ import {
 import bcrypt from 'bcryptjs';
 import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 import { isUUIDInList } from '@/common/utils/uuid.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 
 export class UsersService {
   constructor(private userRepository: UserRepository) {}
@@ -67,24 +68,9 @@ export class UsersService {
 
   async getAllUsers(query: GetUsersQueryDTO) {
     const { page, limit, ...filters } = query;
-    const isPaginated = page !== undefined && limit !== undefined;
-
-    const { data, total } = await this.userRepository.findPublicAll(
-      filters,
-      isPaginated ? { page, limit } : undefined,
-    );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    const pagination = { page, limit };
+    const { data, total } = await this.userRepository.findPublicAll(filters, pagination);
+    return paginatedResult(data, total, pagination);
   }
 
   async updateUser(id: string, data: UpdateUserDTO) {

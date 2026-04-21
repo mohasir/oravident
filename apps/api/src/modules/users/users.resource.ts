@@ -1,4 +1,5 @@
 import { PublicUser } from '@/core/db/schema/users.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export const userResource = (user: PublicUser) => {
   return {
@@ -6,8 +7,8 @@ export const userResource = (user: PublicUser) => {
     email: user.email,
     isPlatformAdmin: user.isPlatformAdmin,
     isActive: user.isActive,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
+    createdAt: formatDate(user.createdAt),
+    updatedAt: formatDate(user.updatedAt),
   };
 };
 

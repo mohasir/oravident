@@ -41,7 +41,7 @@ export abstract class BaseRepository<
 
   public async findAll<T = TTable['$inferSelect']>(
     filters: TFilters = {} as TFilters,
-    pagination?: { page: number; limit: number },
+    pagination?: { page?: number; limit?: number },
     options: {
       orderBy?: PgColumn | SQL | SQL.Aliased;
       columns?: DefaultColumns;
@@ -55,7 +55,10 @@ export abstract class BaseRepository<
 
     const orderBy = options.orderBy || sql`created_at desc`;
 
-    if (pagination) {
+    const needPagination =
+      pagination?.page !== undefined && pagination?.limit !== undefined;
+
+    if (needPagination) {
       this.withPagination(
         dataQuery,
         orderBy,

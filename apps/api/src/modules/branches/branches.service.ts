@@ -4,6 +4,7 @@ import { BranchesRepository } from '@modules/branches/branches.repository.ts';
 import { generateSlug, randomSuffix } from '@common/utils/slug.ts';
 import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 import { compareUUIDs } from '@/common/utils/uuid.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 import {
   CreateBranchDTO,
   UpdateBranchDTO,
@@ -56,25 +57,12 @@ export class BranchesService {
 
   async getAllBranches(query: GetBranchesQueryDTO) {
     const { page, limit, ...filters } = query;
-
-    const isPaginated = page !== undefined && limit !== undefined;
-
+    const pagination = { page, limit };
     const { data, total } = await this.branchesRepository.findAll(
       filters,
-      isPaginated ? { page, limit } : undefined,
+      pagination,
     );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    return paginatedResult(data, total, pagination);
   }
 
   async updateBranch(id: string, data: UpdateBranchDTO) {

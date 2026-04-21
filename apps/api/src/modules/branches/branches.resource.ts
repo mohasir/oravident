@@ -1,4 +1,5 @@
 import { BranchSelect } from '@core/db/schema/branches.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export type Branch = BranchSelect;
 
@@ -14,7 +15,7 @@ export const branchResource = (branch: Branch) => {
     longitude: branch.longitude,
     settings: branch.settings,
     isActive: branch.isActive,
-    createdAt: branch.createdAt,
+    createdAt: formatDate(branch.createdAt),
   };
 };
 

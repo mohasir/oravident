@@ -1,4 +1,5 @@
 import { UserInvitationSelect } from '@/core/db/schema/user_invitations.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export type UserInvitation = UserInvitationSelect;
 
@@ -8,9 +9,9 @@ export const userInvitationResource = (invitation: UserInvitation) => {
     email: invitation.email,
     clinicId: invitation.clinicId,
     roleId: invitation.roleId,
-    expiresAt: invitation.expiresAt,
-    acceptedAt: invitation.acceptedAt,
-    createdAt: invitation.createdAt,
+    expiresAt: formatDate(invitation.expiresAt),
+    acceptedAt: formatDate(invitation.acceptedAt),
+    createdAt: formatDate(invitation.createdAt),
   };
 };
 

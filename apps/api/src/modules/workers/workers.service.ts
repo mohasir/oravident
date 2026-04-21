@@ -3,6 +3,7 @@ import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 import { WorkersRepository } from './workers.repository.ts';
 import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 import { isUUIDInList } from '@/common/utils/uuid.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 import {
   CreateWorkerDTO,
   UpdateWorkerDTO,
@@ -14,25 +15,9 @@ export class WorkersService {
 
   async getAllWorkers(query: GetWorkersQueryDTO) {
     const { page, limit, ...filters } = query;
-
-    const isPaginated = page !== undefined && limit !== undefined;
-
-    const { data, total } = await this.workersRepository.findAll(
-      filters,
-      isPaginated ? { page, limit } : undefined,
-    );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    const pagination = { page, limit };
+    const { data, total } = await this.workersRepository.findAll(filters, pagination);
+    return paginatedResult(data, total, pagination);
   }
 
   async createWorker(data: CreateWorkerDTO) {

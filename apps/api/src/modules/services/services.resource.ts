@@ -1,4 +1,5 @@
 import { ServiceSelect } from '@core/db/schema/services.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export type Select = ServiceSelect;
 
@@ -10,8 +11,8 @@ export const serviceResource = (service: Select) => {
     durationMinutes: service.durationMinutes,
     price: service.price,
     isActive: service.isActive,
-    updatedAt: service.updatedAt,
-    createdAt: service.createdAt,
+    createdAt: formatDate(service.createdAt),
+    updatedAt: formatDate(service.updatedAt),
   };
 };
 

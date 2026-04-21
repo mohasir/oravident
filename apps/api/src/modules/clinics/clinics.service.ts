@@ -3,6 +3,7 @@ import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
 import { ClinicsRepository } from '@modules/clinics/clinics.repository.ts';
 import { generateSlug, randomSuffix } from '@common/utils/slug.ts';
 import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 import { compareUUIDs } from '@/common/utils/uuid.ts';
 import {
   CreateClinicDTO,
@@ -56,25 +57,9 @@ export class ClinicsService {
 
   async getAllClinics(query: GetClinicsQueryDTO) {
     const { page, limit, ...filters } = query;
-
-    const isPaginated = page !== undefined && limit !== undefined;
-
-    const { data, total } = await this.clinicsRepository.findAll(
-      filters,
-      isPaginated ? { page, limit } : undefined,
-    );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    const pagination = { page, limit };
+    const { data, total } = await this.clinicsRepository.findAll(filters, pagination);
+    return paginatedResult(data, total, pagination);
   }
 
   async updateClinic(id: string, data: UpdateClinicDTO) {

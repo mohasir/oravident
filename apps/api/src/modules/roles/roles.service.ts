@@ -1,6 +1,7 @@
 import { ApiError } from '@core/errors/ApiError.ts';
 import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
 import { RolesRepository } from '@modules/roles/roles.repository.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 import {
   CreateRoleDTO,
   UpdateRoleDTO,
@@ -13,25 +14,9 @@ export class RolesService {
 
   async getAllRoles(query: GetRolesQueryDTO) {
     const { page, limit, ...filters } = query;
-
-    const isPaginated = page !== undefined && limit !== undefined;
-
-    const { data, total } = await this.rolesRepository.findAll(
-      filters,
-      isPaginated ? { page, limit } : undefined,
-    );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    const pagination = { page, limit };
+    const { data, total } = await this.rolesRepository.findAll(filters, pagination);
+    return paginatedResult(data, total, pagination);
   }
 
   async createRole(data: CreateRoleDTO): Promise<Role> {

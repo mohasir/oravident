@@ -1,4 +1,5 @@
 import { ClinicSelect } from '@core/db/schema/clinics.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export type Clinic = ClinicSelect;
 
@@ -12,7 +13,7 @@ export const clinicResource = (clinic: Clinic) => {
     timeZone: clinic.timeZone,
     settings: clinic.settings,
     isActive: clinic.isActive,
-    createdAt: clinic.createdAt,
+    createdAt: formatDate(clinic.createdAt),
   };
 };
 

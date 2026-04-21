@@ -1,4 +1,5 @@
 import { ServicesRepository } from '@modules/services/services.repository.ts';
+import { paginatedResult } from '@common/utils/pagination.ts';
 import {
   CreateServiceDTO,
   GetServicesQueryDTO,
@@ -14,8 +15,6 @@ export class ServicesService {
     const exists = await this.servicesRepository.exists({
       name: values.name,
     });
-
-    console.log(exists);
 
     if (exists) {
       throw new ApiError(
@@ -48,25 +47,9 @@ export class ServicesService {
 
   async getAllServices(query: GetServicesQueryDTO) {
     const { page, limit, ...filters } = query;
-
-    const isPaginated = page !== undefined && limit !== undefined;
-
-    const { data, total } = await this.servicesRepository.findAll(
-      filters,
-      isPaginated ? { page, limit } : undefined,
-    );
-
-    return {
-      items: data,
-      ...(isPaginated && {
-        meta: {
-          total,
-          page,
-          limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      }),
-    };
+    const pagination = { page, limit };
+    const { data, total } = await this.servicesRepository.findAll(filters, pagination);
+    return paginatedResult(data, total, pagination);
   }
 
   async updateService(id: string, data: UpdateServiceDTO) {

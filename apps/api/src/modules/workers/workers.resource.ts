@@ -1,4 +1,5 @@
 import { WorkerSelect } from '@/core/db/schema/workers.ts';
+import { formatDate, formatDateOnly } from '@common/utils/date.ts';
 
 export type Worker = WorkerSelect;
 
@@ -13,7 +14,7 @@ export const workerResource = (worker: Worker) => {
     lastName: worker.lastName,
     secondLastName: worker.secondLastName,
     phone: worker.phone,
-    dateOfBirth: worker.dateOfBirth,
+    dateOfBirth: formatDateOnly(worker.dateOfBirth),
     gender: worker.gender,
     prefix: worker.prefix,
     specialty: worker.specialty,
@@ -22,7 +23,7 @@ export const workerResource = (worker: Worker) => {
     calendarColor: worker.calendarColor,
     contractType: worker.contractType,
     isActive: worker.isActive,
-    createdAt: worker.createdAt,
+    createdAt: formatDate(worker.createdAt),
   };
 };
 

@@ -25,7 +25,7 @@ export class UserRepository extends BaseRepository<UserTable, UserFiltersDTO> {
 
   async findPublicAll(
     filters: UserFiltersDTO,
-    pagination?: { page: number; limit: number },
+    pagination?: { page?: number; limit?: number },
   ) {
     return super.findAll<PublicUser>(filters, pagination, {
       columns: publicUserColumns,

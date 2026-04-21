@@ -1,4 +1,5 @@
 import { RoleSelect } from '@/core/db/schema/roles.ts';
+import { formatDate } from '@common/utils/date.ts';
 
 export type Role = RoleSelect;
 
@@ -11,7 +12,7 @@ export const roleResource = (role: Role) => {
     clinicId: role.clinicId,
     isSystem: role.isSystem,
     isActive: role.isActive,
-    createdAt: role.createdAt,
+    createdAt: formatDate(role.createdAt),
   };
 };
 

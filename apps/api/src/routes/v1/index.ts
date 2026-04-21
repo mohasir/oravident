@@ -7,6 +7,7 @@ import servicesRoutes from '@modules/services/services.routes.ts';
 import workersRoutes from '@modules/workers/workers.route.ts';
 import branchesRoutes from '@modules/branches/branches.routes.ts';
 import usersRoutes from '@modules/users/users.routes.ts';
+import patientsRoutes from '@modules/patients/patients.routes.ts';
 
 const v1Router: Router = Router();
 
@@ -18,5 +19,6 @@ v1Router.use('/roles', roleRoutes);
 v1Router.use('/services', servicesRoutes);
 v1Router.use('/workers', workersRoutes);
 v1Router.use('/branches', branchesRoutes);
+v1Router.use('/patients', patientsRoutes);
 
 export default v1Router;
