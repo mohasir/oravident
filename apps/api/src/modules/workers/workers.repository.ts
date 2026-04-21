@@ -7,7 +7,8 @@ import {
   WorkerUpdate,
 } from '@/core/db/schema/workers.ts';
 import { WorkerFiltersDTO } from './workers.schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, and, notInArray } from 'drizzle-orm';
+import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 
 export class WorkersRepository extends BaseRepository<
   WorkerTable,
@@ -37,10 +38,16 @@ export class WorkersRepository extends BaseRepository<
   }
 
   async delete(id: string) {
+    const demoWorkerIds = [
+      DEMO_IDS.WORKER_ADMIN,
+      DEMO_IDS.WORKER_DOCTOR,
+      DEMO_IDS.WORKER_RECEPTION,
+    ];
+
     const [deletedService] = await this.db
       .update(workers)
       .set({ isActive: false })
-      .where(eq(workers.id, id))
+      .where(and(eq(workers.id, id), notInArray(workers.id, demoWorkerIds)))
       .returning();
     return !!deletedService;
   }

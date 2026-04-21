@@ -7,7 +7,8 @@ import {
   ClinicUpdate,
 } from '@core/db/schema/clinics.ts';
 import { ClinicFiltersDTO } from '@modules/clinics/clinics.schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
+import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 
 export class ClinicsRepository extends BaseRepository<
   ClinicTable,
@@ -40,7 +41,7 @@ export class ClinicsRepository extends BaseRepository<
     const [deletedService] = await this.db
       .update(clinics)
       .set({ isActive: false })
-      .where(eq(clinics.id, id))
+      .where(and(eq(clinics.id, id), ne(clinics.id, DEMO_IDS.CLINIC)))
       .returning();
     return !!deletedService;
   }
