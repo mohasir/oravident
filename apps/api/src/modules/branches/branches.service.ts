@@ -1,39 +1,39 @@
 import { ApiError } from '@core/errors/ApiError.ts';
 import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
-import { ClinicsRepository } from '@modules/clinics/clinics.repository.ts';
+import { BranchesRepository } from '@modules/branches/branches.repository.ts';
 import { generateSlug, randomSuffix } from '@common/utils/slug.ts';
 import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
 import { compareUUIDs } from '@/common/utils/uuid.ts';
 import {
-  CreateClinicDTO,
-  UpdateClinicDTO,
-  GetClinicsQueryDTO,
-} from '@modules/clinics/clinics.schema.ts';
+  CreateBranchDTO,
+  UpdateBranchDTO,
+  GetBranchesQueryDTO,
+} from '@modules/branches/branches.schema.ts';
 
-export class ClinicsService {
+export class BranchesService {
   private maxAttempts = 5;
 
-  constructor(private clinicsRepository: ClinicsRepository) {}
+  constructor(private branchesRepository: BranchesRepository) {}
 
-  async createClinic(data: CreateClinicDTO) {
-    const emailExists = await this.clinicsRepository.exists({
+  async createBranch(data: CreateBranchDTO) {
+    const emailExists = await this.branchesRepository.exists({
       email: data.email,
     });
 
     if (emailExists) {
       throw new ApiError(
-        'Clinic with this email already exists',
+        'Branch with this email already exists',
         400,
         ErrorCodes.validation.VALIDATION_ERROR,
       );
     }
 
     const slug = await this.resolveUniqueSlug(data.name);
-    const result = await this.clinicsRepository.create({ ...data, slug });
+    const result = await this.branchesRepository.create({ ...data, slug });
 
     if (!result) {
       throw new ApiError(
-        'An unexpected error occurred while creating the clinic',
+        'An unexpected error occurred while creating the branch',
         500,
         ErrorCodes.system.INTERNAL_SERVER_ERROR,
       );
@@ -42,24 +42,24 @@ export class ClinicsService {
     return result;
   }
 
-  async getClinicById(id: string) {
-    const clinic = await this.clinicsRepository.findOne({ id });
-    if (!clinic) {
+  async getBranchById(id: string) {
+    const branch = await this.branchesRepository.findOne({ id });
+    if (!branch) {
       throw new ApiError(
-        'Clinic not found',
+        'Branch not found',
         404,
         ErrorCodes.auth.TENANT_NOT_FOUND,
       );
     }
-    return clinic;
+    return branch;
   }
 
-  async getAllClinics(query: GetClinicsQueryDTO) {
+  async getAllBranches(query: GetBranchesQueryDTO) {
     const { page, limit, ...filters } = query;
 
     const isPaginated = page !== undefined && limit !== undefined;
 
-    const { data, total } = await this.clinicsRepository.findAll(
+    const { data, total } = await this.branchesRepository.findAll(
       filters,
       isPaginated ? { page, limit } : undefined,
     );
@@ -77,36 +77,36 @@ export class ClinicsService {
     };
   }
 
-  async updateClinic(id: string, data: UpdateClinicDTO) {
-    const clinic = await this.getClinicById(id);
-    const updatePayload: UpdateClinicDTO & { slug?: string } = { ...data };
+  async updateBranch(id: string, data: UpdateBranchDTO) {
+    const branch = await this.getBranchById(id);
+    const updatePayload: UpdateBranchDTO & { slug?: string } = { ...data };
 
-    if (data.name && data.name !== clinic.name) {
-      const newSlug = await this.resolveUniqueSlug(data.name, clinic.slug);
+    if (data.name && data.name !== branch.name) {
+      const newSlug = await this.resolveUniqueSlug(data.name, branch.slug);
 
-      if (newSlug !== clinic.slug) {
+      if (newSlug !== branch.slug) {
         updatePayload.slug = newSlug;
       }
     }
 
-    if (data.email && data.email !== clinic.email) {
-      const emailExists = await this.clinicsRepository.exists({
+    if (data.email && data.email !== branch.email) {
+      const emailExists = await this.branchesRepository.exists({
         email: data.email,
       });
       if (emailExists) {
         throw new ApiError(
-          'Clinic with this email already exists',
+          'Branch with this email already exists',
           400,
           ErrorCodes.validation.VALIDATION_ERROR,
         );
       }
     }
 
-    const result = await this.clinicsRepository.update(id, updatePayload);
+    const result = await this.branchesRepository.update(id, updatePayload);
 
     if (!result) {
       throw new ApiError(
-        'An unexpected error occurred while updating the clinic',
+        'An unexpected error occurred while updating the branch',
         500,
         ErrorCodes.system.INTERNAL_SERVER_ERROR,
       );
@@ -115,20 +115,21 @@ export class ClinicsService {
     return result;
   }
 
-  async deleteClinic(id: string) {
-    if (compareUUIDs(id, DEMO_IDS.CLINIC)) {
+  async deleteBranch(id: string) {
+    console.log({ id }, DEMO_IDS.BRANCH);
+    if (compareUUIDs(id, DEMO_IDS.BRANCH)) {
       throw new ApiError(
-        'The demo clinic cannot be deleted.',
+        'The demo branch cannot be deleted.',
         403,
         ErrorCodes.auth.FORBIDDEN,
       );
     }
-    await this.getClinicById(id);
-    return this.clinicsRepository.delete(id);
+    await this.getBranchById(id);
+    return this.branchesRepository.delete(id);
   }
 
   async validateTenant(id: string) {
-    const exists = await this.clinicsRepository.exists({
+    const exists = await this.branchesRepository.exists({
       id,
     });
 
@@ -155,7 +156,7 @@ export class ClinicsService {
     let attempts = 0;
 
     while (attempts < this.maxAttempts) {
-      const slugExists = await this.clinicsRepository.exists({ slug });
+      const slugExists = await this.branchesRepository.exists({ slug });
 
       if (!slugExists) {
         return slug;
@@ -166,7 +167,7 @@ export class ClinicsService {
     }
 
     throw new ApiError(
-      'Could not generate a unique slug for the clinic',
+      'Could not generate a unique slug for the branch',
       500,
       ErrorCodes.system.INTERNAL_SERVER_ERROR,
     );

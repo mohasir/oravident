@@ -1,6 +1,8 @@
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
 import { WorkersRepository } from './workers.repository.ts';
+import { DEMO_IDS } from '@core/db/seeds/fixtures/demo-data.ts';
+import { isUUIDInList } from '@/common/utils/uuid.ts';
 import {
   CreateWorkerDTO,
   UpdateWorkerDTO,
@@ -73,7 +75,14 @@ export class WorkersService {
   }
 
   async updateWorker(id: string, data: UpdateWorkerDTO) {
-    await this.getWorkerById(id);
+    const workerExists = await this.workersRepository.exists({ id });
+    if (!workerExists) {
+      throw new ApiError(
+        'Worker not found',
+        404,
+        ErrorCodes.auth.USER_NOT_FOUND,
+      );
+    }
 
     const result = await this.workersRepository.update(id, data);
 
@@ -88,8 +97,22 @@ export class WorkersService {
     return result;
   }
 
-  async deactiveWorker(id: string) {
+  async deleteWorker(id: string) {
+    const demoWorkerIds = [
+      DEMO_IDS.WORKER_ADMIN,
+      DEMO_IDS.WORKER_DOCTOR,
+      DEMO_IDS.WORKER_RECEPTION,
+    ];
+
+    if (isUUIDInList(id, demoWorkerIds)) {
+      throw new ApiError(
+        'Demo workers cannot be deleted.',
+        403,
+        ErrorCodes.auth.FORBIDDEN,
+      );
+    }
+
     await this.getWorkerById(id);
-    return this.workersRepository.update(id, { isActive: false });
+    await this.workersRepository.delete(id);
   }
 }

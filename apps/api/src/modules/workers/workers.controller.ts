@@ -21,15 +21,6 @@ export class WorkersController extends BaseController {
     super();
   }
 
-  async getWorkers(req: GetWorkersRequest, res: Response) {
-    const { query } = validateRequest(req);
-    const result = await this.workersService.getAllWorkers(query);
-    return this.ok(res, 'Workers retrieved successfully', {
-      ...result,
-      items: workerCollectionResource(result.items),
-    });
-  }
-
   async createWorker(req: CreateWorkerRequest, res: Response) {
     const { body } = validateRequest(req);
     const worker = await this.workersService.createWorker(body);
@@ -38,6 +29,15 @@ export class WorkersController extends BaseController {
       'Worker created successfully',
       workerResource(worker),
     );
+  }
+
+  async getWorkers(req: GetWorkersRequest, res: Response) {
+    const { query } = validateRequest(req);
+    const result = await this.workersService.getAllWorkers(query);
+    return this.ok(res, 'Workers retrieved successfully', {
+      ...result,
+      items: workerCollectionResource(result.items),
+    });
   }
 
   async getWorker(req: GetWorkerRequest, res: Response) {
@@ -58,10 +58,10 @@ export class WorkersController extends BaseController {
     return this.ok(res, 'Worker updated successfully', workerResource(worker));
   }
 
-  async deactivateWorker(req: IdParamRequest, res: Response) {
+  async deleteWorker(req: IdParamRequest, res: Response) {
     const { params } = validateRequest(req);
     const { id } = params;
-    await this.workersService.deactiveWorker(id);
-    return this.ok(res, 'Worker deactivated successfully', null);
+    await this.workersService.deleteWorker(id);
+    return this.noContent(res);
   }
 }

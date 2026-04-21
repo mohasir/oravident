@@ -18,6 +18,7 @@ import { AuthRepository } from '@modules/auth/auth.repository.ts';
 import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.repository.ts';
 import { WorkersRepository } from '@modules/workers/workers.repository.ts';
 import { ServicesRepository } from '@modules/services/services.repository.ts';
+import { BranchesRepository } from '@modules/branches/branches.repository.ts';
 
 // ─── Services ---
 import { RolesService } from '@modules/roles/roles.service.ts';
@@ -32,6 +33,8 @@ import { WorkersService } from '@modules/workers/workers.service.ts';
 import { WorkersController } from '@modules/workers/workers.controller.ts';
 import { ServicesService } from '@modules/services/services.service.ts';
 import { ServicesController } from '@modules/services/services.controller.ts';
+import { BranchesService } from '@modules/branches/branches.service.ts';
+import { BranchesController } from '@modules/branches/branches.controller.ts';
 
 // ─── Instance Construction ───────────────────────────────────────────────────
 
@@ -49,6 +52,7 @@ export const userPasswordResetsRepository = new UserPasswordResetsRepository(
 );
 export const workersRepository = new WorkersRepository(db);
 export const servicesRepository = new ServicesRepository(db);
+export const branchesRepository = new BranchesRepository(db);
 
 // Instanciar Servicios
 export const authService = new AuthService(
@@ -70,6 +74,7 @@ export const clinicService = new ClinicsService(clinicsRepository);
 export const workersService = new WorkersService(workersRepository);
 export const rolesService = new RolesService(rolesRepository);
 export const servicesService = new ServicesService(servicesRepository);
+export const branchesService = new BranchesService(branchesRepository);
 
 // Instanciar Controladores
 export const authController = new AuthController(authService);
@@ -80,3 +85,4 @@ export const workersController = new WorkersController(workersService);
 export const clinicsController = new ClinicsController(clinicService);
 export const rolesController = new RolesController(rolesService);
 export const servicesController = new ServicesController(servicesService);
+export const branchesController = new BranchesController(branchesService);

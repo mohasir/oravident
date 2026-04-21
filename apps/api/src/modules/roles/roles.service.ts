@@ -103,7 +103,7 @@ export class RolesService {
       throw new ApiError(
         'System roles cannot be deleted',
         403,
-        ErrorCodes.auth.UNAUTHORIZED,
+        ErrorCodes.auth.FORBIDDEN,
       );
     }
 
