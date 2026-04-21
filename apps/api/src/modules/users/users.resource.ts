@@ -1,16 +1,16 @@
-import { UserPublic } from '@/core/db/schema/users.ts';
+import { PublicUser } from '@/core/db/schema/users.ts';
 
-export type User = UserPublic;
-
-export const userResource = (user: User) => {
+export const userResource = (user: PublicUser) => {
   return {
     id: user.id,
     email: user.email,
+    isPlatformAdmin: user.isPlatformAdmin,
     isActive: user.isActive,
     createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   };
 };
 
-export const userCollectionResource = (usersArr: User[]) => {
+export const userCollectionResource = (usersArr: PublicUser[]) => {
   return usersArr.map(userResource);
 };

@@ -21,6 +21,8 @@ import { ServicesRepository } from '@modules/services/services.repository.ts';
 import { BranchesRepository } from '@modules/branches/branches.repository.ts';
 
 // ─── Services ---
+import { UsersService } from '@modules/users/users.service.ts';
+import { UsersController } from '@modules/users/users.controller.ts';
 import { RolesService } from '@modules/roles/roles.service.ts';
 import { RolesController } from '@modules/roles/roles.controller.ts';
 import { AuthService } from '@modules/auth/auth.service.ts';
@@ -71,6 +73,7 @@ export const userInvitationsService = new UserInvitationsService(
 );
 
 export const clinicService = new ClinicsService(clinicsRepository);
+export const usersService = new UsersService(userRepository);
 export const workersService = new WorkersService(workersRepository);
 export const rolesService = new RolesService(rolesRepository);
 export const servicesService = new ServicesService(servicesRepository);
@@ -81,6 +84,7 @@ export const authController = new AuthController(authService);
 export const userInvitationsController = new UserInvitationsController(
   userInvitationsService,
 );
+export const usersController = new UsersController(usersService);
 export const workersController = new WorkersController(workersService);
 export const clinicsController = new ClinicsController(clinicService);
 export const rolesController = new RolesController(rolesService);

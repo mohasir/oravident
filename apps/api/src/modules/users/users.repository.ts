@@ -7,48 +7,38 @@ import {
   UserInsert,
   UserUpdate,
   publicUserColumns,
+  PublicUser,
 } from '@/core/db/schema/users.ts';
 import { workers } from '@/core/db/schema/workers.ts';
-import { eq, and, sql, desc } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export class UserRepository extends BaseRepository<UserTable, UserFiltersDTO> {
   constructor(db: Database) {
     super(db, users);
   }
 
-  async findOne(filters: UserFiltersDTO) {
-    const query = this.db.select(publicUserColumns).from(this.table).$dynamic();
-    this.applyFilters(query, filters);
-
-    const [result] = await query.limit(1);
-    return result || null;
+  async findPublicOne(filters: UserFiltersDTO) {
+    return super.findOne<PublicUser>(filters, {
+      columns: publicUserColumns,
+    });
   }
 
-  async findAll(
-    filters: UserFiltersDTO = {},
+  async findPublicAll(
+    filters: UserFiltersDTO,
     pagination?: { page: number; limit: number },
   ) {
-    const countQuery = this.applyFilters(this.totalQuery(), filters);
-    const dataQuery = this.db
-      .select(publicUserColumns)
-      .from(this.table)
-      .$dynamic();
+    return super.findAll<PublicUser>(filters, pagination, {
+      columns: publicUserColumns,
+    });
+  }
 
-    this.applyFilters(dataQuery, filters);
-
-    if (pagination) {
-      this.withPagination(
-        dataQuery,
-        desc(users.createdAt),
-        pagination.page,
-        pagination.limit,
-      );
-    }
-
-    const [totalCountResult, data] = await Promise.all([countQuery, dataQuery]);
-
-    const total = Number(totalCountResult[0]?.count ?? 0);
-    return { data, total };
+  async delete(id: string) {
+    const [deletedUser] = await this.db
+      .update(users)
+      .set({ isActive: false })
+      .where(eq(users.id, id))
+      .returning();
+    return !!deletedUser;
   }
 
   async findActiveUserWorkerById(id: string) {

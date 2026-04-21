@@ -108,7 +108,7 @@ export class AuthService {
   }
 
   async forgotPassword(data: ForgotPasswordDTO) {
-    const user = await this.userRepository.findOne({
+    const user = await this.userRepository.findPublicOne({
       email: data.email,
     });
 

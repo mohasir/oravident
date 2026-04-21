@@ -34,7 +34,7 @@ export const publicUserColumns = {
 
 export type UserTable = typeof users;
 export type UserColumn = keyof UserSelect;
-export type UserPublic = Pick<UserSelect, keyof typeof publicUserColumns>;
+export type PublicUser = Pick<UserSelect, keyof typeof publicUserColumns>;
 
 export type UserSelect = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
