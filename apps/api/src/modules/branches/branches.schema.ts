@@ -31,6 +31,7 @@ export const updateBranchSchema = createBranchSchema.partial();
 export const branchFiltersSchema = z
   .object({
     id: createIdSchema('id').optional(),
+    clinicId: createIdSchema('clinicId').optional(),
     name: z.string().optional(),
     slug: z.string().optional(),
     email: z.string().optional(),

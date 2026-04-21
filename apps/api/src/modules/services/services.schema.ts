@@ -29,6 +29,7 @@ export const updateServiceSchema = createServiceSchema.partial();
 export const serviceFiltersSchema = z
   .object({
     id: createIdSchema('id').optional(),
+    clinicId: createIdSchema('clinicId').optional(),
     name: z.string().optional(),
     isActive: z.boolean().optional(),
     excludeId: createIdSchema('excludeId').optional(),
