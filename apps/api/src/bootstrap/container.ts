@@ -4,9 +4,9 @@
  */
 
 // ─── Infrastructure ───────────────────────────────────────────────────
-import { db } from '@/core/db/index.ts';
+import { db } from '@core/db/index.ts';
 
-import { DrizzleTransactionManager } from '@/core/db/TransactionManager.ts';
+import { DrizzleTransactionManager } from '@core/db/TransactionManager.ts';
 
 // ─── Repositories ────────────────────────────────────────────────────
 import { UserRepository } from '@modules/users/users.repository.ts';
@@ -17,6 +17,7 @@ import { UserSessionsRepository } from '@modules/auth/userSessions.repository.ts
 import { AuthRepository } from '@modules/auth/auth.repository.ts';
 import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.repository.ts';
 import { WorkersRepository } from '@modules/workers/workers.repository.ts';
+import { ServicesRepository } from '@modules/services/services.repository.ts';
 
 // ─── Services ---
 import { RolesService } from '@modules/roles/roles.service.ts';
@@ -29,6 +30,8 @@ import { UserInvitationsService } from '@modules/userInvitations/userInvitations
 import { UserInvitationsController } from '@modules/userInvitations/userInvitations.controller.ts';
 import { WorkersService } from '@modules/workers/workers.service.ts';
 import { WorkersController } from '@modules/workers/workers.controller.ts';
+import { ServicesService } from '@modules/services/services.service.ts';
+import { ServicesController } from '@modules/services/services.controller.ts';
 
 // ─── Instance Construction ───────────────────────────────────────────────────
 
@@ -45,6 +48,7 @@ export const userPasswordResetsRepository = new UserPasswordResetsRepository(
   db,
 );
 export const workersRepository = new WorkersRepository(db);
+export const servicesRepository = new ServicesRepository(db);
 
 // Instanciar Servicios
 export const authService = new AuthService(
@@ -65,6 +69,7 @@ export const userInvitationsService = new UserInvitationsService(
 export const clinicService = new ClinicsService(clinicsRepository);
 export const workersService = new WorkersService(workersRepository);
 export const rolesService = new RolesService(rolesRepository);
+export const servicesService = new ServicesService(servicesRepository);
 
 // Instanciar Controladores
 export const authController = new AuthController(authService);
@@ -74,3 +79,4 @@ export const userInvitationsController = new UserInvitationsController(
 export const workersController = new WorkersController(workersService);
 export const clinicsController = new ClinicsController(clinicService);
 export const rolesController = new RolesController(rolesService);
+export const servicesController = new ServicesController(servicesService);

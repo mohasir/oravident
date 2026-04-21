@@ -6,18 +6,18 @@ import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
 export interface PayloadAccessToken {
   id: string;
   email: string;
-  role: RoleType;
+  role: string;
   permissions: PermissionType[];
   tenantId?: string;
 }
 
 interface PayloadRefreshToken {
-  id: string,
+  id: string;
 }
 
 export function signAccessToken(
-  payload: PayloadAccessToken, 
-  expiresIn: SignOptions['expiresIn']
+  payload: PayloadAccessToken,
+  expiresIn: SignOptions['expiresIn'],
 ): string {
   return jwt.sign(payload, ENV.JWT_ACCESS_SECRET, { expiresIn });
 }
@@ -36,8 +36,8 @@ export function verifyAccessToken(token: string) {
 }
 
 export function signRefreshToken(
-  payload: PayloadRefreshToken, 
-  expiresIn: SignOptions['expiresIn']
+  payload: PayloadRefreshToken,
+  expiresIn: SignOptions['expiresIn'],
 ): string {
   return jwt.sign(payload, ENV.JWT_REFRESH_SECRET, { expiresIn });
 }

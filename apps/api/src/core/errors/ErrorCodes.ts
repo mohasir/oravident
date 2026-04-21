@@ -3,6 +3,8 @@ export const ErrorCodes = {
     ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
     INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR',
     CONFLICT: 'CONFLICT',
+    ALREADY_EXISTS: 'ALREADY_EXISTS',
+    NOT_FOUND: 'NOT_FOUND',
   },
   auth: {
     UNAUTHORIZED: 'UNAUTHORIZED',
@@ -20,6 +22,5 @@ export const ErrorCodes = {
   },
   validation: {
     VALIDATION_ERROR: 'VALIDATION_ERROR',
-  }
-
+  },
 } as const;

@@ -1,16 +1,19 @@
 import { Response } from 'express';
-import { BaseController } from '@/core/shared/BaseController.ts';
-import { RolesService } from './roles.service.ts';
-import { CatchAsync } from '@/core/shared/decorators/CatchAsync.ts';
+import { BaseController } from '@core/shared/BaseController.ts';
+import { RolesService } from '@modules/roles/roles.service.ts';
+import { CatchAsync } from '@core/shared/decorators/CatchAsync.ts';
 import {
   CreateRoleRequest,
   GetRolesRequest,
   UpdateRoleRequest,
   GetRoleRequest,
-} from './roles.schema.ts';
-import { validateRequest } from '@/common/utils/request.ts';
-import { IdParamRequest } from '@/common/types/requests.ts';
-import { roleResource, roleCollectionResource } from './roles.resource.ts';
+} from '@modules/roles/roles.schema.ts';
+import { validateRequest } from '@common/utils/request.ts';
+import { IdParamRequest } from '@common/types/requests.ts';
+import {
+  roleResource,
+  roleCollectionResource,
+} from '@modules/roles/roles.resource.ts';
 
 @CatchAsync
 export class RolesController extends BaseController {

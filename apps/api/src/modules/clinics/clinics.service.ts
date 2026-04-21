@@ -1,7 +1,7 @@
-import { ApiError } from '@/core/errors/ApiError.ts';
-import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
+import { ApiError } from '@core/errors/ApiError.ts';
+import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
 import { ClinicsRepository } from '@modules/clinics/clinics.repository.ts';
-import { generateSlug, randomSuffix } from '@/common/utils/slug.ts';
+import { generateSlug, randomSuffix } from '@common/utils/slug.ts';
 import {
   CreateClinicDTO,
   UpdateClinicDTO,

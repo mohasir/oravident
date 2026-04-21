@@ -1,12 +1,12 @@
-import { ApiError } from '@/core/errors/ApiError.ts';
-import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
-import { RolesRepository } from './roles.repository.ts';
+import { ApiError } from '@core/errors/ApiError.ts';
+import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
+import { RolesRepository } from '@modules/roles/roles.repository.ts';
 import {
   CreateRoleDTO,
   UpdateRoleDTO,
   GetRolesQueryDTO,
-} from './roles.schema.ts';
-import { Role } from './roles.resource.ts';
+} from '@modules/roles/roles.schema.ts';
+import { Role } from '@modules/roles/roles.resource.ts';
 
 export class RolesService {
   constructor(private rolesRepository: RolesRepository) {}

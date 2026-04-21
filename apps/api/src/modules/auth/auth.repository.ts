@@ -48,6 +48,7 @@ export class AuthRepository extends BaseRepository {
         user: {
           id: users.id,
           email: users.email,
+          isSuperadmin: users.isPlatformAdmin,
           passwordHash: users.passwordHash,
         },
         worker: {
@@ -68,6 +69,8 @@ export class AuthRepository extends BaseRepository {
       .leftJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
       .leftJoin(permissions, eq(rolePermissions.permissionId, permissions.id))
       .where(and(...(conditions.filter(Boolean) as SQL[])));
+
+    console.log(JSON.stringify(rows.length, null, 2));
 
     return this.mapToUserWithPermissions(rows as WorkerProfileRowDTO[]);
   }

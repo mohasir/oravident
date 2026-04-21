@@ -1,7 +1,7 @@
 import { Response } from 'express';
-import { BaseController } from '@/core/shared/BaseController.ts';
-import { ClinicsService } from './clinics.service.ts';
-import { CatchAsync } from '@/core/shared/decorators/CatchAsync.ts';
+import { BaseController } from '@core/shared/BaseController.ts';
+import { ClinicsService } from '@modules/clinics/clinics.service.ts';
+import { CatchAsync } from '@core/shared/decorators/CatchAsync.ts';
 import {
   clinicResource,
   clinicCollectionResource,
@@ -11,9 +11,9 @@ import {
   CreateClinicRequest,
   UpdateClinicRequest,
   GetClinicRequest,
-} from './clinics.schema.ts';
-import { validateRequest } from '@/common/utils/request.ts';
-import { IdParamRequest } from '@/common/types/requests.ts';
+} from '@modules/clinics/clinics.schema.ts';
+import { validateRequest } from '@common/utils/request.ts';
+import { IdParamRequest } from '@common/types/requests.ts';
 
 @CatchAsync
 export class ClinicsController extends BaseController {

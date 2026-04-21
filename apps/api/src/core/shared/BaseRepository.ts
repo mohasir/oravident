@@ -3,15 +3,18 @@ import { and, count, eq, getTableColumns, isNull, SQL, sql } from 'drizzle-orm';
 import { PgColumn, PgSelect, AnyPgTable } from 'drizzle-orm/pg-core';
 
 export abstract class BaseRepository<
-  TTable extends AnyPgTable,
+  TTable extends AnyPgTable = AnyPgTable,
   TFilters extends Record<string, unknown> = Record<string, unknown>,
 > {
   constructor(
     protected readonly db: Database,
-    protected readonly table: TTable,
+    protected readonly table?: TTable,
   ) {}
 
   protected totalQuery() {
+    if (!this.table) {
+      throw new Error('Table not defined in repository');
+    }
     return this.db
       .select({ count: count() })
       .from(this.table as AnyPgTable)
@@ -22,6 +25,9 @@ export abstract class BaseRepository<
     qb: T,
     filters: F,
   ) {
+    if (!this.table) {
+      throw new Error('Table not defined in repository');
+    }
     const conditions: SQL[] = [];
     const columns = getTableColumns(this.table);
 
@@ -39,6 +45,10 @@ export abstract class BaseRepository<
       } else {
         conditions.push(eq(column, value));
       }
+    }
+
+    if ('isActive' in columns && filters['isActive'] === undefined) {
+      conditions.push(eq(columns['isActive'] as PgColumn, true));
     }
 
     return conditions.length > 0 ? qb.where(and(...conditions)) : qb;
@@ -66,6 +76,9 @@ export abstract class BaseRepository<
   public async findOne(
     filters: TFilters = {} as TFilters,
   ): Promise<TTable['$inferSelect'] | null> {
+    if (!this.table) {
+      throw new Error('Table not defined in repository');
+    }
     const query = this.db
       .select()
       .from(this.table as AnyPgTable)
@@ -77,6 +90,9 @@ export abstract class BaseRepository<
   }
 
   public async exists(filters: TFilters = {} as TFilters): Promise<boolean> {
+    if (!this.table) {
+      throw new Error('Table not defined in repository');
+    }
     const query = this.db
       .select({ id: sql`1` })
       .from(this.table as AnyPgTable)
@@ -92,9 +108,14 @@ export abstract class BaseRepository<
     pagination?: { page: number; limit: number },
     options: {
       orderBy?: PgColumn | SQL | SQL.Aliased;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       columns?: Record<string, any>;
     } = {},
   ): Promise<{ data: TTable['$inferSelect'][]; total: number }> {
+    if (!this.table) {
+      throw new Error('Table not defined in repository');
+    }
+
     const countQuery = this.applyFilters(this.totalQuery(), filters);
 
     const dataQuery = (

@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { DB_LIMITS } from '@/core/db/constants.ts';
+import { DB_LIMITS } from '@core/db/constants.ts';
 import {
   createIdSchema,
   emailSchema,
   paginationQuerySchema,
-} from '@/common/schemas/common.schema.ts';
-import { commonIdParamSchema, TypedRequest } from '@/common/types/requests.ts';
+} from '@common/schemas/common.schema.ts';
+import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
 
 // ==========================================
 // 1. CORE DOMAIN SCHEMAS

@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import { validateSchema } from '@/middlewares/validateSchema.ts';
-import { protect } from '@/middlewares/protect.ts';
+import { validateSchema } from '@middlewares/validateSchema.ts';
+import { protect } from '@middlewares/protect.ts';
 import { rolesController } from '@/bootstrap/container.ts';
 import {
   createRoleRequestSchema,
   getRolesRequestSchema,
   getRoleRequestSchema,
   updateRoleRequestSchema,
-} from './roles.schema.ts';
-import { commonIdParamSchema } from '@/common/types/requests.ts';
+} from '@modules/roles/roles.schema.ts';
+import { commonIdParamSchema } from '@common/types/requests.ts';
 
 const router: Router = Router();
 

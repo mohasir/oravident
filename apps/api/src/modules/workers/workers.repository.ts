@@ -7,7 +7,7 @@ import {
   WorkerUpdate,
 } from '@/core/db/schema/workers.ts';
 import { WorkerFiltersDTO } from './workers.schema.ts';
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 export class WorkersRepository extends BaseRepository<
   WorkerTable,
@@ -15,30 +15,6 @@ export class WorkersRepository extends BaseRepository<
 > {
   constructor(db: Database) {
     super(db, workers);
-  }
-
-  async findAll(
-    filters: WorkerFiltersDTO = {},
-    pagination?: { page: number; limit: number },
-  ) {
-    const countQuery = this.applyFilters(this.totalQuery(), filters);
-    const dataQuery = this.db.select().from(this.table).$dynamic();
-
-    this.applyFilters(dataQuery, filters);
-
-    if (pagination) {
-      this.withPagination(
-        dataQuery,
-        desc(workers.createdAt),
-        pagination.page,
-        pagination.limit,
-      );
-    }
-
-    const [totalCountResult, data] = await Promise.all([countQuery, dataQuery]);
-
-    const total = Number(totalCountResult[0]?.count ?? 0);
-    return { data, total };
   }
 
   async create(values: WorkerInsert) {
@@ -61,11 +37,11 @@ export class WorkersRepository extends BaseRepository<
   }
 
   async delete(id: string) {
-    const [deletedWorker] = await this.db
-      .delete(workers)
+    const [deletedService] = await this.db
+      .update(workers)
+      .set({ isActive: false })
       .where(eq(workers.id, id))
       .returning();
-
-    return deletedWorker;
+    return !!deletedService;
   }
 }

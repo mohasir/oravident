@@ -2,7 +2,7 @@ import { db } from "@/core/db/index.ts";
 import { roles } from "@/core/db/schema/roles.ts";
 import { permissions } from "@/core/db/schema/permissions.ts";
 import { rolePermissions } from "@/core/db/schema/role_permissions.ts";
-import { rolesPermissionsMatrix } from "@repo/guards";
+import { rolesPermissionsMatrix, ROLE_IDS, RoleType } from "@repo/guards";
 import { isNull } from "drizzle-orm";
 
 async function syncRolePermissions() {
@@ -24,6 +24,7 @@ async function syncRolePermissions() {
       
       if (!dbRole) {
         const [newRole] = await db.insert(roles).values({
+          id: ROLE_IDS[config.role as RoleType],
           name: config.role,
           displayName: config.role.charAt(0).toUpperCase() + config.role.slice(1),
           isSystem: true,

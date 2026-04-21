@@ -1,7 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { z } from 'zod';
 import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
-import { createIdParamSchema } from '@/common/schemas/common.schema.ts';
 import {
   RequestValidationSchema,
   TypedRequest,
@@ -18,31 +16,7 @@ export const validateSchema = <T extends RequestValidationSchema>(
       const details: Record<string, string[]> = {};
       let rawError: unknown = null;
 
-      // 1. Auto-validate params (non-empty strings and ID patterns)
-      Object.keys(req.params).forEach((key) => {
-        const value = req.params[key];
-
-        // Base rule: Must be a non-empty string
-        const baseResult = z
-          .string()
-          .min(1, `${key} is required`)
-          .safeParse(value);
-        if (!baseResult.success) {
-          details[key] = baseResult.error.issues.map((e) => e.message);
-          return;
-        }
-
-        // Specific rule: If it's an ID field, must be a UUID
-        if (key.toLowerCase().endsWith('id') || key.toLowerCase() === 'id') {
-          const uuidResult = createIdParamSchema(key).safeParse(value);
-
-          if (!uuidResult.success) {
-            details[key] = uuidResult.error.issues.map((e) => e.message);
-          }
-        }
-      });
-
-      // 1.1 Explicit params validation
+      // 1. Explicit params validation
       if (schemas?.params) {
         const paramsResult = schemas.params.safeParse(req.params);
         if (!paramsResult.success) {

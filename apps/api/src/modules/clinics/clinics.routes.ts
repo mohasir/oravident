@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import { validateSchema } from '@/middlewares/validateSchema.ts';
-import { protect } from '@/middlewares/protect.ts';
-import { guardMiddleware } from '@/middlewares/guard.ts';
+import { validateSchema } from '@middlewares/validateSchema.ts';
+import { protect } from '@middlewares/protect.ts';
+import { guardMiddleware } from '@middlewares/guard.ts';
 import { clinicsController } from '@/bootstrap/container.ts';
 import {
   createClinicRequestSchema,
   updateClinicRequestSchema,
   getClinicsRequestSchema,
   getClinicRequestSchema,
-} from './clinics.schema.ts';
+} from '@modules/clinics/clinics.schema.ts';
 import { PERMISSIONS } from '@repo/guards';
-import { idParamRequest } from '@/common/types/requests.ts';
+import { idParamRequest } from '@common/types/requests.ts';
 
 const router: Router = Router();
 

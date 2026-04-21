@@ -1,4 +1,4 @@
-import { Database } from '@/core/db/index.ts';
+import { Database } from '@core/db/index.ts';
 import {
   roles,
   rolePermissions,
@@ -6,38 +6,14 @@ import {
   RoleTable,
   RoleInsert,
   RoleUpdate,
-} from '@/core/db/schema/index.ts';
-import { BaseRepository } from '@/core/shared/BaseRepository.ts';
-import { eq, and, or, desc } from 'drizzle-orm';
-import { RoleFiltersDTO } from './roles.schema.ts';
+} from '@core/db/schema/index.ts';
+import { BaseRepository } from '@core/shared/BaseRepository.ts';
+import { eq, and, or } from 'drizzle-orm';
+import { RoleFiltersDTO } from '@modules/roles/roles.schema.ts';
 
 export class RolesRepository extends BaseRepository<RoleTable, RoleFiltersDTO> {
   constructor(db: Database) {
     super(db, roles);
-  }
-
-  async findAll(
-    filters: RoleFiltersDTO = {},
-    pagination?: { page: number; limit: number },
-  ) {
-    const countQuery = this.applyFilters(this.totalQuery(), filters);
-    const dataQuery = this.db.select().from(this.table).$dynamic();
-
-    this.applyFilters(dataQuery, filters);
-
-    if (pagination) {
-      this.withPagination(
-        dataQuery,
-        desc(roles.createdAt),
-        pagination.page,
-        pagination.limit,
-      );
-    }
-
-    const [totalCountResult, data] = await Promise.all([countQuery, dataQuery]);
-
-    const total = Number(totalCountResult[0]?.count ?? 0);
-    return { data, total };
   }
 
   async isValidRoleForClinic(id: string, clinicId: string): Promise<boolean> {
@@ -65,17 +41,18 @@ export class RolesRepository extends BaseRepository<RoleTable, RoleFiltersDTO> {
     const [updatedRole] = await this.db
       .update(roles)
       .set({ ...values, updatedAt: new Date() })
-      .where(eq(roles.id, id))
+      .where(and(eq(roles.id, id), eq(roles.isSystem, false)))
       .returning();
     return updatedRole;
   }
 
   async delete(id: string) {
-    const [deletedRole] = await this.db
-      .delete(roles)
-      .where(eq(roles.id, id))
+    const [deletedService] = await this.db
+      .update(roles)
+      .set({ isActive: false })
+      .where(and(eq(roles.id, id), eq(roles.isSystem, false)))
       .returning();
-    return deletedRole;
+    return !!deletedService;
   }
 
   async findPermissionsByRole(roleId: string) {

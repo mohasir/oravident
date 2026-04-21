@@ -17,6 +17,7 @@ export const workerProfileRowSchema = z.object({
   user: z.object({
     id: z.string(),
     email: emailSchema,
+    isSuperadmin: z.boolean(),
     passwordHash: z.string(),
   }),
   worker: z

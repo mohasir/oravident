@@ -1,4 +1,4 @@
-import { BaseRepository } from '@/core/shared/BaseRepository.ts';
+import { BaseRepository } from '@core/shared/BaseRepository.ts';
 import { Database } from '@core/db/index.ts';
 import {
   clinics,
@@ -6,7 +6,7 @@ import {
   ClinicInsert,
   ClinicUpdate,
 } from '@core/db/schema/clinics.ts';
-import { ClinicFiltersDTO } from './clinics.schema.ts';
+import { ClinicFiltersDTO } from '@modules/clinics/clinics.schema.ts';
 import { eq } from 'drizzle-orm';
 
 export class ClinicsRepository extends BaseRepository<
@@ -37,11 +37,11 @@ export class ClinicsRepository extends BaseRepository<
   }
 
   async delete(id: string) {
-    const [deletedClinic] = await this.db
-      .delete(clinics)
+    const [deletedService] = await this.db
+      .update(clinics)
+      .set({ isActive: false })
       .where(eq(clinics.id, id))
       .returning();
-
-    return deletedClinic;
+    return !!deletedService;
   }
 }

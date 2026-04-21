@@ -17,7 +17,7 @@ import {
   verifyRefreshToken,
 } from '@/common/utils/jwt.ts';
 import { generateToken, hashToken } from '@/common/utils/hash.ts';
-import { PermissionType, RoleType } from '@repo/guards';
+import { PermissionType, ROLES, RoleType } from '@repo/guards';
 import { ITransactionManager } from '@/core/db/TransactionManager.ts';
 
 export class AuthService {
@@ -59,11 +59,21 @@ export class AuthService {
       );
     }
 
+    const roleName = user.isSuperadmin ? ROLES.SUPERADMIN : role?.name;
+
+    if (!roleName) {
+      throw new ApiError(
+        'Your account does not have an assigned role. Please contact an administrator.',
+        403,
+        ErrorCodes.auth.FORBIDDEN,
+      );
+    }
+
     const accessToken = signAccessToken(
       {
         id: user.id,
         email: user.email,
-        role: role?.name as RoleType,
+        role: roleName,
         permissions: permissions as PermissionType[],
         tenantId: worker?.clinicId || undefined,
       },
