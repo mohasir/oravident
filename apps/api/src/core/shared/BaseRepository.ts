@@ -75,7 +75,7 @@ export abstract class BaseRepository<
     return { data: data as T[], total };
   }
 
-  protected select(columns?: DefaultColumns) {
+  public select(columns?: DefaultColumns) {
     if (!this.table) {
       throw new Error('Table not defined in repository');
     }

@@ -9,7 +9,10 @@ import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
 // 1. CORE DOMAIN SCHEMAS
 // ==========================================
 
-export const createAppointmentSchema = z
+const MIN_DURATION_MINUTES = 15;
+const MAX_DURATION_HOURS = 8;
+
+const appointmentInputSchema = z
   .object({
     clinicId: createIdSchema('clinicId'),
     branchId: createIdSchema('branchId'),
@@ -36,9 +39,99 @@ export const createAppointmentSchema = z
   })
   .strict();
 
-export const updateAppointmentSchema = createAppointmentSchema
+export const createAppointmentSchema = appointmentInputSchema.superRefine(
+  (data, ctx) => {
+    const startsAt = new Date(data.startsAt);
+    const endsAt = new Date(data.endsAt);
+    const now = new Date();
+
+    if (startsAt < now) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'startsAt cannot be in the past',
+        path: ['startsAt'],
+      });
+    }
+
+    if (endsAt <= startsAt) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'endsAt must be after startsAt',
+        path: ['endsAt'],
+      });
+      return;
+    }
+
+    const durationMs = endsAt.getTime() - startsAt.getTime();
+    const minMs = MIN_DURATION_MINUTES * 60 * 1000;
+    const maxMs = MAX_DURATION_HOURS * 60 * 60 * 1000;
+
+    if (durationMs < minMs) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Appointment duration must be at least ${MIN_DURATION_MINUTES} minutes`,
+        path: ['endsAt'],
+      });
+    }
+
+    if (durationMs > maxMs) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `Appointment duration cannot exceed ${MAX_DURATION_HOURS} hours`,
+        path: ['endsAt'],
+      });
+    }
+  },
+);
+
+export const updateAppointmentSchema = appointmentInputSchema
   .omit({ clinicId: true })
-  .partial();
+  .partial()
+  .superRefine((data, ctx) => {
+    if (data.startsAt === undefined && data.endsAt === undefined) return;
+
+    const startsAt = data.startsAt ? new Date(data.startsAt) : undefined;
+    const endsAt = data.endsAt ? new Date(data.endsAt) : undefined;
+
+    if (startsAt !== undefined && startsAt < new Date()) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'startsAt cannot be in the past',
+        path: ['startsAt'],
+      });
+    }
+
+    if (startsAt !== undefined && endsAt !== undefined) {
+      if (endsAt <= startsAt) {
+        ctx.addIssue({
+          code: 'custom',
+          message: 'endsAt must be after startsAt',
+          path: ['endsAt'],
+        });
+        return;
+      }
+
+      const durationMs = endsAt.getTime() - startsAt.getTime();
+      const minMs = MIN_DURATION_MINUTES * 60 * 1000;
+      const maxMs = MAX_DURATION_HOURS * 60 * 60 * 1000;
+
+      if (durationMs < minMs) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Appointment duration must be at least ${MIN_DURATION_MINUTES} minutes`,
+          path: ['endsAt'],
+        });
+      }
+
+      if (durationMs > maxMs) {
+        ctx.addIssue({
+          code: 'custom',
+          message: `Appointment duration cannot exceed ${MAX_DURATION_HOURS} hours`,
+          path: ['endsAt'],
+        });
+      }
+    }
+  });
 
 export const cancelAppointmentSchema = z
   .object({

@@ -71,6 +71,37 @@ export class AppointmentsService {
     }
   }
 
+  private async validateTimeSlot(params: {
+    startsAt: Date;
+    endsAt: Date;
+    workerId: string;
+    patientId: string;
+    excludeId?: string;
+  }) {
+    const { startsAt, endsAt, workerId, patientId, excludeId } = params;
+
+    const [workerConflicts, patientConflicts] = await Promise.all([
+      this.appointmentsRepository.findOverlapping({ startsAt, endsAt, workerId, excludeId }),
+      this.appointmentsRepository.findOverlapping({ startsAt, endsAt, patientId, excludeId }),
+    ]);
+
+    if (workerConflicts.length > 0) {
+      throw new ApiError(
+        'The worker already has an appointment scheduled in that time slot',
+        409,
+        ErrorCodes.system.CONFLICT,
+      );
+    }
+
+    if (patientConflicts.length > 0) {
+      throw new ApiError(
+        'The patient already has an appointment scheduled in that time slot',
+        409,
+        ErrorCodes.system.CONFLICT,
+      );
+    }
+  }
+
   async create(values: CreateAppointmentDTO) {
     await this.validateClinicOwnership({
       clinicId: values.clinicId,
@@ -80,10 +111,20 @@ export class AppointmentsService {
       serviceId: values.serviceId,
     });
 
+    const startsAt = new Date(values.startsAt);
+    const endsAt = new Date(values.endsAt);
+
+    await this.validateTimeSlot({
+      startsAt,
+      endsAt,
+      workerId: values.workerId,
+      patientId: values.patientId,
+    });
+
     const result = await this.appointmentsRepository.create({
       ...values,
-      startsAt: new Date(values.startsAt),
-      endsAt: new Date(values.endsAt),
+      startsAt,
+      endsAt,
     });
 
     if (!result) {
@@ -146,10 +187,29 @@ export class AppointmentsService {
     }
 
     const { startsAt, endsAt, ...rest } = data;
+    const newStartsAt = startsAt !== undefined ? new Date(startsAt) : undefined;
+    const newEndsAt = endsAt !== undefined ? new Date(endsAt) : undefined;
+
+    const needsTimeSlotValidation =
+      newStartsAt !== undefined ||
+      newEndsAt !== undefined ||
+      data.workerId !== undefined ||
+      data.patientId !== undefined;
+
+    if (needsTimeSlotValidation) {
+      await this.validateTimeSlot({
+        startsAt: newStartsAt ?? existing.startsAt,
+        endsAt: newEndsAt ?? existing.endsAt,
+        workerId: data.workerId ?? existing.workerId,
+        patientId: data.patientId ?? existing.patientId,
+        excludeId: id,
+      });
+    }
+
     const result = await this.appointmentsRepository.update(id, {
       ...rest,
-      ...(startsAt !== undefined && { startsAt: new Date(startsAt) }),
-      ...(endsAt !== undefined && { endsAt: new Date(endsAt) }),
+      ...(newStartsAt !== undefined && { startsAt: newStartsAt }),
+      ...(newEndsAt !== undefined && { endsAt: newEndsAt }),
     });
 
     if (!result) {

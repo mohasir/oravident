@@ -69,6 +69,7 @@ export const appointments = pgTable(
     index('appointments_clinic_idx').on(table.clinicId),
     index('appointments_patient_idx').on(table.patientId),
     index('appointments_branch_idx').on(table.branchId),
+    index('appointments_worker_idx').on(table.workerId),
     index('appointments_starts_at_idx').on(table.startsAt),
   ],
 );
