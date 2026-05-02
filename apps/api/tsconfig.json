@@ -2,17 +2,16 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@core/*": ["src/core/*"],
-      "@common/*": ["src/common/*"],
-      "@modules/*": ["src/modules/*"],
-      "@routes/*": ["src/routes/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@commands/*": ["src/commands/*"],
-      "@channels/*": ["src/channels/*"],
-      "@jobs/*": ["src/jobs/*"]
+      "@core/*": ["./src/core/*"],
+      "@common/*": ["./src/common/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@routes/*": ["./src/routes/*"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@commands/*": ["./src/commands/*"],
+      "@channels/*": ["./src/channels/*"],
+      "@jobs/*": ["./src/jobs/*"]
     },
     "allowImportingTsExtensions": true,
     "noEmit": true,

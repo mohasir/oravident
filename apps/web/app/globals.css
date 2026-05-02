@@ -1,0 +1,75 @@
+:root {
+  color-scheme: light;
+  --background: #f7f8fa;
+  --foreground: #17202a;
+  --muted: #5d6673;
+  --panel: #ffffff;
+  --accent: #0f766e;
+  --accent-soft: #d9f3ef;
+  --border: #dde3ea;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.12), transparent 36rem),
+    var(--background);
+  color: var(--foreground);
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+}
+
+.intro {
+  width: min(100%, 48rem);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: clamp(1.5rem, 4vw, 3rem);
+  box-shadow: 0 24px 80px rgba(23, 32, 42, 0.08);
+}
+
+.eyebrow {
+  width: fit-content;
+  margin: 0 0 1rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  padding: 0.35rem 0.65rem;
+}
+
+h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-size: clamp(2.25rem, 4rem, 4rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.lead {
+  max-width: 38rem;
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
