@@ -1,0 +1,24 @@
+/* ============================================================
+   SASS APP — Global Styles
+   ============================================================
+   @import "tailwindcss" must stay here (resolved from this
+   app's node_modules by @tailwindcss/postcss).
+
+   @resas/ui/theme handles everything else:
+     ✓ shadcn/tailwind.css tokens
+     ✓ tw-animate-css animations
+     ✓ @source scan of packages/ui/src/
+     ✓ Brand tokens + dark mode + @theme block
+   ============================================================ */
+
+@import 'tailwindcss';
+@import '@repo/ui/theme';
+
+/*
+  App-specific brand overrides (uncomment to customize for this app):
+
+  :root {
+    --brand-primary:     #7C3AED;
+    --brand-primary-fg:  oklch(0.98 0.01 280);
+  }
+*/

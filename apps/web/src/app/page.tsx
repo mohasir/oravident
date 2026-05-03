@@ -1,3 +1,5 @@
+import { Button } from "@repo/ui";
+
 export default function HomePage() {
   return (
     <main className="shell">
@@ -8,6 +10,10 @@ export default function HomePage() {
           Next.js ya esta inicializado dentro del monorepo. Desde aqui podemos
           conectar autenticacion, agenda, pacientes y el API existente.
         </p>
+        <div className="mt-6 flex gap-3">
+          <Button>Comenzar</Button>
+          <Button variant="outline">Ver documentación</Button>
+        </div>
       </section>
     </main>
   );
