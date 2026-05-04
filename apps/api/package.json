@@ -26,12 +26,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/guards": "workspace:*",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dayjs": "^1.11.20",
     "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "node-cron": "^4.2.1",
@@ -40,8 +42,7 @@
     "postgres": "^3.4.9",
     "swagger-ui-express": "^5.0.1",
     "yamljs": "^0.3.0",
-    "zod": "^4.3.6",
-    "@repo/guards": "workspace:*"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

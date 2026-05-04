@@ -129,11 +129,6 @@ export class AuthService {
     });
 
     // TODO: Enviar email con el token original (sin hashear)
-    console.log(`Reset token for ${data.email}: ${token}`);
-
-    return {
-      token,
-    };
   }
 
   async resetPassword(data: ResetPasswordDTO) {
@@ -205,7 +200,24 @@ export class AuthService {
       '30m',
     );
 
-    return { accessToken };
+    const newRefreshToken = signRefreshToken({ id: user.id }, '7d');
+    const newHashedToken = hashToken(newRefreshToken);
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // Revoke old session and create new one atomically — prevents reuse of stolen tokens
+    await this.txManager.run(async (tx) => {
+      await this.userSessionsRepository.revokeByToken(hashedToken, tx);
+      await this.userSessionsRepository.create({
+        userId: user.id,
+        token: newHashedToken,
+        userAgent: session.userAgent,
+        ipAddress: session.ipAddress,
+        expiresAt,
+      });
+    });
+
+    return { accessToken, refreshToken: newRefreshToken };
   }
 
   async logout(refreshToken: string) {

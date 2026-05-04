@@ -7,7 +7,8 @@
       "users": "Usuarios",
       "doctors": "Doctores",
       "receptionists": "Recepcionistas",
-      "admins": "Administradores",
+      "owners": "Propietarios",
+      "allUsers": "Todos los usuarios",
       "invitations": "Invitaciones",
       "roles": "Roles",
       "branches": "Sucursales",
@@ -32,10 +33,37 @@
       "account": "Mi cuenta",
       "settings": "Configuración",
       "language": "Idioma"
+    },
+    "table": {
+      "emptyMessage": "Sin resultados.",
+      "pageOf": "Página {{page}} de {{totalPages}}",
+      "next": "Siguiente",
+      "previous": "Anterior",
+      "actions": "Acciones",
+      "searchPlaceholder": "Filtrar..."
     }
   },
   "profile": {
     "title": "Pagina del perfil"
+  },
+  "user": {
+    "title": "Usuarios",
+    "description": "Administra los usuarios de la plataforma y sus permisos.",
+    "addUser": "Agregar usuario",
+    "copyId": "Copiar ID",
+    "editUser": "Editar usuario",
+    "deactivate": "Desactivar",
+    "deactivateUser": "Desactivar usuario",
+    "confirmDeactivate": "¿Estás seguro que deseas desactivar a {{email}}?",
+    "email": "Correo electrónico",
+    "role": "Rol",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "createdAt": "Creado el",
+    "platformAdmin": "Administrador de plataforma",
+    "filterEmail": "Filtrar por correo electrónico...",
+    "noUsers": "No se encontraron usuarios."
   },
   "auth": {
     "forgotPassword": {

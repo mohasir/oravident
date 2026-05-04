@@ -13,7 +13,7 @@ export const Topbar = ({ notifications }: TopbarProps) => {
   const clinic = getMockClinic();
 
   return (
-    <div className="flex h-14 items-center justify-between px-4">
+    <div className="bg-brand-neutral/80 flex h-14 items-center justify-between px-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger />
         <ClinicBadge name={clinic.name} imageSrc={logoClinic} />

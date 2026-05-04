@@ -77,6 +77,14 @@ export class AuthController extends BaseController {
 
     const tokens = await this.authService.refreshToken(refreshToken);
 
+    // Replace old cookie with the new refresh token — old one is already revoked in DB
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return this.ok(res, 'Token refreshed', {
       accessToken: tokens.accessToken,
     });

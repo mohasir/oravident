@@ -31,7 +31,7 @@ export default function TranslationsProvider({
       newI18n = clientI18n;
     } else {
       newI18n = createInstance();
-      
+
       newI18n
         .use(initReactI18next)
         .use(

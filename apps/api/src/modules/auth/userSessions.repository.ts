@@ -1,15 +1,18 @@
-import { Database, db } from '@/core/db/index.ts';
+import { Database } from '@/core/db/index.ts';
 import { BaseRepository } from '@/core/shared/BaseRepository.ts';
-import { UserSessionsDTO, UserSessionFiltersDTO } from '@modules/auth/auth.schema.ts';
-import { userSessions } from '@/core/db/schema/user_sessions.ts';
-import { eq, and, isNull } from 'drizzle-orm';
+import {
+  UserSessionsDTO,
+  UserSessionFiltersDTO,
+} from '@modules/auth/auth.schema.ts';
+import { userSessions, UserSessionSelect } from '@/core/db/schema/user_sessions.ts';
+import { eq } from 'drizzle-orm';
 
 export class UserSessionsRepository extends BaseRepository {
   constructor(db: Database) {
     super(db);
   }
 
-  async findOne(filters: UserSessionFiltersDTO) {
+  async findOne<T = UserSessionSelect>(filters: UserSessionFiltersDTO): Promise<T | null> {
     const result = await this.db.query.userSessions.findFirst({
       where: (u, { eq, and }) => {
         const conditions = [];
@@ -24,7 +27,7 @@ export class UserSessionsRepository extends BaseRepository {
       },
     });
 
-    return result;
+    return (result as T) ?? null;
   }
 
   async exists(filters: UserSessionFiltersDTO): Promise<boolean> {
@@ -55,8 +58,9 @@ export class UserSessionsRepository extends BaseRepository {
     return session;
   }
 
-  async revokeByToken(token: string) {
-    await this.db
+  async revokeByToken(token: string, tx?: Database) {
+    const conn = tx ?? this.db;
+    await conn
       .update(userSessions)
       .set({
         isValid: false,

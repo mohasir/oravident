@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { useCan } from '../hooks/useCan';
-import type { PermissionCode } from '../data/permissions';
-import type { RoleType } from '../data/roles';
+import type { PermissionType } from '../core/permissions';
+import type { RoleType } from '../constants/roles';
 
 interface CanProps {
-  allowed?:     PermissionCode[];
-  allRequired?: PermissionCode[];
+  allowed?:     PermissionType[];
+  allRequired?: PermissionType[];
   roles?:       RoleType[];
   fallback?:    ReactNode;
   children:     ReactNode;

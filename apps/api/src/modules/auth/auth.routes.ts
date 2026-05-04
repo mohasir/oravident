@@ -10,12 +10,22 @@ import {
   changePasswordRequestSchema,
   updateProfileRequestSchema,
 } from '@modules/auth/auth.schema.ts';
+import {
+  loginLimiter,
+  forgotPasswordLimiter,
+  refreshLimiter,
+} from '@/middlewares/rateLimit.ts';
 
 const router: Router = Router();
 
 // --- Public Routes ---
 
-router.post('/login', validateSchema(loginRequestSchema), authController.login);
+router.post(
+  '/login',
+  loginLimiter,
+  validateSchema(loginRequestSchema),
+  authController.login,
+);
 router.post(
   '/register',
   validateSchema(registerRequestSchema),
@@ -23,6 +33,7 @@ router.post(
 );
 router.post(
   '/forgot-password',
+  forgotPasswordLimiter,
   validateSchema(forgotPasswordRequestSchema),
   authController.forgotPassword,
 );
@@ -31,7 +42,7 @@ router.post(
   validateSchema(resetPasswordRequestSchema),
   authController.resetPassword,
 );
-router.post('/refresh', authController.refreshToken);
+router.post('/refresh', refreshLimiter, authController.refreshToken);
 router.post('/logout', authController.logout);
 
 // --- Protected Routes ---

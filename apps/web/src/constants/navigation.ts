@@ -70,6 +70,12 @@ export const ADMIN_MENU: NavGroup[] = [
         icon: 'users',
         children: [
           {
+            label: 'common.menu.allUsers',
+            href: '/admin/users',
+            icon: 'users',
+            guard: [PERMISSIONS.LIST_USER],
+          },
+          {
             label: 'common.menu.doctors',
             href: '/admin/workers/doctors',
             icon: 'doctor',
@@ -82,8 +88,8 @@ export const ADMIN_MENU: NavGroup[] = [
             guard: [PERMISSIONS.LIST_WORKER],
           },
           {
-            label: 'common.menu.admins',
-            href: '/admin/users',
+            label: 'common.menu.owners',
+            href: '/admin/clinic-owners',
             icon: 'admin',
             guard: [PERMISSIONS.LIST_USER],
           },

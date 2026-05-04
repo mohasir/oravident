@@ -7,7 +7,8 @@
       "users": "Users",
       "doctors": "Doctors",
       "receptionists": "Receptionists",
-      "admins": "Admins",
+      "owners": "Owners",
+      "allUsers": "All users",
       "invitations": "Invitations",
       "roles": "Roles",
       "branches": "Branches",
@@ -32,10 +33,37 @@
       "account": "My account",
       "settings": "Settings",
       "language": "Language"
+    },
+    "table": {
+      "emptyMessage": "No results.",
+      "pageOf": "Page {{page}} of {{totalPages}}",
+      "next": "Next",
+      "previous": "Previous",
+      "actions": "Actions",
+      "searchPlaceholder": "Filter..."
     }
   },
   "profile": {
     "title": "Profile page"
+  },
+  "user": {
+    "title": "Users",
+    "description": "Manage platform users and their permissions.",
+    "addUser": "Add user",
+    "copyId": "Copy ID",
+    "editUser": "Edit user",
+    "deactivate": "Deactivate",
+    "deactivateUser": "Deactivate user",
+    "confirmDeactivate": "Are you sure you want to deactivate {{email}}?",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created At",
+    "platformAdmin": "Platform Admin",
+    "filterEmail": "Filter by email...",
+    "noUsers": "No users found."
   },
   "auth": {
     "forgotPassword": {

@@ -11,10 +11,10 @@ export function AdminLayoutContainer({
     <TooltipProvider>
       <SidebarProvider className="bg-brand-neutral">
         <AppSidebar />
-        <SidebarInset className="bg-brand-neutral overflow-y-auto">
+        <SidebarInset className="bg-brand-neutral flex flex-col h-screen overflow-hidden">
           <Topbar />
-          <div className="p-4">
-            <Card>
+          <div className="px-4 pb-8 flex-1 overflow-y-auto">
+            <Card className="min-h-full">
               <div className="container p-8 md:p-12">{children}</div>
             </Card>
           </div>
