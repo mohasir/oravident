@@ -18,7 +18,7 @@ export {
   InputGroupText,
   InputGroupInput,
   InputGroupTextarea,
-} from './ui/input-group';
+} from './ui/inputGroup';
 
 // Components — Textarea
 export { Textarea } from './ui/textarea';
@@ -33,7 +33,12 @@ export {
 } from './ui/card';
 
 // Components — Alert (primitives)
-export { AlertPrimitive, AlertTitle, AlertDescription, AlertAction } from './ui/alert/alert';
+export {
+  AlertPrimitive,
+  AlertTitle,
+  AlertDescription,
+  AlertAction,
+} from './ui/alert/alert';
 // Components — Alert (compound)
 export { Alert } from './components/alert';
 
@@ -43,3 +48,80 @@ export { Field, FieldLabel, FieldError } from './ui/field/field';
 // Components — Password Input
 export { PasswordInput } from './components/passwordInput';
 export { FormField } from './components/formField';
+
+// Components — Dropdown Menu
+export {
+  DropdownMenu,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from './ui/dropdownMenu';
+
+// Components — Sheet
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+} from './ui/sheet';
+
+// Components — Skeleton
+export { Skeleton } from './ui/skeleton';
+
+// Components — Tooltip
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
+
+// Components — Sidebar
+export {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInput,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSkeleton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
+} from './ui/sidebar';
+
+// Components — Sidebar
+export {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './ui/collapsible';

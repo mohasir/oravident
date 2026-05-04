@@ -2,11 +2,11 @@ import * as z from 'zod';
 
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, { message: 'resetPassword.validation.minPassword' }),
-    confirmPassword: z.string().min(1, { message: 'resetPassword.validation.requiredConfirm' }),
+    password: z.string().min(8, { message: 'auth.resetPassword.validation.minPassword' }),
+    confirmPassword: z.string().min(1, { message: 'auth.resetPassword.validation.requiredConfirm' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'resetPassword.validation.passwordsMismatch',
+    message: 'auth.resetPassword.validation.passwordsMismatch',
     path: ['confirmPassword'],
   });
 

@@ -1,4 +1,4 @@
-import { AuthLayoutContainer } from '@/features/auth/components/AuthLayoutContainer';
+import { AuthLayoutContainer } from '@/components/Layouts';
 
 export default function AuthLayout({
   children,

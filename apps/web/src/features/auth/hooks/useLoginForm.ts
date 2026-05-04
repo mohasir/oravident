@@ -3,18 +3,21 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 // import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { loginSchema, type LoginSchema } from '../schemas/login.schema';
+import {
+  loginSchema,
+  type LoginSchema,
+} from '@/features/auth/schemas/login.schema';
 import { DEFAULT_REDIRECT_HOME } from '@/lib/auth/navigation';
 import type { Route } from 'next';
 
 export function useLoginForm() {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation('admin');
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const callbackUrl = searchParams.get('callbackUrl');
+  const callbackUrl = searchParams?.get('callbackUrl');
   const prefilledEmail =
-    searchParams.get('email') || searchParams.get('usernameOrEmail') || '';
+    searchParams?.get('email') || searchParams?.get('usernameOrEmail') || '';
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -51,7 +54,10 @@ export function useLoginForm() {
       } */
     } catch (e) {
       form.setError('root', {
-        message: t('login.errors.generic', 'Algo salió mal, intenta de nuevo'),
+        message: t(
+          'auth.login.errors.generic',
+          'Algo salió mal, intenta de nuevo',
+        ),
       });
     }
   };

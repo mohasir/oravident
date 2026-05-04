@@ -1,7 +1,7 @@
 'use client';
 
 import { Alert, Button, PasswordInput, FormField } from '@repo/ui';
-import { useResetPasswordForm } from '../hooks/useResetPasswordForm';
+import { useResetPasswordForm } from '@/features/auth/hooks/useResetPasswordForm';
 
 export function ResetPasswordForm() {
   const { register, onSubmit, errors, isSubmitting, token, t } =
@@ -11,10 +11,10 @@ export function ResetPasswordForm() {
     return (
       <div className="space-y-1">
         <h1 className="text-2xl font-bold text-primary">
-          {t('resetPassword.invalidTitle')}
+          {t('auth.resetPassword.invalidTitle')}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {t('resetPassword.invalidDescription')}
+          {t('auth.resetPassword.invalidDescription')}
         </p>
       </div>
     );
@@ -25,10 +25,10 @@ export function ResetPasswordForm() {
       {/* Header */}
       <div className="space-y-1 mb-4">
         <h1 className="text-2xl font-bold text-primary">
-          {t('resetPassword.title')}
+          {t('auth.resetPassword.title')}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {t('resetPassword.description')}
+          {t('auth.resetPassword.description')}
         </p>
       </div>
 
@@ -37,7 +37,7 @@ export function ResetPasswordForm() {
         {errors.root && <Alert.error>{errors.root.message}</Alert.error>}
 
         <FormField
-          label={t('resetPassword.passwordLabel')}
+          label={t('auth.resetPassword.passwordLabel')}
           required
           htmlFor="password"
           error={
@@ -46,7 +46,7 @@ export function ResetPasswordForm() {
         >
           <PasswordInput
             id="password"
-            placeholder={t('resetPassword.passwordPlaceholder')}
+            placeholder={t('auth.resetPassword.passwordPlaceholder')}
             required
             aria-invalid={!!errors.password}
             {...register('password')}
@@ -54,7 +54,7 @@ export function ResetPasswordForm() {
         </FormField>
 
         <FormField
-          label={t('resetPassword.confirmPasswordLabel')}
+          label={t('auth.resetPassword.confirmPasswordLabel')}
           required
           htmlFor="confirmPassword"
           error={
@@ -65,7 +65,7 @@ export function ResetPasswordForm() {
         >
           <PasswordInput
             id="confirmPassword"
-            placeholder={t('resetPassword.confirmPasswordPlaceholder')}
+            placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
             required
             aria-invalid={!!errors.confirmPassword}
             {...register('confirmPassword')}
@@ -78,7 +78,7 @@ export function ResetPasswordForm() {
           fullWidth
           disabled={isSubmitting}
         >
-          {t('resetPassword.submitButton')}
+          {t('auth.resetPassword.submitButton')}
         </Button>
       </form>
     </>

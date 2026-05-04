@@ -1,10 +1,10 @@
-import { createInstance, Resource } from 'i18next';
+import { createInstance, Resource, i18n, TFunction } from 'i18next';
 import { initReactI18next } from 'react-i18next/initReactI18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 import { cookies } from 'next/headers';
 import { i18nConfig, i18nNamespaces } from './config';
 
-export const initI18next = async (locale: string, namespaces: string[]) => {
+export const initI18next = async (locale: string, namespaces: string[]): Promise<i18n> => {
   const i18nInstance = createInstance();
 
   await i18nInstance
@@ -32,7 +32,7 @@ export async function getTranslation(
   locale: string,
   namespaces: string | string[] = 'common',
   options: { keyPrefix?: string } = {}
-) {
+): Promise<{ t: TFunction; i18n: i18n }> {
   const i18nextInstance = await initI18next(
     locale,
     Array.isArray(namespaces) ? namespaces : [namespaces]
@@ -40,7 +40,7 @@ export async function getTranslation(
   return {
     t: i18nextInstance.getFixedT(
       locale,
-      Array.isArray(namespaces) ? namespaces[0] : namespaces,
+      Array.isArray(namespaces) ? (namespaces[0] ?? 'common') : (namespaces ?? 'common'),
       options.keyPrefix
     ),
     i18n: i18nextInstance,

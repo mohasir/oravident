@@ -1,4 +1,4 @@
-export const i18nNamespaces = ['common', 'auth', 'booking'];
+export const i18nNamespaces = ['common', 'public', 'admin'];
 
 export const i18nConfig = {
   locales: ['es', 'en'],

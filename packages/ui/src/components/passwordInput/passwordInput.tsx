@@ -8,7 +8,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
   InputGroupButton,
-} from '../../ui/input-group';
+} from '../../ui/inputGroup';
 import { cn } from '@repo/ui/utils';
 
 export const PasswordInput = forwardRef<

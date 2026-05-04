@@ -14,6 +14,8 @@
 @import 'tailwindcss';
 @import '@repo/ui/theme';
 
+@source "../";
+
 /*
   App-specific brand overrides (uncomment to customize for this app):
 

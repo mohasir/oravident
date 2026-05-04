@@ -1,10 +1,10 @@
 import * as z from 'zod';
 
 export const loginSchema = z.object({
-  email: z.email({ message: 'login.validation.invalidEmail' }),
+  email: z.email({ message: 'auth.login.validation.invalidEmail' }),
   password: z
     .string()
-    .min(1, { message: 'login.validation.requiredPassword' }),
+    .min(1, { message: 'auth.login.validation.requiredPassword' }),
   remember: z.boolean().optional(),
 });
 

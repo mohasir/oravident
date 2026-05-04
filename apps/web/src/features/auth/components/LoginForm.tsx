@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { Controller } from 'react-hook-form';
 import {
   Alert,
-  AlertDescription,
   Button,
   Input,
   PasswordInput,
   Checkbox,
   FormField,
 } from '@repo/ui';
-import { useLoginForm } from '../hooks/useLoginForm';
+import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
 
 export function LoginForm() {
   const { form, register, onSubmit, errors, t } = useLoginForm();
@@ -20,9 +19,9 @@ export function LoginForm() {
     <>
       {/* Header */}
       <div className="space-y-1 mb-4">
-        <h1 className="text-2xl font-bold text-primary">{t('login.title')}</h1>
+        <h1 className="text-2xl font-bold text-primary">{t('auth.login.title')}</h1>
         <p className="text-sm text-muted-foreground">
-          {t('login.description')}
+          {t('auth.login.description')}
         </p>
       </div>
 
@@ -32,7 +31,7 @@ export function LoginForm() {
 
         {/* Email */}
         <FormField
-          label={t('login.emailLabel')}
+          label={t('auth.login.emailLabel')}
           required
           htmlFor="email"
           error={errors.email?.message ? t(errors.email.message) : undefined}
@@ -40,7 +39,7 @@ export function LoginForm() {
           <Input
             id="email"
             type="email"
-            placeholder={t('login.emailPlaceholder')}
+            placeholder={t('auth.login.emailPlaceholder')}
             required
             aria-invalid={!!errors.email}
             {...register('email')}
@@ -48,7 +47,7 @@ export function LoginForm() {
         </FormField>
 
         <FormField
-          label={t('login.passwordLabel')}
+          label={t('auth.login.passwordLabel')}
           required
           htmlFor="password"
           error={
@@ -57,7 +56,7 @@ export function LoginForm() {
         >
           <PasswordInput
             id="password"
-            placeholder={t('login.passwordPlaceholder')}
+            placeholder={t('auth.login.passwordPlaceholder')}
             required
             aria-invalid={!!errors.password}
             {...register('password')}
@@ -82,7 +81,7 @@ export function LoginForm() {
               htmlFor="remember"
               className="text-sm cursor-pointer select-none text-primary"
             >
-              {t('login.rememberMe')}
+              {t('auth.login.rememberMe')}
             </label>
           </div>
 
@@ -92,13 +91,13 @@ export function LoginForm() {
             color="primary"
             className="text-sm px-0 py-0 h-auto font-medium"
           >
-            <Link href="/forgot-password">{t('login.forgotPassword')}</Link>
+            <Link href="/forgot-password">{t('auth.login.forgotPassword')}</Link>
           </Button>
         </div>
 
         {/* Submit */}
         <Button className="mt-10" type="submit" fullWidth>
-          {t('login.submitButton')}
+          {t('auth.login.submitButton')}
         </Button>
       </form>
     </>

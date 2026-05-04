@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "about": "Nosotros",
+    "contact": "Contacto"
+  },
+  "landing": {
+    "eyebrow": "OraviDent",
+    "title": "Tu clínica, perfectamente organizada.",
+    "description": "Gestiona citas, pacientes y servicios desde un solo lugar. Simplifica tu práctica dental con tecnología moderna.",
+    "cta": {
+      "primary": "Comenzar gratis",
+      "secondary": "Saber más"
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Alert, Button, Input, FormField } from '@repo/ui';
-import { useForgotPasswordForm } from '../hooks/useForgotPasswordForm';
+import { useForgotPasswordForm } from '@/features/auth/hooks/useForgotPasswordForm';
 
 export function ForgotPasswordForm() {
   const { register, onSubmit, errors, isSubmitting, emailSent, t } =
@@ -13,10 +13,10 @@ export function ForgotPasswordForm() {
       <>
         <div className="space-y-1 mb-4">
           <h1 className="text-2xl font-bold text-primary">
-            {t('forgotPassword.successTitle')}
+            {t('auth.forgotPassword.successTitle')}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {t('forgotPassword.successDescription')}
+            {t('auth.forgotPassword.successDescription')}
           </p>
         </div>
         <Button
@@ -25,7 +25,7 @@ export function ForgotPasswordForm() {
           color="primary"
           className="px-0 py-0 h-auto text-sm font-medium"
         >
-          <Link href="/login">{t('forgotPassword.backToLogin')}</Link>
+          <Link href="/login">{t('auth.forgotPassword.backToLogin')}</Link>
         </Button>
       </>
     );
@@ -36,10 +36,10 @@ export function ForgotPasswordForm() {
       {/* Header */}
       <div className="space-y-1 mb-4">
         <h1 className="text-2xl font-bold text-primary">
-          {t('forgotPassword.title')}
+          {t('auth.forgotPassword.title')}
         </h1>
         <p className="text-sm text-muted-foreground">
-          {t('forgotPassword.description')}
+          {t('auth.forgotPassword.description')}
         </p>
       </div>
 
@@ -48,7 +48,7 @@ export function ForgotPasswordForm() {
         {errors.root && <Alert.error>{errors.root.message}</Alert.error>}
 
         <FormField
-          label={t('forgotPassword.emailLabel')}
+          label={t('auth.forgotPassword.emailLabel')}
           required
           htmlFor="email"
           error={errors.email?.message ? t(errors.email.message) : undefined}
@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
           <Input
             id="email"
             type="email"
-            placeholder={t('forgotPassword.emailPlaceholder')}
+            placeholder={t('auth.forgotPassword.emailPlaceholder')}
             required
             aria-invalid={!!errors.email}
             {...register('email')}
@@ -69,7 +69,7 @@ export function ForgotPasswordForm() {
           fullWidth
           disabled={isSubmitting}
         >
-          {t('forgotPassword.submitButton')}
+          {t('auth.forgotPassword.submitButton')}
         </Button>
       </form>
 
@@ -80,7 +80,7 @@ export function ForgotPasswordForm() {
           color="primary"
           className="px-0 py-0 h-auto text-sm font-medium"
         >
-          <Link href="/login">{t('forgotPassword.backToLogin')}</Link>
+          <Link href="/login">{t('auth.forgotPassword.backToLogin')}</Link>
         </Button>
       </div>
     </>

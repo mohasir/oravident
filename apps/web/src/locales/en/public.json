@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "about": "About",
+    "contact": "Contact"
+  },
+  "landing": {
+    "eyebrow": "OraviDent",
+    "title": "Your clinic, perfectly organized.",
+    "description": "Manage appointments, patients and services from one place. Simplify your dental practice with modern technology.",
+    "cta": {
+      "primary": "Get started free",
+      "secondary": "Learn more"
+    }
+  }
+}
