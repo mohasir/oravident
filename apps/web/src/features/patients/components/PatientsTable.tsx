@@ -14,16 +14,16 @@ import {
 import { Input } from '@repo/ui';
 import { useColumns } from './columns';
 import { DataTable, DataTablePagination } from '@/components/shared/DataTable';
-import { useServicesActions } from '../hooks/useServicesActions';
-import { useServicesQuery } from '../hooks/useServicesQuery';
+import { usePatientsActions } from '../hooks/usePatientsActions';
+import { usePatientsQuery } from '../hooks/usePatientsQuery';
 
-import type { Service } from '../types';
+import type { Patient } from '../types';
 
-interface ServicesTableProps {
-  onEdit?: (service: Service) => void;
+interface PatientsTableProps {
+  onEdit?: (patient: Patient) => void;
 }
 
-export function ServicesTable({ onEdit }: ServicesTableProps) {
+export function PatientsTable({ onEdit }: PatientsTableProps) {
   const { t } = useTranslation('admin');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -32,17 +32,17 @@ export function ServicesTable({ onEdit }: ServicesTableProps) {
     pageSize: 10,
   });
 
-  const { handlers } = useServicesActions({ onEdit });
+  const { handlers } = usePatientsActions({ onEdit });
   const columns = useColumns(handlers);
 
-  const { data, isLoading } = useServicesQuery({
+  const { data, isLoading } = usePatientsQuery({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
   });
-  const services = data?.data?.items ?? [];
+  const patients = data?.data?.items ?? [];
 
   const table = useReactTable({
-    data: services,
+    data: patients,
     columns,
     pageCount: data?.data?.pagination?.totalPages ?? -1,
     manualPagination: true,
@@ -60,10 +60,10 @@ export function ServicesTable({ onEdit }: ServicesTableProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Input
-          placeholder={t('service.index.table.filterName', 'Filter by name...')}
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          placeholder={t('patient.index.table.filterName')}
+          value={(table.getColumn('fullName')?.getFilterValue() as string) ?? ''}
           onChange={(e) =>
-            table.getColumn('name')?.setFilterValue(e.target.value)
+            table.getColumn('fullName')?.setFilterValue(e.target.value)
           }
           className="max-w-sm"
         />
@@ -73,7 +73,7 @@ export function ServicesTable({ onEdit }: ServicesTableProps) {
         table={table}
         isLoading={isLoading}
         columnCount={columns.length}
-        emptyMessage={t('service.index.table.empty', 'No services found.')}
+        emptyMessage={t('patient.index.table.empty')}
       />
 
       <DataTablePagination

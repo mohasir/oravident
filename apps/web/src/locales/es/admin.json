@@ -37,6 +37,7 @@
     "table": {
       "emptyMessage": "Sin resultados.",
       "pageOf": "Página {{page}} de {{totalPages}}",
+      "totalRecords": "Total: {{total}} registros",
       "next": "Siguiente",
       "previous": "Anterior",
       "actions": "Acciones",
@@ -169,6 +170,69 @@
       },
       "submit": "Crear servicio",
       "submitEdit": "Actualizar servicio",
+      "error": "Algo salió mal"
+    }
+  },
+  "patient": {
+    "index": {
+      "title": "Pacientes",
+      "description": "Administra el registro de tus pacientes y su historial.",
+      "add": "Agregar paciente",
+      "table": {
+        "name": "Nombre completo",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "filterName": "Filtrar por nombre...",
+        "empty": "No se encontraron pacientes."
+      },
+      "actions": {
+        "create": "Agregar paciente",
+        "edit": "Editar paciente",
+        "delete": "Desactivar",
+        "deleteTitle": "Desactivar paciente",
+        "confirmDelete": "¿Estás seguro que deseas desactivar a {{name}}?",
+        "deleteSuccess": "Paciente desactivado con éxito",
+        "deleteError": "Error al desactivar el paciente"
+      }
+    },
+    "create": {
+      "title": "Registrar nuevo paciente",
+      "description": "Completa los datos personales y de contacto del paciente.",
+      "success": "Paciente registrado con éxito"
+    },
+    "edit": {
+      "title": "Editar paciente",
+      "description": "Actualiza la información del paciente.",
+      "success": "Paciente actualizado con éxito"
+    },
+    "form": {
+      "fields": {
+        "firstName": { "label": "Nombre", "placeholder": "Juan" },
+        "secondName": { "label": "Segundo nombre", "placeholder": "Alexander" },
+        "lastName": { "label": "Primer apellido", "placeholder": "Doe" },
+        "secondLastName": { "label": "Segundo apellido", "placeholder": "Smith" },
+        "email": { "label": "Correo electrónico", "placeholder": "juan.doe@ejemplo.com" },
+        "phone": { "label": "Teléfono", "placeholder": "+505 8888 0000" },
+        "idNumber": { "label": "Número de cédula/ID", "placeholder": "001-150590-0045A" },
+        "dateOfBirth": { "label": "Fecha de nacimiento" },
+        "gender": { 
+          "label": "Género",
+          "options": {
+            "male": "Masculino",
+            "female": "Femenino",
+            "other": "Otro"
+          }
+        },
+        "primaryBranchId": { "label": "Sucursal principal" },
+        "address": { "label": "Dirección", "placeholder": "Dirección completa..." },
+        "medicalNotes": { "label": "Notas médicas / Antecedentes", "placeholder": "Alergias, condiciones, etc..." }
+      },
+      "submit": "Registrar paciente",
+      "submitEdit": "Actualizar paciente",
       "error": "Algo salió mal"
     }
   },

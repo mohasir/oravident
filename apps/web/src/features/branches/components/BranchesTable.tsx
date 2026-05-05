@@ -27,24 +27,33 @@ export function BranchesTable({ onEdit }: BranchesTableProps) {
   const { t } = useTranslation('admin');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   const { handlers } = useBranchesActions({ onEdit });
   const columns = useColumns(handlers);
 
-  const { data, isLoading } = useBranchesQuery();
+  const { data, isLoading } = useBranchesQuery({
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+  });
   const branches = data?.data?.items ?? [];
 
   const table = useReactTable({
     data: branches,
     columns,
+    pageCount: data?.data?.pagination?.totalPages ?? -1,
+    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    state: { sorting, columnFilters },
-    initialState: { pagination: { pageSize: 10 } },
+    onPaginationChange: setPagination,
+    state: { sorting, columnFilters, pagination },
   });
 
   return (
@@ -67,7 +76,10 @@ export function BranchesTable({ onEdit }: BranchesTableProps) {
         emptyMessage={t('branch.index.table.empty')}
       />
 
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        table={table}
+        total={data?.data?.pagination?.total}
+      />
     </div>
   );
 }

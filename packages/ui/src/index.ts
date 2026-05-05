@@ -173,3 +173,35 @@ export {
 
 // Components — Sonner
 export { Toaster, toast } from './ui/sonner';
+
+// Components - Select
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+
+// Components - Popover
+export {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from './ui/popover';
+
+// Components - Calendar
+export { Calendar, CalendarDayButton } from './ui/calendar';
+
+// Components - DatePicker
+export { DatePicker } from './components/datePicker';
+

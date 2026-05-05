@@ -1,0 +1,11 @@
+export * from './types';
+export { PatientsPage as PatientsPageIndex } from './components/PatientsPage';
+export * from './components/PatientsTable';
+export * from './components/PatientForm';
+export * from './components/CreatePatientDialog';
+export * from './components/EditPatientDialog';
+export * from './services/patients.service';
+export * from './hooks/usePatientsQuery';
+export * from './hooks/usePatientsActions';
+export * from './hooks/usePatientForm';
+export * from './schemas/patient.schema';
