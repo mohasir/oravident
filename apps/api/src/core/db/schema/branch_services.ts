@@ -2,6 +2,7 @@ import {
   pgTable,
   uuid,
   numeric,
+  boolean,
   uniqueIndex,
   timestamp,
 } from 'drizzle-orm/pg-core';
@@ -23,6 +24,7 @@ export const branchServices = pgTable(
       .notNull()
       .references(() => services.id, { onDelete: 'cascade' }),
     priceOverride: numeric('price_override', { precision: 10, scale: 2 }),
+    isActive: boolean('is_active').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
