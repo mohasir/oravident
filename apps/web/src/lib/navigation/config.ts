@@ -32,10 +32,6 @@ export const RECEPTIONIST_MENU_CONFIG: NavGroup[] = [
     group: 'common.menu.groups.agenda',
     items: [NAV_ITEMS.APPOINTMENTS, NAV_ITEMS.PATIENTS],
   },
-  {
-    group: 'common.menu.groups.settings',
-    items: [NAV_ITEMS.PROFILE],
-  },
 ];
 
 export const SUPERADMIN_MENU_CONFIG: NavGroup[] = [

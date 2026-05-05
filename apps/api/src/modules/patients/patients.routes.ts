@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { patientsController } from '@/bootstrap/container.ts';
 import { validateSchema } from '@middlewares/validateSchema.ts';
-import { guardMiddleware } from '@middlewares/guard.ts';
-import { PERMISSIONS } from '@repo/guards';
+import { guardMiddleware, roleGuardMiddleware } from '@middlewares/guard.ts';
+import { PERMISSIONS, ROLES } from '@repo/guards';
 import {
   createPatientRequestSchema,
+  createPatientSuperadminRequestSchema,
   updatePatientRequestSchema,
   getPatientRequestSchema,
   getPatientsRequestSchema,
@@ -21,6 +22,13 @@ router.post(
   guardMiddleware([PERMISSIONS.CREATE_PATIENT]),
   validateSchema(createPatientRequestSchema),
   patientsController.createPatient,
+);
+
+router.post(
+  '/clinic/:clinicId',
+  roleGuardMiddleware([ROLES.SUPERADMIN]),
+  validateSchema(createPatientSuperadminRequestSchema),
+  patientsController.createPatientForSuperadmin,
 );
 
 router.get(
@@ -52,3 +60,4 @@ router.delete(
 );
 
 export default router;
+

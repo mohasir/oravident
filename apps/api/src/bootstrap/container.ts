@@ -86,7 +86,10 @@ export const workersService = new WorkersService(workersRepository);
 export const rolesService = new RolesService(rolesRepository);
 export const servicesService = new ServicesService(servicesRepository);
 export const branchesService = new BranchesService(branchesRepository);
-export const patientsService = new PatientsService(patientsRepository);
+export const patientsService = new PatientsService(
+  patientsRepository,
+  branchesRepository,
+);
 export const appointmentsService = new AppointmentsService(
   appointmentsRepository,
   branchesRepository,

@@ -14,7 +14,6 @@ import { Genders } from '@core/db/enums.ts';
 
 export const createPatientSchema = z
   .object({
-    clinicId: createIdSchema('clinicId'),
     primaryBranchId: createIdSchema('primaryBranchId').optional(),
     firstName: z.string().min(1).max(DB_LIMITS.NAME),
     secondName: z.string().max(DB_LIMITS.NAME).optional(),
@@ -30,9 +29,7 @@ export const createPatientSchema = z
   })
   .strict();
 
-export const updatePatientSchema = createPatientSchema
-  .omit({ clinicId: true })
-  .partial();
+export const updatePatientSchema = createPatientSchema.partial();
 
 export const patientFiltersSchema = z
   .object({
@@ -55,6 +52,13 @@ export const getPatientsQuerySchema = paginationQuerySchema.extend(
 // ==========================================
 
 export const createPatientRequestSchema = {
+  body: createPatientSchema,
+};
+
+export const createPatientSuperadminRequestSchema = {
+  params: z.object({
+    clinicId: createIdSchema('clinicId'),
+  }),
   body: createPatientSchema,
 };
 
@@ -91,6 +95,11 @@ export type GetPatientsQueryDTO = z.infer<typeof getPatientsQuerySchema>;
 export type CreatePatientRequest = TypedRequest<
   typeof createPatientRequestSchema
 >;
+
+export type CreatePatientSuperadminRequest = TypedRequest<
+  typeof createPatientSuperadminRequestSchema
+>;
+
 export type GetPatientsRequest = TypedRequest<typeof getPatientsRequestSchema>;
 export type UpdatePatientRequest = TypedRequest<
   typeof updatePatientRequestSchema
@@ -99,3 +108,4 @@ export type GetPatientRequest = TypedRequest<typeof getPatientRequestSchema>;
 export type DeletePatientRequest = TypedRequest<
   typeof deletePatientRequestSchema
 >;
+

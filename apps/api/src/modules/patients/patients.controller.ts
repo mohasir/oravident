@@ -8,12 +8,15 @@ import {
 } from '@modules/patients/patients.resource.ts';
 import {
   CreatePatientRequest,
+  CreatePatientSuperadminRequest,
   GetPatientsRequest,
   GetPatientRequest,
   UpdatePatientRequest,
   DeletePatientRequest,
+  CreatePatientDTO,
 } from '@modules/patients/patients.schema.ts';
 import { validateRequest } from '@common/utils/request.ts';
+import { ApiError, ErrorCodes } from '@core/errors/index.ts';
 
 @CatchAsync
 export class PatientsController extends BaseController {
@@ -23,7 +26,29 @@ export class PatientsController extends BaseController {
 
   async createPatient(req: CreatePatientRequest, res: Response) {
     const { body } = validateRequest(req);
-    const result = await this.patientsService.create(body);
+    const tenantId = await this.resolveTenantId(req.tenantId);
+
+    return this.handleCreatePatient(res, body, tenantId);
+  }
+
+  async createPatientForSuperadmin(
+    req: CreatePatientSuperadminRequest,
+    res: Response,
+  ) {
+    const { body, params } = validateRequest(req);
+    return this.handleCreatePatient(res, body, params.clinicId);
+  }
+
+  private async handleCreatePatient(
+    res: Response,
+    body: CreatePatientDTO,
+    clinicId?: string | null,
+  ) {
+    if (!clinicId) {
+      throw new ApiError('Tenant required', 403, ErrorCodes.auth.FORBIDDEN);
+    }
+
+    const result = await this.patientsService.create(body, clinicId);
 
     return this.created(
       res,
@@ -34,8 +59,9 @@ export class PatientsController extends BaseController {
 
   async getPatients(req: GetPatientsRequest, res: Response) {
     const { query } = validateRequest(req);
+    const tenantId = await this.resolveTenantId(req.tenantId);
 
-    const result = await this.patientsService.getAllPatients(query);
+    const result = await this.patientsService.getAllPatients(query, tenantId);
 
     return this.ok(res, 'Patients retrieved successfully', {
       ...result,
@@ -45,9 +71,10 @@ export class PatientsController extends BaseController {
 
   async getPatient(req: GetPatientRequest, res: Response) {
     const { params } = validateRequest(req);
+    const tenantId = await this.resolveTenantId(req.tenantId);
     const { id } = params;
 
-    const result = await this.patientsService.getPatientById(id);
+    const result = await this.patientsService.getPatientById(id, tenantId);
 
     return this.ok(
       res,
@@ -58,9 +85,10 @@ export class PatientsController extends BaseController {
 
   async updatePatient(req: UpdatePatientRequest, res: Response) {
     const { params, body } = validateRequest(req);
+    const tenantId = await this.resolveTenantId(req.tenantId);
     const { id } = params;
 
-    const result = await this.patientsService.updatePatient(id, body);
+    const result = await this.patientsService.updatePatient(id, body, tenantId);
 
     return this.ok(
       res,
@@ -71,10 +99,12 @@ export class PatientsController extends BaseController {
 
   async deletePatient(req: DeletePatientRequest, res: Response) {
     const { params } = validateRequest(req);
+    const tenantId = await this.resolveTenantId(req.tenantId);
     const { id } = params;
 
-    await this.patientsService.deletePatient(id);
+    await this.patientsService.deletePatient(id, tenantId);
 
     return this.noContent(res);
   }
 }
+
