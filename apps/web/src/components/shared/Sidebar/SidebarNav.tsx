@@ -2,7 +2,7 @@
 
 import { useTranslation } from 'react-i18next';
 import { useCan } from '@/lib/auth';
-import { ADMIN_MENU } from '@/constants/navigation';
+import { useNavigation } from '@/lib/navigation';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -16,7 +16,10 @@ import { NavMenuItem } from '@/components/shared/Sidebar/NavMenuItem';
 
 export const SidebarNav = () => {
   const { t } = useTranslation('admin');
-  const { can, isLoading } = useCan();
+  const { can, isLoading: isCanLoading } = useCan();
+  const { menu, isLoading: isNavLoading } = useNavigation();
+
+  const isLoading = isCanLoading || isNavLoading;
 
   if (isLoading) {
     return (
@@ -36,7 +39,7 @@ export const SidebarNav = () => {
 
   return (
     <>
-      {ADMIN_MENU.map((group, index) => {
+      {menu.map((group, index) => {
         if (!isGroupVisible(group, can)) return null;
 
         return (

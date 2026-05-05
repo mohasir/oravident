@@ -1,4 +1,4 @@
-import { NavItem, NavGroup } from '@/constants/navigation';
+import { NavItem, NavGroup } from '@/lib/navigation';
 
 export interface NavMenuItemProps {
   item: NavItem;

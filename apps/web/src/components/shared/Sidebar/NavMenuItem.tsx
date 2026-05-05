@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight, LayoutDashboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCan } from '@/lib/auth';
-import { IconMap } from '@/constants/navigation';
+import { IconMap } from '@/lib/navigation';
 import {
   Collapsible,
   CollapsibleContent,
