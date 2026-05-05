@@ -16,21 +16,27 @@ export class BranchesService {
 
   constructor(private branchesRepository: BranchesRepository) {}
 
-  async createBranch(data: CreateBranchDTO) {
-    const emailExists = await this.branchesRepository.exists({
-      email: data.email,
-    });
+  async createBranch(data: CreateBranchDTO, tenantId: string) {
+    if (data.email) {
+      const emailExists = await this.branchesRepository.exists({
+        email: data.email,
+      });
 
-    if (emailExists) {
-      throw new ApiError(
-        'Branch with this email already exists',
-        400,
-        ErrorCodes.validation.VALIDATION_ERROR,
-      );
+      if (emailExists) {
+        throw new ApiError(
+          'Branch with this email already exists',
+          400,
+          ErrorCodes.validation.VALIDATION_ERROR,
+        );
+      }
     }
 
     const slug = await this.resolveUniqueSlug(data.name);
-    const result = await this.branchesRepository.create({ ...data, slug });
+    const result = await this.branchesRepository.create({
+      ...data,
+      clinicId: tenantId,
+      slug,
+    });
 
     if (!result) {
       throw new ApiError(
@@ -43,8 +49,12 @@ export class BranchesService {
     return result;
   }
 
-  async getBranchById(id: string) {
-    const branch = await this.branchesRepository.findOne({ id });
+  async getBranchById(id: string, tenantId: string | null) {
+    const branch = await this.branchesRepository.findOne({
+      id,
+      ...(tenantId !== null && { clinicId: tenantId }),
+    });
+
     if (!branch) {
       throw new ApiError(
         'Branch not found',
@@ -55,9 +65,14 @@ export class BranchesService {
     return branch;
   }
 
-  async getAllBranches(query: GetBranchesQueryDTO) {
+  async getAllBranches(query: GetBranchesQueryDTO, tenantId: string | null) {
     const { page, limit, ...filters } = query;
     const pagination = { page, limit };
+
+    if (tenantId) {
+      filters.clinicId = tenantId;
+    }
+
     const { data, total } = await this.branchesRepository.findAll(
       filters,
       pagination,
@@ -65,8 +80,12 @@ export class BranchesService {
     return paginatedResult(data, total, pagination);
   }
 
-  async updateBranch(id: string, data: UpdateBranchDTO) {
-    const branch = await this.getBranchById(id);
+  async updateBranch(
+    id: string,
+    data: UpdateBranchDTO,
+    tenantId: string | null,
+  ) {
+    const branch = await this.getBranchById(id, tenantId);
     const updatePayload: UpdateBranchDTO & { slug?: string } = { ...data };
 
     if (data.name && data.name !== branch.name) {
@@ -103,8 +122,7 @@ export class BranchesService {
     return result;
   }
 
-  async deleteBranch(id: string) {
-    console.log({ id }, DEMO_IDS.BRANCH);
+  async deleteBranch(id: string, tenantId: string | null) {
     if (compareUUIDs(id, DEMO_IDS.BRANCH)) {
       throw new ApiError(
         'The demo branch cannot be deleted.',
@@ -112,7 +130,7 @@ export class BranchesService {
         ErrorCodes.auth.FORBIDDEN,
       );
     }
-    await this.getBranchById(id);
+    await this.getBranchById(id, tenantId);
     return this.branchesRepository.delete(id);
   }
 

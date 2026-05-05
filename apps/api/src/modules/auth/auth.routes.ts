@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { validateSchema } from '@/middlewares/validateSchema.ts';
 import { protect } from '@/middlewares/protect.ts';
+import { authMiddleware } from '@/middlewares/auth.ts';
 import { authController } from '@/bootstrap/container.ts';
 import {
   loginRequestSchema,
@@ -45,7 +46,11 @@ router.post(
 router.post('/refresh', refreshLimiter, authController.refreshToken);
 router.post('/logout', authController.logout);
 
-// --- Protected Routes ---
+// --- Auth-only Routes (no tenant context required) ---
+
+router.get('/me', authMiddleware, authController.getMe);
+
+// --- Tenant-Protected Routes ---
 
 router.use(protect);
 

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { BaseController } from '@/core/shared/BaseController.ts';
 import { AuthService } from '@modules/auth/auth.service.ts';
+import { ENV } from '@/core/config/env.ts';
 import { CatchAsync } from '@/core/shared/decorators/CatchAsync.ts';
 import { ApiError } from '@/core/errors/ApiError.ts';
 import { ErrorCodes } from '@/core/errors/ErrorCodes.ts';
@@ -13,6 +14,7 @@ import {
   UpdateProfileRequest,
 } from './auth.schema.ts';
 import { validateRequest } from '@/common/utils/request.ts';
+import { meResource } from '@modules/auth/auth.resource.ts';
 
 @CatchAsync
 export class AuthController extends BaseController {
@@ -30,11 +32,14 @@ export class AuthController extends BaseController {
 
     const tokens = await this.authService.login(body, meta);
 
+    const isProd = ENV.NODE_ENV === 'production';
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      ...(tokens.remember && { maxAge: THIRTY_DAYS }),
     });
 
     return this.ok(res, 'Login successful', {
@@ -78,11 +83,14 @@ export class AuthController extends BaseController {
     const tokens = await this.authService.refreshToken(refreshToken);
 
     // Replace old cookie with the new refresh token — old one is already revoked in DB
+    const isProd = ENV.NODE_ENV === 'production';
+    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: isProd,
+      sameSite: isProd ? 'none' : 'lax',
+      ...(tokens.remember && { maxAge: THIRTY_DAYS }),
     });
 
     return this.ok(res, 'Token refreshed', {
@@ -100,6 +108,12 @@ export class AuthController extends BaseController {
     res.clearCookie('refreshToken');
 
     return this.ok(res, 'Logged out successfully', null);
+  }
+
+  async getMe(req: Request, res: Response) {
+    const userId = req.user!.token.id;
+    const data = await this.authService.getMe(userId);
+    return this.ok(res, 'Profile retrieved successfully', meResource(data));
   }
 
   async updateProfile(req: UpdateProfileRequest, res: Response) {

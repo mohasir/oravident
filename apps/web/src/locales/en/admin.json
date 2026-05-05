@@ -40,30 +40,140 @@
       "next": "Next",
       "previous": "Previous",
       "actions": "Actions",
-      "searchPlaceholder": "Filter..."
+      "searchPlaceholder": "Filter...",
+      "rowActions": {
+        "copyId": "Copy ID",
+        "idCopied": "ID copied to clipboard"
+      }
     }
   },
   "profile": {
     "title": "Profile page"
   },
   "user": {
-    "title": "Users",
-    "description": "Manage platform users and their permissions.",
-    "addUser": "Add user",
-    "copyId": "Copy ID",
-    "editUser": "Edit user",
-    "deactivate": "Deactivate",
-    "deactivateUser": "Deactivate user",
-    "confirmDeactivate": "Are you sure you want to deactivate {{email}}?",
-    "email": "Email",
-    "role": "Role",
-    "status": "Status",
-    "active": "Active",
-    "inactive": "Inactive",
-    "createdAt": "Created At",
-    "platformAdmin": "Platform Admin",
-    "filterEmail": "Filter by email...",
-    "noUsers": "No users found."
+    "index": {
+      "title": "Users",
+      "description": "Manage the platform users and their permissions.",
+      "add": "Add user",
+      "table": {
+        "email": "Email",
+        "role": "Role",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created at",
+        "platformAdmin": "Platform Administrator",
+        "filterEmail": "Filter by email...",
+        "empty": "No users found."
+      },
+      "actions": {
+        "edit": "Edit user",
+        "disable": "Disable",
+        "disableTitle": "Disable user",
+        "confirmDisable": "Are you sure you want to disable {{email}}?",
+        "disableSuccess": "User disabled successfully",
+        "disableError": "Error disabling user"
+      }
+    }
+  },
+  "branch": {
+    "index": {
+      "title": "Branches",
+      "description": "Manage the clinic branches.",
+      "add": "Add branch",
+      "table": {
+        "name": "Name",
+        "slug": "Slug",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created at",
+        "filterName": "Filter by name...",
+        "empty": "No branches found."
+      },
+      "actions": {
+        "edit": "Edit branch",
+        "disable": "Disable",
+        "disableTitle": "Disable branch",
+        "confirmDisable": "Are you sure you want to disable {{name}}?",
+        "disableSuccess": "Branch disabled successfully",
+        "disableError": "Error disabling branch"
+      }
+    },
+    "create": {
+      "title": "Create new branch",
+      "description": "Fill in the details below to create a new branch.",
+      "success": "Branch created successfully"
+    },
+    "edit": {
+      "title": "Edit branch",
+      "description": "Update the branch details below.",
+      "success": "Branch updated successfully"
+    },
+    "form": {
+      "fields": {
+        "name": { "label": "Name", "placeholder": "Main Branch" },
+        "slug": { "label": "Slug", "placeholder": "main-branch" },
+        "address": { "label": "Address", "placeholder": "123 Main St, City" },
+        "email": { "label": "Email (Optional)", "placeholder": "branch@example.com" },
+        "phone": { "label": "Phone (Optional)", "placeholder": "+1 234 567 890" },
+        "latitude": { "label": "Latitude", "placeholder": "0.0000" },
+        "longitude": { "label": "Longitude", "placeholder": "0.0000" },
+        "color": { "label": "Color" }
+      },
+      "submit": "Create branch",
+      "submitEdit": "Update branch",
+      "error": "Something went wrong"
+    }
+  },
+  "service": {
+    "index": {
+      "title": "Services",
+      "description": "Manage the services offered by your clinic.",
+      "add": "Add service",
+      "table": {
+        "name": "Name",
+        "duration": "Duration (min)",
+        "price": "Price",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created at",
+        "filterName": "Filter by name...",
+        "empty": "No services found."
+      },
+      "actions": {
+        "edit": "Edit service",
+        "disable": "Disable",
+        "disableTitle": "Disable service",
+        "confirmDisable": "Are you sure you want to disable the service {{name}}?",
+        "disableSuccess": "Service disabled successfully",
+        "disableError": "Error disabling service"
+      }
+    },
+    "create": {
+      "title": "Create new service",
+      "description": "Fill in the details below to create a new service.",
+      "success": "Service created successfully"
+    },
+    "edit": {
+      "title": "Edit service",
+      "description": "Update the service details below.",
+      "success": "Service updated successfully"
+    },
+    "form": {
+      "fields": {
+        "name": { "label": "Name", "placeholder": "Dental Cleaning" },
+        "description": { "label": "Description (Optional)", "placeholder": "Full professional dental cleaning..." },
+        "durationMinutes": { "label": "Duration (Minutes)" },
+        "price": { "label": "Price (Optional)" }
+      },
+      "submit": "Create service",
+      "submitEdit": "Update service",
+      "error": "Something went wrong"
+    }
   },
   "auth": {
     "forgotPassword": {

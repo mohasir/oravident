@@ -32,15 +32,14 @@ export const passwordMatchRefine = (
   }
 };
 
-export const loginSchema = z
-  .object({
-    email: emailSchema,
-    password: z
-      .string({ error: 'Password is required' })
-      .min(1, 'Password is required')
-      .max(DB_LIMITS.PASSWORD),
-  })
-  .strict();
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: z
+    .string({ error: 'Password is required' })
+    .min(1, 'Password is required')
+    .max(DB_LIMITS.PASSWORD),
+  remember: z.boolean().optional().default(false),
+});
 
 export const sessionMetaSchema = z.object({
   userAgent: z.string().optional().nullable(),

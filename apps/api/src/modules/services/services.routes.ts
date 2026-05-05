@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { servicesController } from '@/bootstrap/container.ts';
 import { validateSchema } from '@middlewares/validateSchema.ts';
-import { guardMiddleware } from '@middlewares/guard.ts';
-import { PERMISSIONS } from '@repo/guards';
+import { guardMiddleware, roleGuardMiddleware } from '@middlewares/guard.ts';
+import { PERMISSIONS, ROLES } from '@repo/guards';
 import {
   createServiceRequestSchema,
+  createServiceSuperadminRequestSchema,
   updateServiceRequestSchema,
   getServiceRequestSchema,
   getServicesRequestSchema,
@@ -21,6 +22,13 @@ router.post(
   guardMiddleware([PERMISSIONS.CREATE_SERVICE]),
   validateSchema(createServiceRequestSchema),
   servicesController.createService,
+);
+
+router.post(
+  '/clinic/:clinicId',
+  roleGuardMiddleware([ROLES.SUPERADMIN]),
+  validateSchema(createServiceSuperadminRequestSchema),
+  servicesController.createServiceForSuperadmin,
 );
 
 router.get(

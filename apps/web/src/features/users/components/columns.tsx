@@ -23,14 +23,14 @@ export function useColumns(handlers: UsersTableHandlers): ColumnDef<User>[] {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="-ml-3"
           >
-            {t('user.email')}
+            {t('user.index.table.email')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
       },
       {
         accessorKey: 'isPlatformAdmin',
-        header: () => t('user.platformAdmin'),
+        header: () => t('user.index.table.platformAdmin'),
         cell: ({ row }) => {
           const value = row.getValue<boolean>('isPlatformAdmin');
           return (
@@ -46,7 +46,7 @@ export function useColumns(handlers: UsersTableHandlers): ColumnDef<User>[] {
       },
       {
         accessorKey: 'isActive',
-        header: () => t('user.status'),
+        header: () => t('user.index.table.status'),
         cell: ({ row }) => {
           const value = row.getValue<boolean>('isActive');
           return (
@@ -55,7 +55,7 @@ export function useColumns(handlers: UsersTableHandlers): ColumnDef<User>[] {
                 value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
               }`}
             >
-              {value ? t('user.active') : t('user.inactive')}
+              {value ? t('user.index.table.active') : t('user.index.table.inactive')}
             </span>
           );
         },
@@ -69,7 +69,7 @@ export function useColumns(handlers: UsersTableHandlers): ColumnDef<User>[] {
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="-ml-3"
           >
-            {t('user.createdAt')}
+            {t('user.index.table.createdAt')}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -82,16 +82,16 @@ export function useColumns(handlers: UsersTableHandlers): ColumnDef<User>[] {
             <DataTableRowActions
               label={t('common.table.actions')}
               actions={[
-                { label: t('user.copyId'), onAction: () => handlers.onCopyId(user.id) },
+                { label: t('common.table.rowActions.copyId'), onAction: () => handlers.onCopyId(user.id) },
                 { separator: true },
-                { label: t('user.editUser'), onAction: () => handlers.onEdit(user) },
+                { label: t('user.index.actions.edit'), onAction: () => handlers.onEdit(user) },
                 {
-                  label: t('user.deactivate'),
+                  label: t('user.index.actions.disable'),
                   variant: 'destructive',
                   isDelete: true,
-                  confirmTitle: t('user.deactivateUser'),
-                  confirmDescription: t('user.confirmDeactivate', { email: user.email }),
-                  confirmLabel: t('user.deactivate'),
+                  confirmTitle: t('user.index.actions.disableTitle'),
+                  confirmDescription: t('user.index.actions.confirmDisable', { email: user.email }),
+                  confirmLabel: t('user.index.actions.disable'),
                   onAction: () => handlers.onDeactivate(user),
                 },
               ]}

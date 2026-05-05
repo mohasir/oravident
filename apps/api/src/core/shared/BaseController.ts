@@ -44,4 +44,15 @@ export abstract class BaseController {
   public tooMany(developerMessage = 'Too many requests', errorCode: ErrorCodeType = ErrorCodes.system.INTERNAL_SERVER_ERROR) {
     throw new ApiError(developerMessage, 429, errorCode);
   }
+
+  protected resolveTenantId(tenantId?: string | null) {
+    if (tenantId === undefined) {
+      throw new ApiError(
+        'Tenant context not resolved',
+        500,
+        ErrorCodes.system.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return tenantId;
+  }
 }

@@ -1,15 +1,16 @@
 import { Router } from 'express';
 import { validateSchema } from '@middlewares/validateSchema.ts';
 import { protect } from '@middlewares/protect.ts';
-import { guardMiddleware } from '@middlewares/guard.ts';
+import { guardMiddleware, roleGuardMiddleware } from '@middlewares/guard.ts';
 import { branchesController } from '@/bootstrap/container.ts';
 import {
   createBranchRequestSchema,
+  createBranchSuperadminRequestSchema,
   updateBranchRequestSchema,
   getBranchesRequestSchema,
   getBranchRequestSchema,
 } from '@modules/branches/branches.schema.ts';
-import { PERMISSIONS } from '@repo/guards';
+import { PERMISSIONS, ROLES } from '@repo/guards';
 import { idParamRequest } from '@common/types/requests.ts';
 
 const router: Router = Router();
@@ -18,35 +19,42 @@ router.use(protect);
 
 router.get(
   '/',
-  guardMiddleware([PERMISSIONS.LIST_CLINIC]),
+  guardMiddleware([PERMISSIONS.LIST_BRANCH]),
   validateSchema(getBranchesRequestSchema),
   branchesController.getBranches,
 );
 
 router.post(
   '/',
-  guardMiddleware([PERMISSIONS.CREATE_CLINIC]),
+  guardMiddleware([PERMISSIONS.CREATE_BRANCH]),
   validateSchema(createBranchRequestSchema),
   branchesController.createBranch,
 );
 
+router.post(
+  '/clinic/:clinicId',
+  roleGuardMiddleware([ROLES.SUPERADMIN]),
+  validateSchema(createBranchSuperadminRequestSchema),
+  branchesController.createBranchForSuperadmin,
+);
+
 router.get(
   '/:id',
-  guardMiddleware([PERMISSIONS.GET_CLINIC]),
+  guardMiddleware([PERMISSIONS.GET_BRANCH]),
   validateSchema(getBranchRequestSchema),
   branchesController.getBranch,
 );
 
 router.patch(
   '/:id',
-  guardMiddleware([PERMISSIONS.UPDATE_CLINIC]),
+  guardMiddleware([PERMISSIONS.UPDATE_BRANCH]),
   validateSchema(updateBranchRequestSchema),
   branchesController.updateBranch,
 );
 
 router.delete(
   '/:id',
-  guardMiddleware([PERMISSIONS.DELETE_CLINIC]),
+  guardMiddleware([PERMISSIONS.DELETE_BRANCH]),
   validateSchema(idParamRequest),
   branchesController.deleteBranch,
 );

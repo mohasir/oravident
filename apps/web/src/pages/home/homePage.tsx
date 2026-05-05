@@ -1,10 +1,12 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@repo/ui';
 import { Menu } from 'lucide-react';
 import { Logo } from '@/components/shared/Logo/Logo';
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher/LanguageSwitcher';
+import type { Route } from 'next';
 
 export default function HomePage() {
   const { t } = useTranslation('public');
@@ -21,7 +23,7 @@ export default function HomePage() {
 
         {/* Desktop links */}
         <div className="hidden sm:flex items-center gap-1">
-          <a
+          {/* <a
             href="#about"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent/50"
           >
@@ -32,8 +34,7 @@ export default function HomePage() {
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent/50"
           >
             {t('nav.contact')}
-          </a>
-          <div className="w-px h-5 bg-border mx-2" />
+          </a> */}
           <LanguageSwitcher />
         </div>
 
@@ -53,7 +54,7 @@ export default function HomePage() {
       <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 md:px-12">
         <div className="max-w-3xl mx-auto flex flex-col items-center gap-5">
           <div className="mb-4">
-            <Logo width={140} />
+            <Logo width={140} isPressable={false} />
           </div>
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-primary leading-[1.1]">
             {t('landing.title')}
@@ -62,8 +63,8 @@ export default function HomePage() {
             {t('landing.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
-            <Button size="lg" className="min-w-44">
-              {t('landing.cta.primary')}
+            <Button size="lg" className="min-w-44" asChild>
+              <Link href={'/login' as Route}>{t('landing.cta.primary')}</Link>
             </Button>
             <Button size="lg" variant="outline" className="min-w-44">
               {t('landing.cta.secondary')}

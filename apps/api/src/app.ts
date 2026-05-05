@@ -19,7 +19,7 @@ const app: Application = express();
 const swaggerDocument = YAML.load(path.join(__dirname, './docs/openapi.yaml'));
 
 app.use(helmet());
-app.use(cors({ origin: ENV.ALLOWED_ORIGINS }));
+app.use(cors({ origin: ENV.ALLOWED_ORIGINS, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 

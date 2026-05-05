@@ -7,6 +7,7 @@ declare global {
         token: PayloadAccessToken;
         clinicId?: string;
       };
+      tenantId?: string | null;
     }
   }
 }

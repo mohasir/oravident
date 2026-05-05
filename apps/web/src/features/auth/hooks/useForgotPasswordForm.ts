@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/features/auth/schemas/forgotPassword.schema';
+import { authService } from '@/features/auth/services/auth.service';
 
 export function useForgotPasswordForm() {
   const { t } = useTranslation('admin');
@@ -13,10 +14,10 @@ export function useForgotPasswordForm() {
     defaultValues: { email: '' },
   });
 
-  const onSubmit = async (_data: ForgotPasswordSchema) => {
+  const onSubmit = async (data: ForgotPasswordSchema) => {
     try {
       form.clearErrors('root');
-      // TODO: call API to send reset email
+      await authService.forgotPassword(data);
       setEmailSent(true);
     } catch {
       form.setError('root', {

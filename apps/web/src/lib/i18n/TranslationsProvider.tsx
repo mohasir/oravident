@@ -48,7 +48,7 @@ export default function TranslationsProvider({
           defaultNS: namespaces[0],
           fallbackNS: namespaces[0],
           ns: namespaces,
-          preload: typeof window === 'undefined' ? [] : [locale],
+          preload: [],
         });
 
       if (typeof window !== 'undefined') {

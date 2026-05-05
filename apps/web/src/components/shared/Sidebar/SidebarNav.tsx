@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { useCan } from '@repo/guards';
+import { useCan } from '@/lib/auth';
 import { ADMIN_MENU } from '@/constants/navigation';
 import {
   SidebarGroup,

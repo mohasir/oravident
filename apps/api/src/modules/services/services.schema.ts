@@ -12,7 +12,6 @@ import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
 
 export const createServiceSchema = z
   .object({
-    clinicId: createIdSchema('clinicId'),
     name: z.string().min(2).max(DB_LIMITS.NAME),
     description: z.string().optional(),
     durationMinutes: z.number().int().min(5).max(480).default(30),
@@ -20,7 +19,6 @@ export const createServiceSchema = z
       .string()
       .regex(/^\d+(\.\d{1,2})?$/, 'Invalid price format')
       .optional(),
-    isActive: z.boolean().optional().default(true),
   })
   .strict();
 
@@ -45,6 +43,13 @@ export const getServicesQuerySchema = paginationQuerySchema.extend(
 // ==========================================
 
 export const createServiceRequestSchema = {
+  body: createServiceSchema,
+};
+
+export const createServiceSuperadminRequestSchema = {
+  params: z.object({
+    clinicId: createIdSchema('clinicId'),
+  }),
   body: createServiceSchema,
 };
 
@@ -80,6 +85,9 @@ export type GetServicesQueryDTO = z.infer<typeof getServicesQuerySchema>;
 
 export type CreateServiceRequest = TypedRequest<
   typeof createServiceRequestSchema
+>;
+export type CreateServiceSuperadminRequest = TypedRequest<
+  typeof createServiceSuperadminRequestSchema
 >;
 export type GetServicesRequest = TypedRequest<typeof getServicesRequestSchema>;
 export type UpdateServiceRequest = TypedRequest<

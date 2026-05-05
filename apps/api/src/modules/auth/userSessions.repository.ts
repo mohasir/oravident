@@ -49,8 +49,9 @@ export class UserSessionsRepository extends BaseRepository {
     return !!result;
   }
 
-  async create(data: UserSessionsDTO) {
-    const [session] = await this.db
+  async create(data: UserSessionsDTO, tx?: Database) {
+    const conn = tx ?? this.db;
+    const [session] = await conn
       .insert(userSessions)
       .values(data)
       .returning();

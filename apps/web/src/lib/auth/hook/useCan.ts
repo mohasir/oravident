@@ -1,6 +1,5 @@
 import { usePermissions } from './usePermissions';
-import type { PermissionType } from '../core/permissions';
-import { RoleType } from '../constants';
+import type { PermissionType, RoleType } from '@repo/guards';
 
 export function useCan() {
   const { roles, permissions, isSuperadmin, isLoading } = usePermissions();

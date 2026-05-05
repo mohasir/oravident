@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { resetPasswordSchema, type ResetPasswordSchema } from '@/features/auth/schemas/resetPassword.schema';
+import { authService } from '@/features/auth/services/auth.service';
 import { DEFAULT_REDIRECT_LOGIN } from '@/lib/auth/navigation';
 import type { Route } from 'next';
 
@@ -17,10 +18,10 @@ export function useResetPasswordForm() {
     defaultValues: { password: '', confirmPassword: '' },
   });
 
-  const onSubmit = async (_data: ResetPasswordSchema) => {
+  const onSubmit = async (data: ResetPasswordSchema) => {
     try {
       form.clearErrors('root');
-      // TODO: call API with token and new password
+      await authService.resetPassword({ ...data, token });
       router.replace(DEFAULT_REDIRECT_LOGIN as Route);
     } catch {
       form.setError('root', {

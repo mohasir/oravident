@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRight, LayoutDashboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useCan } from '@repo/guards';
+import { useCan } from '@/lib/auth';
 import { IconMap } from '@/constants/navigation';
 import {
   Collapsible,

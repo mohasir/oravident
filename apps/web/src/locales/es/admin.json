@@ -40,30 +40,137 @@
       "next": "Siguiente",
       "previous": "Anterior",
       "actions": "Acciones",
-      "searchPlaceholder": "Filtrar..."
+      "searchPlaceholder": "Filtrar...",
+      "rowActions": {
+        "copyId": "Copiar ID",
+        "idCopied": "ID copiado al portapapeles"
+      }
     }
   },
-  "profile": {
-    "title": "Pagina del perfil"
-  },
   "user": {
-    "title": "Usuarios",
-    "description": "Administra los usuarios de la plataforma y sus permisos.",
-    "addUser": "Agregar usuario",
-    "copyId": "Copiar ID",
-    "editUser": "Editar usuario",
-    "deactivate": "Desactivar",
-    "deactivateUser": "Desactivar usuario",
-    "confirmDeactivate": "¿Estás seguro que deseas desactivar a {{email}}?",
-    "email": "Correo electrónico",
-    "role": "Rol",
-    "status": "Estado",
-    "active": "Activo",
-    "inactive": "Inactivo",
-    "createdAt": "Creado el",
-    "platformAdmin": "Administrador de plataforma",
-    "filterEmail": "Filtrar por correo electrónico...",
-    "noUsers": "No se encontraron usuarios."
+    "index": {
+      "title": "Usuarios",
+      "description": "Administra los usuarios de la plataforma y sus permisos.",
+      "add": "Agregar usuario",
+      "table": {
+        "email": "Correo electrónico",
+        "role": "Rol",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "platformAdmin": "Administrador de plataforma",
+        "filterEmail": "Filtrar por correo electrónico...",
+        "empty": "No se encontraron usuarios."
+      },
+      "actions": {
+        "edit": "Editar usuario",
+        "disable": "Deshabilitar",
+        "disableTitle": "Deshabilitar usuario",
+        "confirmDisable": "¿Estás seguro que deseas deshabilitar a {{email}}?",
+        "disableSuccess": "Usuario deshabilitado con éxito",
+        "disableError": "Error al deshabilitar el usuario"
+      }
+    }
+  },
+  "branch": {
+    "index": {
+      "title": "Sucursales",
+      "description": "Administra las sucursales de la clínica.",
+      "add": "Agregar sucursal",
+      "table": {
+        "name": "Nombre",
+        "slug": "Slug",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "filterName": "Filtrar por nombre...",
+        "empty": "No se encontraron sucursales."
+      },
+      "actions": {
+        "edit": "Editar sucursal",
+        "disable": "Deshabilitar",
+        "disableTitle": "Deshabilitar sucursal",
+        "confirmDisable": "¿Estás seguro que deseas deshabilitar {{name}}?",
+        "disableSuccess": "Sucursal deshabilitada con éxito",
+        "disableError": "Error al deshabilitar la sucursal"
+      }
+    },
+    "create": {
+      "title": "Crear nueva sucursal",
+      "description": "Completa los detalles a continuación para crear una nueva sucursal.",
+      "success": "Sucursal creada con éxito"
+    },
+    "edit": {
+      "title": "Editar sucursal",
+      "description": "Actualiza los detalles de la sucursal a continuación.",
+      "success": "Sucursal actualizada con éxito"
+    },
+    "form": {
+      "fields": {
+        "name": { "label": "Nombre", "placeholder": "Sucursal Principal" },
+        "slug": { "label": "Slug", "placeholder": "sucursal-principal" },
+        "address": { "label": "Dirección", "placeholder": "Calle 123, Ciudad" },
+        "email": { "label": "Correo electrónico (Opcional)", "placeholder": "sucursal@ejemplo.com" },
+        "phone": { "label": "Teléfono (Opcional)", "placeholder": "+1 234 567 890" },
+        "latitude": { "label": "Latitud", "placeholder": "0.0000" },
+        "longitude": { "label": "Longitud", "placeholder": "0.0000" },
+        "color": { "label": "Color" }
+      },
+      "submit": "Crear sucursal",
+      "submitEdit": "Actualizar sucursal",
+      "error": "Algo salió mal"
+    }
+  },
+  "service": {
+    "index": {
+      "title": "Servicios",
+      "description": "Administra los servicios que ofrece tu clínica.",
+      "add": "Agregar servicio",
+      "table": {
+        "name": "Nombre",
+        "duration": "Duración (min)",
+        "price": "Precio",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "filterName": "Filtrar por nombre...",
+        "empty": "No se encontraron servicios."
+      },
+      "actions": {
+        "edit": "Editar servicio",
+        "disable": "Deshabilitar",
+        "disableTitle": "Deshabilitar servicio",
+        "confirmDisable": "¿Estás seguro que deseas deshabilitar el servicio {{name}}?",
+        "disableSuccess": "Servicio deshabilitado con éxito",
+        "disableError": "Error al deshabilitar el servicio"
+      }
+    },
+    "create": {
+      "title": "Crear nuevo servicio",
+      "description": "Completa los detalles a continuación para crear un nuevo servicio.",
+      "success": "Servicio creado con éxito"
+    },
+    "edit": {
+      "title": "Editar servicio",
+      "description": "Actualiza los detalles del servicio a continuación.",
+      "success": "Servicio actualizado con éxito"
+    },
+    "form": {
+      "fields": {
+        "name": { "label": "Nombre", "placeholder": "Limpieza Dental" },
+        "description": { "label": "Descripción (Opcional)", "placeholder": "Limpieza dental profesional completa..." },
+        "durationMinutes": { "label": "Duración (Minutos)" },
+        "price": { "label": "Precio (Opcional)" }
+      },
+      "submit": "Crear servicio",
+      "submitEdit": "Actualizar servicio",
+      "error": "Algo salió mal"
+    }
   },
   "auth": {
     "forgotPassword": {

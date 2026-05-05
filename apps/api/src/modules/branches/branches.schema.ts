@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { DB_LIMITS } from '@core/db/constants.ts';
 import {
+  createIdParamSchema,
   createIdSchema,
   emailSchema,
   paginationQuerySchema,
@@ -13,7 +14,6 @@ import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
 
 export const createBranchSchema = z
   .object({
-    clinicId: createIdSchema('Clinic'),
     name: z.string().min(2).max(DB_LIMITS.NAME),
     slug: z.string().min(2).max(DB_LIMITS.SLUG),
     address: z.string().min(1),
@@ -51,6 +51,13 @@ export const createBranchRequestSchema = {
   body: createBranchSchema,
 };
 
+export const createBranchSuperadminRequestSchema = {
+  params: z.object({
+    clinicId: createIdParamSchema('clinicId'),
+  }),
+  body: createBranchSchema,
+};
+
 export const getBranchesRequestSchema = {
   query: getBranchesQuerySchema,
 };
@@ -79,6 +86,9 @@ export type GetBranchesQueryDTO = z.infer<typeof getBranchesQuerySchema>;
 
 export type CreateBranchRequest = TypedRequest<
   typeof createBranchRequestSchema
+>;
+export type createBranchSuperadminRequest = TypedRequest<
+  typeof createBranchSuperadminRequestSchema
 >;
 export type GetBranchesRequest = TypedRequest<typeof getBranchesRequestSchema>;
 export type UpdateBranchRequest = TypedRequest<

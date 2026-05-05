@@ -51,7 +51,7 @@ export function UsersTable() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Input
-          placeholder={t('user.filterEmail')}
+          placeholder={t('user.index.table.filterEmail')}
           value={(table.getColumn('email')?.getFilterValue() as string) ?? ''}
           onChange={(e) =>
             table.getColumn('email')?.setFilterValue(e.target.value)
@@ -64,7 +64,7 @@ export function UsersTable() {
         table={table}
         isLoading={loading}
         columnCount={columns.length}
-        emptyMessage={t('user.noUsers')}
+        emptyMessage={t('user.index.table.empty')}
       />
 
       <DataTablePagination table={table} />

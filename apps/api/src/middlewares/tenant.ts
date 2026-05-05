@@ -5,13 +5,19 @@ import { clinicService } from '@/bootstrap/container.ts';
 import { isSuperAdmin } from '@repo/guards';
 
 export const tenantMiddleware = async (
-  req: Request, res: Response, next: NextFunction
+  req: Request,
+  _res: Response,
+  next: NextFunction,
 ) => {
   try {
-
     const user = req.user;
 
-    if(user && isSuperAdmin(user.token.role)){
+    console.log('[middleware - TENANT]', {
+      user,
+    });
+
+    if (user && isSuperAdmin(user.token.role)) {
+      req.tenantId = null;
       return next();
     }
 
@@ -19,26 +25,22 @@ export const tenantMiddleware = async (
     const workerClinicId = user?.clinicId;
 
     if (!tokenTenantId) {
-      throw new ApiError(
-        'No tenant provided', 
-        401, 
-        ErrorCodes.auth.UNAUTHORIZED
-      );
+      throw new ApiError('No tenant provided', 403, ErrorCodes.auth.FORBIDDEN);
     }
 
     if (tokenTenantId !== workerClinicId) {
       throw new ApiError(
         'Tenant mismatch. Your session is not valid for this clinic.',
         403,
-        ErrorCodes.auth.FORBIDDEN
+        ErrorCodes.auth.FORBIDDEN,
       );
     }
 
     await clinicService.validateTenant(tokenTenantId);
 
+    req.tenantId = tokenTenantId;
     next();
-
   } catch (error) {
     next(error);
   }
-}
+};

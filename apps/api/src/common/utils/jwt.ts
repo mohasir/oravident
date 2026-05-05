@@ -1,6 +1,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
+import crypto from 'crypto';
 import { ENV } from '@core/config/env.ts';
-import { PermissionType, RoleType } from '@repo/guards';
+import { PermissionType } from '@repo/guards';
 import { ApiError, ErrorCodes } from '@/core/errors/index.ts';
 
 export interface PayloadAccessToken {
@@ -11,8 +12,13 @@ export interface PayloadAccessToken {
   tenantId?: string;
 }
 
-interface PayloadRefreshToken {
+interface RefreshTokenPayload {
   id: string;
+}
+
+interface VerifiedRefreshToken extends RefreshTokenPayload {
+  iat: number;
+  exp: number;
 }
 
 export function signAccessToken(
@@ -36,15 +42,15 @@ export function verifyAccessToken(token: string) {
 }
 
 export function signRefreshToken(
-  payload: PayloadRefreshToken,
+  payload: RefreshTokenPayload,
   expiresIn: SignOptions['expiresIn'],
 ): string {
-  return jwt.sign(payload, ENV.JWT_REFRESH_SECRET, { expiresIn });
+  return jwt.sign(payload, ENV.JWT_REFRESH_SECRET, { expiresIn, jwtid: crypto.randomUUID() });
 }
 
-export function verifyRefreshToken(token: string) {
+export function verifyRefreshToken(token: string): VerifiedRefreshToken {
   try {
-    return jwt.verify(token, ENV.JWT_REFRESH_SECRET) as PayloadRefreshToken;
+    return jwt.verify(token, ENV.JWT_REFRESH_SECRET) as VerifiedRefreshToken;
   } catch (error) {
     throw new ApiError(
       'Invalid or expired refresh token',

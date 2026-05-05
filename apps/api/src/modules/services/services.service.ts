@@ -11,9 +11,10 @@ import { ErrorCodes } from '@core/errors/ErrorCodes.ts';
 export class ServicesService {
   constructor(private servicesRepository: ServicesRepository) {}
 
-  async create(values: CreateServiceDTO) {
+  async create(values: CreateServiceDTO, clinicId: string) {
     const exists = await this.servicesRepository.exists({
       name: values.name,
+      clinicId,
     });
 
     if (exists) {
@@ -24,11 +25,14 @@ export class ServicesService {
       );
     }
 
-    const result = await this.servicesRepository.create(values);
+    const result = await this.servicesRepository.create({
+      ...values,
+      clinicId,
+    });
 
     if (!result) {
       throw new ApiError(
-        'An unexpected error occurred while creating the clinic',
+        'An unexpected error occurred while creating the service',
         500,
         ErrorCodes.system.INTERNAL_SERVER_ERROR,
       );
@@ -37,25 +41,43 @@ export class ServicesService {
     return result;
   }
 
-  async getServiceById(id: string) {
-    const service = await this.servicesRepository.findOne({ id });
+  async getServiceById(id: string, clinicId: string | null) {
+    const service = await this.servicesRepository.findOne({
+      id,
+      ...(clinicId && { clinicId }),
+    });
     if (!service) {
       throw new ApiError('Service not found', 404, ErrorCodes.system.NOT_FOUND);
     }
     return service;
   }
 
-  async getAllServices(query: GetServicesQueryDTO) {
+  async getAllServices(query: GetServicesQueryDTO, clinicId: string | null) {
     const { page, limit, ...filters } = query;
     const pagination = { page, limit };
-    const { data, total } = await this.servicesRepository.findAll(filters, pagination);
+
+    if (clinicId) {
+      filters.clinicId = clinicId;
+    }
+
+    const { data, total } = await this.servicesRepository.findAll(
+      filters,
+      pagination,
+    );
     return paginatedResult(data, total, pagination);
   }
 
-  async updateService(id: string, data: UpdateServiceDTO) {
-    if (data.name) {
+  async updateService(
+    id: string,
+    data: UpdateServiceDTO,
+    clinicId: string | null,
+  ) {
+    const service = await this.getServiceById(id, clinicId);
+
+    if (data.name && data.name !== service.name) {
       const exists = await this.servicesRepository.exists({
         name: data.name,
+        clinicId: service.clinicId,
         excludeId: id,
       });
       if (exists) {
@@ -79,7 +101,8 @@ export class ServicesService {
     return result;
   }
 
-  async deleteService(id: string) {
+  async deleteService(id: string, clinicId: string | null) {
+    await this.getServiceById(id, clinicId);
     const success = await this.servicesRepository.delete(id);
     if (!success) {
       throw new ApiError('Service not found', 404, ErrorCodes.system.NOT_FOUND);

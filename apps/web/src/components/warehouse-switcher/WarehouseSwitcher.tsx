@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Building2, Check, ChevronsUpDown } from 'lucide-react';
 import {
   DropdownMenu,
@@ -10,14 +9,20 @@ import {
   Button,
   cn,
 } from '@repo/ui';
-import { MOCK_BRANCHES, type Branch } from '@/mock/branches';
+import { useConfigStore } from '@/lib/config';
 
 interface WarehouseSwitcherProps {
   onOpenChange?: (open: boolean) => void;
 }
 
 export function WarehouseSwitcher({ onOpenChange }: WarehouseSwitcherProps) {
-  const [selected, setSelected] = useState<Branch>(MOCK_BRANCHES[0]!);
+  const branches = useConfigStore((state) => state.branches);
+  const selectedBranch = useConfigStore((state) => state.selectedBranch);
+  const setSelectedBranch = useConfigStore((state) => state.setSelectedBranch);
+
+  if (branches && branches.length === 0 && selectedBranch === null) {
+    return null;
+  }
 
   return (
     <DropdownMenu onOpenChange={onOpenChange}>
@@ -31,11 +36,11 @@ export function WarehouseSwitcher({ onOpenChange }: WarehouseSwitcherProps) {
             <Building2 className="size-4 shrink-0 text-muted-foreground" />
             <div className="flex flex-col justify-start items-start min-w-0 w-full">
               <span className="truncate text-sm font-medium w-full text-left">
-                {selected.name}
+                {selectedBranch?.name}
               </span>
 
               <span className="truncate text-xs font-medium text-muted-foreground w-full text-left">
-                {selected.address}
+                {selectedBranch?.address}
               </span>
             </div>
           </div>
@@ -44,16 +49,16 @@ export function WarehouseSwitcher({ onOpenChange }: WarehouseSwitcherProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-64" align="start">
-        {MOCK_BRANCHES.map((branch) => (
+        {branches.map((branch) => (
           <DropdownMenuItem
             key={branch.id}
-            onSelect={() => setSelected(branch)}
+            onSelect={() => setSelectedBranch(branch)}
             className="flex items-start gap-2 py-2"
           >
             <Check
               className={cn(
                 'size-4 mt-0.5 shrink-0',
-                selected.id === branch.id ? 'opacity-100' : 'opacity-0',
+                selectedBranch?.id === branch.id ? 'opacity-100' : 'opacity-0',
               )}
             />
             <div className="min-w-0">

@@ -1,4 +1,4 @@
-import { AppProviders } from '@/components/AppProviders';
+import { AppProviders } from '@/components/provider/AppProviders';
 import { APP_CONFIG } from '@/config/app.config';
 import { i18nNamespaces } from '@/lib/i18n/config';
 import { getI18nResources } from '@/lib/i18n/server';

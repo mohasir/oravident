@@ -7,12 +7,26 @@ import {
   InferQuery,
   InferBody,
 } from '@/common/types/requests.ts';
+import { isSuperAdmin } from '@repo/guards';
+import z from 'zod';
 
 export const validateSchema = <T extends RequestValidationSchema>(
   schemas?: T,
 ) => {
   return async (req: TypedRequest<T>, _res: Response, next: NextFunction) => {
     try {
+      const roleName = req.user?.token.role;
+      const baseBody = schemas?.body;
+
+      const resolvedBody: z.ZodTypeAny | undefined = (() => {
+        if (!baseBody || isSuperAdmin(roleName ?? '')) return baseBody;
+        if (!(baseBody instanceof z.ZodObject)) return baseBody;
+        if (!('clinicId' in baseBody.shape)) return baseBody;
+        return (baseBody as z.ZodObject<z.ZodRawShape>).omit({
+          clinicId: true,
+        });
+      })();
+
       const details: Record<string, string[]> = {};
       let rawError: unknown = null;
 
@@ -51,11 +65,11 @@ export const validateSchema = <T extends RequestValidationSchema>(
       }
 
       // 3. Validate body
-      if (schemas?.body) {
+      if (resolvedBody) {
         if (!req.body || Object.keys(req.body).length === 0) {
           details['body'] = ['Request body is required'];
         } else {
-          const bodyResult = await schemas.body.safeParseAsync(req.body);
+          const bodyResult = await resolvedBody.safeParseAsync(req.body);
 
           if (!bodyResult.success) {
             bodyResult.error.issues.forEach((err) => {

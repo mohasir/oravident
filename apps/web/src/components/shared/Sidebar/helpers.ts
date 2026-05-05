@@ -1,5 +1,5 @@
 import { NavGroup } from '@/constants/navigation';
-import { useCan } from '@repo/guards';
+import { useCan } from '@/lib/auth';
 
 export const isGroupVisible = (
   group: NavGroup,

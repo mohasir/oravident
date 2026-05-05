@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react';
-import { useCan } from '../hooks/useCan';
-import type { PermissionType } from '../core/permissions';
-import type { RoleType } from '../constants/roles';
+import { useCan } from '../hook/useCan';
+import type { PermissionType, RoleType } from '@repo/guards';
 
 interface CanProps {
-  allowed?:     PermissionType[];
+  allowed?: PermissionType[];
   allRequired?: PermissionType[];
-  roles?:       RoleType[];
-  fallback?:    ReactNode;
-  children:     ReactNode;
+  roles?: RoleType[];
+  fallback?: ReactNode;
+  children: ReactNode;
 }
 
 export function Can({
@@ -23,10 +22,10 @@ export function Can({
   if (isLoading) return null;
 
   const hasAccess = (): boolean => {
-    if (allRequired?.length)              return canAll(allRequired);
+    if (allRequired?.length) return canAll(allRequired);
     if (allowed?.length && roles?.length) return canWithRole(allowed, roles);
-    if (allowed?.length)                  return can(allowed);
-    if (roles?.length)                    return hasRole(roles);
+    if (allowed?.length) return can(allowed);
+    if (roles?.length) return hasRole(roles);
     return true;
   };
 

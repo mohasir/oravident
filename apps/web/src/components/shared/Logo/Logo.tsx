@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import logoLight from '@/assets/logoLight.svg';
 import logoDark from '@/assets/logoDark.svg';
 import faviconLight from '@/assets/faviconLight.svg';
 import faviconDark from '@/assets/faviconDark.svg';
+import type { Route } from 'next';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -15,6 +17,8 @@ interface LogoProps {
   width?: number;
   alt?: string;
   iconOnly?: boolean;
+  href?: string;
+  isPressable?: boolean;
 }
 
 function resolveTheme(theme: Theme): 'light' | 'dark' {
@@ -30,6 +34,8 @@ export function Logo({
   width = 180,
   alt = 'OraviDent',
   iconOnly = false,
+  href = '/',
+  isPressable = true,
 }: Omit<LogoProps, 'height'>) {
   const [resolved, setResolved] = useState<'light' | 'dark'>('light');
 
@@ -54,7 +60,7 @@ export function Logo({
       ? logoDark
       : logoLight;
 
-  return (
+  const image = (
     <Image
       src={src}
       alt={alt}
@@ -65,4 +71,10 @@ export function Logo({
       priority
     />
   );
+
+  if (!isPressable) {
+    return image;
+  }
+
+  return <Link href={href as Route}>{image}</Link>;
 }

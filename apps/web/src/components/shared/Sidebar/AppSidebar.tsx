@@ -13,6 +13,7 @@ import {
   SidebarRail,
 } from '@repo/ui';
 import { WarehouseSwitcher } from '@/components/warehouse-switcher/WarehouseSwitcher';
+import { LogoutButton } from '@/components/shared/LogoutButton';
 import { SidebarLogo } from './SidebarLogo';
 import { SidebarNav } from './SidebarNav';
 
@@ -35,12 +36,11 @@ export const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip={t('nav.logout')}
-              onClick={() => console.log('fuera')}
-            >
-              <LogOut />
-              <span>{t('common.menu.logout')}</span>
+            <SidebarMenuButton tooltip={t('nav.logout')} asChild>
+              <LogoutButton>
+                <LogOut />
+                <span>{t('common.menu.logout')}</span>
+              </LogoutButton>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

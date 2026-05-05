@@ -26,8 +26,8 @@ export const UserAvatar = ({
       <Image
         src={avatarUrl}
         alt={name ?? 'User'}
-        width={32}
-        height={32}
+        width={38}
+        height={38}
         className={cn('size-8 rounded-full object-cover', className)}
       />
     );
@@ -36,7 +36,7 @@ export const UserAvatar = ({
   return (
     <span
       className={cn(
-        'inline-flex size-8 items-center justify-center rounded-full bg-brand/15 text-xs font-semibold text-brand select-none',
+        'inline-flex size-9 items-center justify-center rounded-full bg-brand/15 text-xs font-semibold text-brand select-none',
         className,
       )}
     >

@@ -80,17 +80,13 @@ export class AuthService {
       '30m',
     );
 
-    const refreshToken = signRefreshToken(
-      {
-        id: user.id,
-      },
-      '7d',
-    );
+    const sessionDays = data.remember ? 30 : 1;
+
+    const refreshToken = signRefreshToken({ id: user.id }, `${sessionDays}d`);
 
     const hashedToken = hashToken(refreshToken);
     const expiresAt = new Date();
-
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    expiresAt.setDate(expiresAt.getDate() + sessionDays);
 
     // create session
     await this.userSessionsRepository.create({
@@ -104,6 +100,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+      remember: data.remember,
     };
   }
 
@@ -168,10 +165,19 @@ export class AuthService {
     const hashedToken = hashToken(refreshToken);
     const session = await this.userSessionsRepository.findOne({
       token: hashedToken,
-      isValid: true,
     });
 
     if (!session) {
+      throw new ApiError(
+        'Session expired or revoked',
+        401,
+        ErrorCodes.auth.INVALID_TOKEN,
+      );
+    }
+
+    if (!session.isValid) {
+      // Revoked token reuse — possible token theft, invalidate all sessions
+      await this.userSessionsRepository.revokeAllSessionsByUserId(session.userId);
       throw new ApiError(
         'Session expired or revoked',
         401,
@@ -189,35 +195,66 @@ export class AuthService {
 
     const { user, worker, role, permissions } = result;
 
+    const roleName = user.isSuperadmin ? ROLES.SUPERADMIN : role?.name;
+
+    if (!roleName) {
+      throw new ApiError(
+        'Your account does not have an assigned role. Please contact an administrator.',
+        403,
+        ErrorCodes.auth.FORBIDDEN,
+      );
+    }
+
     const accessToken = signAccessToken(
       {
         id: user.id,
         email: user.email,
-        role: role?.name as RoleType,
+        role: roleName,
         permissions: permissions as PermissionType[],
         tenantId: worker?.clinicId || undefined,
       },
       '30m',
     );
 
-    const newRefreshToken = signRefreshToken({ id: user.id }, '7d');
+    const SEVEN_DAYS_SEC = 7 * 24 * 60 * 60;
+    const sessionDays =
+      payloadJWT.exp - payloadJWT.iat > SEVEN_DAYS_SEC ? 30 : 1;
+    const remember = sessionDays === 30;
+
+    const newRefreshToken = signRefreshToken(
+      { id: user.id },
+      `${sessionDays}d`,
+    );
     const newHashedToken = hashToken(newRefreshToken);
     const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    expiresAt.setDate(expiresAt.getDate() + sessionDays);
 
     // Revoke old session and create new one atomically — prevents reuse of stolen tokens
     await this.txManager.run(async (tx) => {
       await this.userSessionsRepository.revokeByToken(hashedToken, tx);
-      await this.userSessionsRepository.create({
-        userId: user.id,
-        token: newHashedToken,
-        userAgent: session.userAgent,
-        ipAddress: session.ipAddress,
-        expiresAt,
-      });
+      await this.userSessionsRepository.create(
+        {
+          userId: user.id,
+          token: newHashedToken,
+          userAgent: session.userAgent,
+          ipAddress: session.ipAddress,
+          expiresAt,
+        },
+        tx,
+      );
     });
 
-    return { accessToken, refreshToken: newRefreshToken };
+    return { accessToken, refreshToken: newRefreshToken, remember };
+  }
+
+  async getMe(userId: string) {
+    const result = await this.authRepository.findMe(userId);
+
+    if (!result) {
+      throw new ApiError('User not found', 404, ErrorCodes.system.NOT_FOUND);
+    }
+
+    return result;
   }
 
   async logout(refreshToken: string) {

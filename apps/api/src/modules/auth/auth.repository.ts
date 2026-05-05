@@ -10,6 +10,7 @@ import {
   WorkerProfileRowDTO,
   UserFiltersDTO,
 } from '@modules/users/users.schema.ts';
+import { clinics } from '@/core/db/schema/clinics.ts';
 
 export class AuthRepository extends BaseRepository {
   constructor(db: Database) {
@@ -89,6 +90,70 @@ export class AuthRepository extends BaseRepository {
     });
 
     return !!result;
+  }
+
+  async findMe(userId: string) {
+    const row = await this.db
+      .select({
+        user: {
+          id: users.id,
+          email: users.email,
+          isPlatformAdmin: users.isPlatformAdmin,
+          isActive: users.isActive,
+          createdAt: users.createdAt,
+          updatedAt: users.updatedAt,
+        },
+        worker: {
+          id: workers.id,
+          clinicId: workers.clinicId,
+          firstName: workers.firstName,
+          secondName: workers.secondName,
+          lastName: workers.lastName,
+          secondLastName: workers.secondLastName,
+          phone: workers.phone,
+          dateOfBirth: workers.dateOfBirth,
+          gender: workers.gender,
+          prefix: workers.prefix,
+          specialty: workers.specialty,
+          idNumber: workers.idNumber,
+          licenseNumber: workers.licenseNumber,
+          calendarColor: workers.calendarColor,
+          contractType: workers.contractType,
+        },
+        clinic: {
+          id: clinics.id,
+          name: clinics.name,
+          slug: clinics.slug,
+          email: clinics.email,
+          phone: clinics.phone,
+          logoUrl: clinics.logoUrl,
+          timeZone: clinics.timeZone,
+          settings: clinics.settings,
+          createdAt: clinics.createdAt,
+          updatedAt: clinics.updatedAt,
+        },
+        role: {
+          id: roles.id,
+          name: roles.name,
+          displayName: roles.displayName,
+        },
+      })
+      .from(users)
+      .leftJoin(workers, eq(users.id, workers.userId))
+      .leftJoin(clinics, eq(workers.clinicId, clinics.id))
+      .leftJoin(roles, eq(workers.roleId, roles.id))
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!row.length) return null;
+
+    const { user, worker, role, clinic } = row[0]!;
+    return {
+      ...user,
+      worker: worker?.id ? worker : null,
+      role: role?.id ? role : null,
+      clinic: clinic?.id ? clinic : null,
+    };
   }
 
   async updatePassword(userId: string, passwordHash: string, tx?: Database) {

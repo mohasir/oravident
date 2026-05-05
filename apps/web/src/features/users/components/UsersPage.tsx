@@ -12,14 +12,14 @@ export function UsersPageIndex() {
     <div>
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t('user.title')}</h1>
+          <h1 className="text-2xl font-bold">{t('user.index.title')}</h1>
           <p className="text-muted-foreground mt-1">
-            {t('user.description')}
+            {t('user.index.description')}
           </p>
         </div>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
-          {t('user.addUser')}
+          {t('user.index.add')}
         </Button>
       </div>
       <UsersTable />
