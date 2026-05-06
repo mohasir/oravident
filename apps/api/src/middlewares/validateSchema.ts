@@ -24,16 +24,16 @@ export const validateSchema = <T extends RequestValidationSchema>(
         let currentSchema: z.ZodTypeAny = baseBody;
 
         // Unwrap ZodEffects to find the underlying ZodObject
-        while (currentSchema._def?.typeName === 'ZodEffects') {
+        while ((currentSchema as any)._def?.typeName === 'ZodEffects') {
           currentSchema = (currentSchema as any)._def.schema;
         }
 
         if (
-          currentSchema._def?.typeName === 'ZodObject' &&
+          (currentSchema as any)._def?.typeName === 'ZodObject' &&
           'clinicId' in (currentSchema as any).shape
         ) {
           // If the original was a ZodObject, we can just omit
-          if (baseBody._def?.typeName === 'ZodObject') {
+          if ((baseBody as any)._def?.typeName === 'ZodObject') {
             return (baseBody as any).omit({ clinicId: true });
           }
 

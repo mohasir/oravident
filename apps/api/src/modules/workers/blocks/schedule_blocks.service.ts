@@ -46,10 +46,12 @@ export class ScheduleBlocksService {
   ) {
     await this.resolveBlock(blockId, workerId, clinicId);
 
+    const { startAt, endAt, ...rest } = data;
+
     const block = await this.scheduleBlocksRepository.update(blockId, {
-      ...data,
-      ...(data.startAt && { startAt: new Date(data.startAt) }),
-      ...(data.endAt && { endAt: new Date(data.endAt) }),
+      ...rest,
+      ...(startAt && { startAt: new Date(startAt) }),
+      ...(endAt && { endAt: new Date(endAt) }),
     });
 
     if (!block) {

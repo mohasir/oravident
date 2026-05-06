@@ -276,6 +276,7 @@ export function AppointmentForm({
           <FormField
             label={t('appointment.form.fields.date.label', 'Fecha')}
             required
+            htmlFor="appointment-date"
             error={errors.startsAt?.message ? t(errors.startsAt.message) : undefined}
           >
             <DatePicker
@@ -291,6 +292,7 @@ export function AppointmentForm({
           <FormField
             label={t('appointment.form.fields.startTime.label', 'Hora Inicio')}
             required
+            htmlFor="startTime"
           >
             <TimePicker
               value={startsAt && isValid(parseISO(startsAt)) ? format(parseISO(startsAt), 'HH:mm') : ''}
@@ -301,6 +303,7 @@ export function AppointmentForm({
           <FormField
             label={t('appointment.form.fields.endTime.label', 'Hora Fin')}
             required
+            htmlFor="endTime"
             error={errors.endsAt?.message ? t(errors.endsAt.message) : undefined}
           >
             <TimePicker
