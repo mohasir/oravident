@@ -45,7 +45,9 @@
       "rowActions": {
         "copyId": "Copiar ID",
         "idCopied": "ID copiado al portapapeles"
-      }
+      },
+      "unknown": "Desconocido",
+      "not_specified": "No especificado"
     }
   },
   "user": {
@@ -321,6 +323,30 @@
       "submit": "Registrar paciente",
       "submitEdit": "Actualizar paciente",
       "error": "Algo salió mal"
+    }
+  },
+  "appointment": {
+    "index": {
+      "title": "Citas",
+      "description": "Administra la agenda de la clínica.",
+      "add": "Nueva cita",
+      "detail": {
+        "title": "Detalle de la Cita",
+        "patient": "Paciente",
+        "service": "Servicio",
+        "date": "Fecha",
+        "time": "Horario",
+        "notes": "Notas",
+        "worker": "Doctor(a)",
+        "price": "Costo",
+        "cancelled_title": "Cita Cancelada",
+        "cancelled_at": "Fecha de cancelación",
+        "cancelled_by": "Cancelado por",
+        "cancel_reason": "Motivo",
+        "metadata": "Historial del registro",
+        "created_at": "Creado el",
+        "updated_at": "Última actualización"
+      }
     }
   },
   "auth": {

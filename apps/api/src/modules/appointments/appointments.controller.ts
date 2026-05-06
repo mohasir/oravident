@@ -4,7 +4,8 @@ import { AppointmentsService } from '@modules/appointments/appointments.service.
 import { CatchAsync } from '@core/shared/decorators/CatchAsync.ts';
 import {
   appointmentResource,
-  appointmentCollectionResource,
+  appointmentWithRelationsResource,
+  appointmentWithRelationsCollectionResource,
 } from '@modules/appointments/appointments.resource.ts';
 import {
   CancelAppointmentRequest,
@@ -24,7 +25,9 @@ export class AppointmentsController extends BaseController {
 
   async createAppointment(req: CreateAppointmentRequest, res: Response) {
     const { body } = validateRequest(req);
-    const result = await this.appointmentsService.create(body);
+    const tenantId = this.resolveTenantId(req.tenantId);
+
+    const result = await this.appointmentsService.create(body, tenantId!);
     return this.created(
       res,
       'Appointment created successfully',
@@ -34,28 +37,44 @@ export class AppointmentsController extends BaseController {
 
   async getAppointments(req: GetAppointmentsRequest, res: Response) {
     const { query } = validateRequest(req);
-    const result = await this.appointmentsService.getAllAppointments(query);
+    const tenantId = this.resolveTenantId(req.tenantId);
+
+    const result = await this.appointmentsService.getAllAppointments(
+      query,
+      tenantId,
+    );
     return this.ok(res, 'Appointments retrieved successfully', {
       ...result,
-      items: appointmentCollectionResource(result.items),
+      items: appointmentWithRelationsCollectionResource(result.items),
     });
   }
 
   async getAppointment(req: GetAppointmentRequest, res: Response) {
     const { params } = validateRequest(req);
+    const tenantId = this.resolveTenantId(req.tenantId);
     const { id } = params;
-    const result = await this.appointmentsService.getAppointmentById(id);
+
+    const result = await this.appointmentsService.getAppointmentById(
+      id,
+      tenantId,
+    );
     return this.ok(
       res,
       'Appointment retrieved successfully',
-      appointmentResource(result),
+      appointmentWithRelationsResource(result),
     );
   }
 
   async updateAppointment(req: UpdateAppointmentRequest, res: Response) {
     const { params, body } = validateRequest(req);
     const { id } = params;
-    const result = await this.appointmentsService.updateAppointment(id, body);
+    const tenantId = this.resolveTenantId(req.tenantId);
+
+    const result = await this.appointmentsService.updateAppointment(
+      id,
+      body,
+      tenantId,
+    );
     return this.ok(
       res,
       'Appointment updated successfully',
@@ -66,7 +85,13 @@ export class AppointmentsController extends BaseController {
   async cancelAppointment(req: CancelAppointmentRequest, res: Response) {
     const { params, body } = validateRequest(req);
     const { id } = params;
-    const result = await this.appointmentsService.cancelAppointment(id, body);
+    const tenantId = this.resolveTenantId(req.tenantId);
+
+    const result = await this.appointmentsService.cancelAppointment(
+      id,
+      body,
+      tenantId!,
+    );
     return this.ok(
       res,
       'Appointment cancelled successfully',
@@ -77,7 +102,9 @@ export class AppointmentsController extends BaseController {
   async deleteAppointment(req: DeleteAppointmentRequest, res: Response) {
     const { params } = validateRequest(req);
     const { id } = params;
-    await this.appointmentsService.deleteAppointment(id);
+    const tenantId = this.resolveTenantId(req.tenantId);
+
+    await this.appointmentsService.deleteAppointment(id, tenantId!);
     return this.noContent(res);
   }
 }

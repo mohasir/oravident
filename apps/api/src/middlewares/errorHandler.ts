@@ -51,6 +51,9 @@ export const errorHandlerMiddleware = (
     }
   } else {
     console.error('Critical error not handled:', err);
+    if (err instanceof Error) {
+      console.error('   ↳ [Stack Trace]:', err.stack);
+    }
   }
 
   const fallbackError = new ApiError(

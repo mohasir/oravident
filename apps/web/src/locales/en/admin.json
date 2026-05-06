@@ -44,7 +44,9 @@
       "rowActions": {
         "copyId": "Copy ID",
         "idCopied": "ID copied to clipboard"
-      }
+      },
+      "unknown": "Unknown",
+      "not_specified": "Not specified"
     }
   },
   "profile": {
@@ -241,6 +243,30 @@
         "delete": "Delete",
         "deleteSuccess": "Receptionist deleted successfully",
         "deleteError": "Error deleting receptionist"
+      }
+    }
+  },
+  "appointment": {
+    "index": {
+      "title": "Appointments",
+      "description": "Manage the clinic's agenda.",
+      "add": "New appointment",
+      "detail": {
+        "title": "Appointment Details",
+        "patient": "Patient",
+        "service": "Service",
+        "date": "Date",
+        "time": "Time",
+        "notes": "Notes",
+        "worker": "Doctor",
+        "price": "Cost",
+        "cancelled_title": "Appointment Cancelled",
+        "cancelled_at": "Cancellation date",
+        "cancelled_by": "Cancelled by",
+        "cancel_reason": "Reason",
+        "metadata": "Record History",
+        "created_at": "Created on",
+        "updated_at": "Last update"
       }
     }
   },
