@@ -15,6 +15,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from '@repo/ui';
 import { NavMenuItemProps } from '@/components/shared/Sidebar/types';
 
@@ -22,6 +23,13 @@ export const NavMenuItem = ({ item }: NavMenuItemProps) => {
   const pathname = usePathname();
   const { t } = useTranslation('admin');
   const { can } = useCan();
+  const { setOpenMobile, isMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const Icon = (item.icon ? IconMap[item.icon] : null) ?? LayoutDashboard;
 
@@ -60,7 +68,7 @@ export const NavMenuItem = ({ item }: NavMenuItemProps) => {
                 return (
                   <SidebarMenuSubItem key={String(child.href ?? child.label)}>
                     <SidebarMenuSubButton asChild isActive={isSubActive}>
-                      <Link href={child.href!}>
+                      <Link href={child.href!} onClick={handleLinkClick}>
                         <ChildIcon />
                         <span>{t(child.label)}</span>
                       </Link>
@@ -80,7 +88,7 @@ export const NavMenuItem = ({ item }: NavMenuItemProps) => {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive} tooltip={t(item.label)}>
-        <Link href={item.href!}>
+        <Link href={item.href!} onClick={handleLinkClick}>
           <Icon />
           <span>{t(item.label)}</span>
         </Link>

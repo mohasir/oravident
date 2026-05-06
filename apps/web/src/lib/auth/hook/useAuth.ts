@@ -9,10 +9,9 @@ export function useAuth() {
   const signIn = useCallback(async (data: LoginSchema) => {
     try {
       const { accessToken } = await authService.login(data);
-      
-      // Set session cookie for proxy/middleware visibility in development
+
       Cookies.set('auth-session', 'true', { expires: 7 });
-      
+
       useAuthStore.getState().setAuth(accessToken);
 
       const meResponse = await authService.getMe(accessToken);
