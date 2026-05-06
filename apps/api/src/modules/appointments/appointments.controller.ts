@@ -107,4 +107,9 @@ export class AppointmentsController extends BaseController {
     await this.appointmentsService.deleteAppointment(id, tenantId!);
     return this.noContent(res);
   }
+
+  async getStatuses(_req: any, res: Response) {
+    const result = await this.appointmentsService.getStatuses();
+    return this.ok(res, 'Appointment statuses retrieved successfully', result);
+  }
 }

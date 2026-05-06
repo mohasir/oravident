@@ -14,7 +14,7 @@ const MAX_DURATION_HOURS = 8;
 
 const appointmentInputSchema = z
   .object({
-    clinicId: createIdSchema('clinicId'),
+    clinicId: createIdSchema('clinicId').optional(),
     branchId: createIdSchema('branchId'),
     patientId: createIdSchema('patientId'),
     workerId: createIdSchema('workerId'),

@@ -467,4 +467,8 @@ export class AppointmentsService {
     }
     return { message: 'Appointment successfully deactivated' };
   }
+
+  async getStatuses() {
+    return this.appointmentsRepository.findStatuses();
+  }
 }

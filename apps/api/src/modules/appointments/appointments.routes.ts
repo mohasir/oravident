@@ -17,6 +17,11 @@ const router: Router = Router();
 
 router.use(protect);
 
+router.get(
+  '/statuses',
+  appointmentsController.getStatuses,
+);
+
 router.post(
   '/',
   guardMiddleware([PERMISSIONS.CREATE_APPOINTMENT]),

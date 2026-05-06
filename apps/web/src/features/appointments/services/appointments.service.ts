@@ -17,4 +17,7 @@ export const appointmentsService = {
 
   delete: (id: string) =>
     PROTECTED_API.delete(`/appointments/${id}`),
+
+  getStatuses: () =>
+    PROTECTED_API.get<ApiResponse<any[]>>('/appointments/statuses').then((r) => r.data),
 };

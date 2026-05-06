@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import z from 'zod';
+import { z } from 'zod';
 import { createIdParamSchema } from '@common/schemas/common.schema.ts';
 
 export interface RequestValidationSchema {

@@ -192,4 +192,8 @@ export class AppointmentsRepository {
       .returning();
     return !!deletedAppointment;
   }
+
+  async findStatuses() {
+    return this.db.select().from(appointmentStatuses);
+  }
 }

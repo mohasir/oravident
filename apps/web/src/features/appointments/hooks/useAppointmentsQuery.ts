@@ -12,6 +12,7 @@ export const APPOINTMENT_KEYS = {
   list: (params?: GetAppointmentsParams) =>
     [...APPOINTMENT_KEYS.lists(), params] as const,
   detail: (id: string) => [...APPOINTMENT_KEYS.all, id] as const,
+  statuses: () => [...APPOINTMENT_KEYS.all, 'statuses'] as const,
 };
 
 export function useAppointmentsQuery(params?: GetAppointmentsParams) {
@@ -56,5 +57,12 @@ export function useMutationDeleteAppointment() {
     mutationFn: (id: string) => appointmentsService.delete(id),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: APPOINTMENT_KEYS.lists() }),
+  });
+}
+
+export function useAppointmentStatusesQuery() {
+  return useQuery({
+    queryKey: APPOINTMENT_KEYS.statuses(),
+    queryFn: () => appointmentsService.getStatuses(),
   });
 }

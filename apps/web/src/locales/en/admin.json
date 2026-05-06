@@ -41,6 +41,10 @@
       "previous": "Previous",
       "actions": "Actions",
       "searchPlaceholder": "Filter...",
+      "select": {
+        "placeholder": "Select...",
+        "date": "Select date"
+      },
       "rowActions": {
         "copyId": "Copy ID",
         "idCopied": "ID copied to clipboard"
@@ -251,6 +255,43 @@
       "title": "Appointments",
       "description": "Manage the clinic's agenda.",
       "add": "New appointment",
+      "create": {
+        "title": "New Appointment",
+        "success": "Appointment created successfully"
+      },
+      "edit": {
+        "success": "Appointment updated successfully"
+      },
+      "form": {
+        "fields": {
+          "branch": { "label": "Branch" },
+          "status": { "label": "Status" },
+          "patient": { "label": "Patient" },
+          "worker": { "label": "Doctor" },
+          "service": { "label": "Service" },
+          "price": { "label": "Cost (Optional)" },
+          "date": { "label": "Date" },
+          "startTime": { "label": "Start Time" },
+          "endTime": { "label": "End Time" },
+          "notes": { "label": "Notes", "placeholder": "Additional notes..." }
+        },
+        "sections": {
+          "schedule": "Appointment Schedule"
+        },
+        "submit": "Create Appointment",
+        "submitEdit": "Update Appointment",
+        "error": "Something went wrong"
+      },
+      "validation": {
+        "branchRequired": "Branch is required",
+        "patientRequired": "Patient is required",
+        "workerRequired": "Doctor is required",
+        "serviceRequired": "Service is required",
+        "statusRequired": "Status is required",
+        "startsAtRequired": "Start date is required",
+        "endsAtRequired": "End date is required",
+        "invalidPrice": "Invalid price"
+      },
       "detail": {
         "title": "Appointment Details",
         "patient": "Patient",
