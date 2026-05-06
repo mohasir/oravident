@@ -38,6 +38,9 @@ importers:
       dayjs:
         specifier: ^1.11.20
         version: 1.11.20
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@types/pg@8.20.0)(kysely@0.28.16)(postgres@3.4.9)

@@ -36,12 +36,6 @@ export async function proxy(request: NextRequest) {
   const origin = request.nextUrl.origin;
   const homeUrl = createAbsoluteUrl(origin, DEFAULT_REDIRECT_HOME);
 
-  console.log({
-    hasSession,
-    origin,
-    homeUrl,
-  });
-
   if (guards.shouldRedirectToLogin()) {
     const loginUrl = createAbsoluteUrl(origin, DEFAULT_REDIRECT_LOGIN);
     const callbackPath = pathname + request.nextUrl.search;

@@ -51,14 +51,11 @@ PROTECTED_API.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log('entra en el interceptor');
-
     if (
       axios.isAxiosError(error) &&
       error.response?.status === 401 &&
       !originalRequest._retry
     ) {
-      console.log('se hace retry');
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject });
