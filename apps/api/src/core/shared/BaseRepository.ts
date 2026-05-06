@@ -3,7 +3,7 @@ import { and, count, eq, getTableColumns, isNull, SQL, sql } from 'drizzle-orm';
 import { PgColumn, PgSelect, AnyPgTable } from 'drizzle-orm/pg-core';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DefaultColumns = Record<string, any>;
+export type DefaultColumns = Record<string, any>;
 
 export abstract class BaseRepository<
   TTable extends AnyPgTable = AnyPgTable,
