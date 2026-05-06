@@ -30,6 +30,9 @@ export class BranchServicesRepository extends BaseRepository<
         },
       })
       .returning();
+    if (!record) {
+      throw new Error('Failed to upsert branch service');
+    }
     return record;
   }
 

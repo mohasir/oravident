@@ -12,8 +12,13 @@ describe('UserInvitationsService', () => {
   let mockAuthRepo: Mocked<AuthRepository>;
   let mockInviteRepo: Mocked<UserInvitationsRepository>;
   let mockRoleRepo: Mocked<RolesRepository>;
+  let mockTxManager: any;
 
   beforeEach(() => {
+    mockTxManager = {
+      run: vi.fn((cb) => cb()),
+    };
+
     mockAuthRepo = {
       userExists: vi.fn(),
     } as unknown as Mocked<AuthRepository>;
@@ -22,6 +27,7 @@ describe('UserInvitationsService', () => {
       findByEmail: vi.fn(),
       existsByEmail: vi.fn(),
       create: vi.fn(),
+      hasInvitationActive: vi.fn(),
     } as unknown as Mocked<UserInvitationsRepository>;
 
     mockRoleRepo = {
@@ -29,6 +35,7 @@ describe('UserInvitationsService', () => {
     } as unknown as Mocked<RolesRepository>;
 
     userInvitationsService = new UserInvitationsService(
+      mockTxManager,
       mockInviteRepo,
       mockAuthRepo,
       mockRoleRepo,
@@ -77,7 +84,7 @@ describe('UserInvitationsService', () => {
     it('should throw an error if there is already a pending invitation', async () => {
       mockRoleRepo.isValidRoleForClinic.mockResolvedValue(true);
       mockAuthRepo.userExists.mockResolvedValue(false);
-      mockInviteRepo.exists.mockResolvedValue(true);
+      mockInviteRepo.hasInvitationActive.mockResolvedValue(true);
 
       const inviteData: SendInvitationDTO = {
         email: 'pending@dent.com',
@@ -96,7 +103,7 @@ describe('UserInvitationsService', () => {
     it('should create an invitation if everything is correct', async () => {
       mockRoleRepo.isValidRoleForClinic.mockResolvedValue(true);
       mockAuthRepo.userExists.mockResolvedValue(false);
-      mockInviteRepo.exists.mockResolvedValue(false);
+      mockInviteRepo.hasInvitationActive.mockResolvedValue(false);
       mockInviteRepo.create.mockResolvedValue({
         id: 'new-invite-id',
         email: 'new@dent.com',
