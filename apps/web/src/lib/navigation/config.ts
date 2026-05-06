@@ -10,10 +10,10 @@ export const CLINIC_OWNER_MENU_CONFIG: NavGroup[] = [
     group: 'common.menu.groups.agenda',
     items: [NAV_ITEMS.APPOINTMENTS, NAV_ITEMS.PATIENTS],
   },
-  /* {
+  {
     group: 'common.menu.groups.team',
     items: [NAV_ITEMS.DOCTORS, NAV_ITEMS.RECEPTIONISTS],
-  }, */
+  },
   {
     group: 'common.menu.groups.clinic',
     items: [

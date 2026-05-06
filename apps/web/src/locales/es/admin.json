@@ -205,6 +205,54 @@
       "error": "Algo salió mal"
     }
   },
+  "doctor": {
+    "index": {
+      "title": "Doctores",
+      "description": "Administra el equipo médico de tu clínica.",
+      "add": "Agregar doctor",
+      "table": {
+        "name": "Nombre",
+        "specialty": "Especialidad",
+        "licenseNumber": "Cédula/Licencia",
+        "phone": "Teléfono",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "filterName": "Filtrar por nombre...",
+        "empty": "No se encontraron doctores."
+      },
+      "actions": {
+        "edit": "Editar doctor",
+        "delete": "Eliminar",
+        "deleteSuccess": "Doctor eliminado exitosamente",
+        "deleteError": "Error al eliminar doctor"
+      }
+    }
+  },
+  "receptionist": {
+    "index": {
+      "title": "Recepcionistas",
+      "description": "Administra el equipo de recepción.",
+      "add": "Agregar recepcionista",
+      "table": {
+        "name": "Nombre",
+        "phone": "Teléfono",
+        "status": "Estado",
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "createdAt": "Creado el",
+        "filterName": "Filtrar por nombre...",
+        "empty": "No se encontraron recepcionistas."
+      },
+      "actions": {
+        "edit": "Editar recepcionista",
+        "delete": "Eliminar",
+        "deleteSuccess": "Recepcionista eliminado exitosamente",
+        "deleteError": "Error al eliminar recepcionista"
+      }
+    }
+  },
   "patient": {
     "index": {
       "title": "Pacientes",

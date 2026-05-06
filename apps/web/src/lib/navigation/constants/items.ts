@@ -30,14 +30,14 @@ export const ALL_USERS_ITEM: NavItem = {
 
 export const DOCTORS_ITEM: NavItem = {
   label: 'common.menu.doctors',
-  href: '/admin/workers/doctors',
+  href: '/admin/doctors',
   icon: 'doctor',
   guard: [PERMISSIONS.LIST_WORKER],
 };
 
 export const RECEPTIONISTS_ITEM: NavItem = {
   label: 'common.menu.receptionists',
-  href: '/admin/workers/receptionists',
+  href: '/admin/receptionists',
   icon: 'receptionist',
   guard: [PERMISSIONS.LIST_WORKER],
 };

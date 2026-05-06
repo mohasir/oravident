@@ -196,6 +196,54 @@
       "error": "Something went wrong"
     }
   },
+  "doctor": {
+    "index": {
+      "title": "Doctors",
+      "description": "Manage your clinic's medical team.",
+      "add": "Add doctor",
+      "table": {
+        "name": "Name",
+        "specialty": "Specialty",
+        "licenseNumber": "License Number",
+        "phone": "Phone",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created at",
+        "filterName": "Filter by name...",
+        "empty": "No doctors found."
+      },
+      "actions": {
+        "edit": "Edit doctor",
+        "delete": "Delete",
+        "deleteSuccess": "Doctor deleted successfully",
+        "deleteError": "Error deleting doctor"
+      }
+    }
+  },
+  "receptionist": {
+    "index": {
+      "title": "Receptionists",
+      "description": "Manage the reception team.",
+      "add": "Add receptionist",
+      "table": {
+        "name": "Name",
+        "phone": "Phone",
+        "status": "Status",
+        "active": "Active",
+        "inactive": "Inactive",
+        "createdAt": "Created at",
+        "filterName": "Filter by name...",
+        "empty": "No receptionists found."
+      },
+      "actions": {
+        "edit": "Edit receptionist",
+        "delete": "Delete",
+        "deleteSuccess": "Receptionist deleted successfully",
+        "deleteError": "Error deleting receptionist"
+      }
+    }
+  },
   "auth": {
     "forgotPassword": {
       "title": "Forgot Password",
