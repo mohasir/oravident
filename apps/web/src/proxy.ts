@@ -29,8 +29,9 @@ export async function proxy(request: NextRequest) {
   }
 
   // Auth guards
-
-  const hasSession = request.cookies.has('refreshToken');
+  const hasSession = 
+    request.cookies.has('refreshToken') || 
+    request.cookies.has('auth-session');
 
   const guards = middlewareGuards(hasSession, pathname);
   const origin = request.nextUrl.origin;

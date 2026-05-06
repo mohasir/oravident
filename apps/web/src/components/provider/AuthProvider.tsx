@@ -61,7 +61,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       );
 
       if (!currentState.isAuthenticated && isProtectedRoute) {
-        router.replace(DEFAULT_REDIRECT_LOGIN as Route);
+        const loginUrl = `${DEFAULT_REDIRECT_LOGIN}?callbackUrl=${pathname}`;
+        router.replace(loginUrl as Route);
         return;
       }
 

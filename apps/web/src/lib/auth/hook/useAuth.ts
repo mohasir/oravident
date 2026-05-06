@@ -2,12 +2,17 @@ import { useCallback } from 'react';
 import { authService } from '@/features/auth/services/auth.service';
 import { useAuthStore } from '@/lib/auth/store/auth.store';
 import { clearAllStores } from '@/lib/store/clear-stores';
+import Cookies from 'js-cookie';
 import type { LoginSchema } from '@/features/auth/schemas/login.schema';
 
 export function useAuth() {
   const signIn = useCallback(async (data: LoginSchema) => {
     try {
       const { accessToken } = await authService.login(data);
+      
+      // Set session cookie for proxy/middleware visibility in development
+      Cookies.set('auth-session', 'true', { expires: 7 });
+      
       useAuthStore.getState().setAuth(accessToken);
 
       const meResponse = await authService.getMe(accessToken);
@@ -26,6 +31,7 @@ export function useAuth() {
     try {
       await authService.logout();
     } finally {
+      Cookies.remove('auth-session');
       clearAllStores();
     }
   }, []);
