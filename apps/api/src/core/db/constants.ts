@@ -11,5 +11,6 @@ export const DB_LIMITS = {
   TIMEZONE: 50,
   ID_NUMBER: 20,
   GENDER: 20,
-  PREFIX: 20
+  PREFIX: 20,
+  ADDRESS: 255,
 } as const;

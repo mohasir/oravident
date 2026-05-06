@@ -21,9 +21,10 @@ import type { Branch } from '../types';
 
 interface BranchesTableProps {
   onEdit?: (branch: Branch) => void;
+  onViewSchedule?: (branch: Branch) => void;
 }
 
-export function BranchesTable({ onEdit }: BranchesTableProps) {
+export function BranchesTable({ onEdit, onViewSchedule }: BranchesTableProps) {
   const { t } = useTranslation('admin');
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -32,7 +33,7 @@ export function BranchesTable({ onEdit }: BranchesTableProps) {
     pageSize: 10,
   });
 
-  const { handlers } = useBranchesActions({ onEdit });
+  const { handlers } = useBranchesActions({ onEdit, onViewSchedule });
   const columns = useColumns(handlers);
 
   const { data, isLoading } = useBranchesQuery({

@@ -7,12 +7,14 @@ import { Plus } from 'lucide-react';
 import { BranchesTable } from './BranchesTable';
 import { CreateBranchDialog } from './CreateBranchDialog';
 import { EditBranchDialog } from './EditBranchDialog';
+import { BranchScheduleDialog } from './BranchScheduleDialog';
 import type { Branch } from '../types';
 
 export function BranchesPageIndex() {
   const { t } = useTranslation('admin');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
+  const [viewingScheduleBranch, setViewingScheduleBranch] = useState<Branch | null>(null);
 
   return (
     <div>
@@ -29,7 +31,10 @@ export function BranchesPageIndex() {
         </Button>
       </div>
 
-      <BranchesTable onEdit={setEditingBranch} />
+      <BranchesTable
+        onEdit={setEditingBranch}
+        onViewSchedule={setViewingScheduleBranch}
+      />
 
       <CreateBranchDialog
         open={isCreateDialogOpen}
@@ -40,6 +45,12 @@ export function BranchesPageIndex() {
         branch={editingBranch}
         open={!!editingBranch}
         onOpenChange={(open) => !open && setEditingBranch(null)}
+      />
+
+      <BranchScheduleDialog
+        branch={viewingScheduleBranch}
+        open={!!viewingScheduleBranch}
+        onOpenChange={(open) => !open && setViewingScheduleBranch(null)}
       />
     </div>
   );

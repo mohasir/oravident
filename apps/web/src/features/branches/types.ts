@@ -1,5 +1,14 @@
 import type { Row } from '@tanstack/react-table';
 
+export interface BranchSchedule {
+  id: string;
+  dayOfWeek: number;
+  dayName: string;
+  openTime: string;
+  closeTime: string;
+  createdAt: string;
+}
+
 export interface Branch {
   id: string;
   clinicId: string;
@@ -14,6 +23,7 @@ export interface Branch {
   isActive: boolean;
   color: string | null;
   createdAt: string;
+  schedules: BranchSchedule[];
 }
 
 export interface GetBranchesParams {
@@ -27,7 +37,6 @@ export interface GetBranchesParams {
 
 export interface CreateBranchDTO {
   name: string;
-  slug: string;
   address: string;
   email?: string;
   phone?: string;
@@ -35,11 +44,15 @@ export interface CreateBranchDTO {
   longitude?: string;
   color?: string;
   settings?: Record<string, unknown>;
+  schedules?: {
+    dayOfWeek: number;
+    openTime: string;
+    closeTime: string;
+  }[];
 }
 
 export interface UpdateBranchDTO {
   name?: string;
-  slug?: string;
   address?: string;
   email?: string;
   phone?: string;
@@ -47,12 +60,18 @@ export interface UpdateBranchDTO {
   longitude?: string;
   color?: string;
   settings?: Record<string, unknown>;
+  schedules?: {
+    dayOfWeek: number;
+    openTime: string;
+    closeTime: string;
+  }[];
 }
 
 export interface BranchesTableHandlers {
   onCopyId: (id: string) => Promise<void>;
   onEdit: (branch: Branch) => void;
   onDeactivate: (branch: Branch) => void;
+  onViewSchedule: (branch: Branch) => void;
 }
 
 export interface BranchActionsCellProps {

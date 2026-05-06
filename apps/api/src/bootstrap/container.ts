@@ -19,6 +19,7 @@ import { UserPasswordResetsRepository } from '@modules/auth/userPasswordResets.r
 import { WorkersRepository } from '@modules/workers/workers.repository.ts';
 import { ServicesRepository } from '@modules/services/services.repository.ts';
 import { BranchesRepository } from '@modules/branches/branches.repository.ts';
+import { BranchSchedulesRepository } from '@modules/branches/schedule/branch_schedules.repository.ts';
 import { PatientsRepository } from '@modules/patients/patients.repository.ts';
 import { AppointmentsRepository } from '@modules/appointments/appointments.repository.ts';
 
@@ -39,6 +40,8 @@ import { ServicesService } from '@modules/services/services.service.ts';
 import { ServicesController } from '@modules/services/services.controller.ts';
 import { BranchesService } from '@modules/branches/branches.service.ts';
 import { BranchesController } from '@modules/branches/branches.controller.ts';
+import { BranchSchedulesService } from '@modules/branches/schedule/branch_schedules.service.ts';
+import { BranchSchedulesController } from '@modules/branches/schedule/branch_schedules.controller.ts';
 import { PatientsService } from '@modules/patients/patients.service.ts';
 import { PatientsController } from '@modules/patients/patients.controller.ts';
 import { AppointmentsService } from '@modules/appointments/appointments.service.ts';
@@ -61,6 +64,7 @@ export const userPasswordResetsRepository = new UserPasswordResetsRepository(
 export const workersRepository = new WorkersRepository(db);
 export const servicesRepository = new ServicesRepository(db);
 export const branchesRepository = new BranchesRepository(db);
+export const branchSchedulesRepository = new BranchSchedulesRepository(db);
 export const patientsRepository = new PatientsRepository(db);
 export const appointmentsRepository = new AppointmentsRepository(db);
 
@@ -85,7 +89,15 @@ export const usersService = new UsersService(userRepository);
 export const workersService = new WorkersService(workersRepository);
 export const rolesService = new RolesService(rolesRepository);
 export const servicesService = new ServicesService(servicesRepository);
-export const branchesService = new BranchesService(branchesRepository);
+export const branchesService = new BranchesService(
+  branchesRepository,
+  branchSchedulesRepository,
+  transactionManager,
+);
+export const branchSchedulesService = new BranchSchedulesService(
+  branchSchedulesRepository,
+  branchesRepository,
+);
 export const patientsService = new PatientsService(
   patientsRepository,
   branchesRepository,
@@ -109,5 +121,6 @@ export const clinicsController = new ClinicsController(clinicService);
 export const rolesController = new RolesController(rolesService);
 export const servicesController = new ServicesController(servicesService);
 export const branchesController = new BranchesController(branchesService);
+export const branchSchedulesController = new BranchSchedulesController(branchSchedulesService);
 export const patientsController = new PatientsController(patientsService);
 export const appointmentsController = new AppointmentsController(appointmentsService);

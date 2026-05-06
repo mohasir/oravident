@@ -5,9 +5,13 @@ import { useMutationDeleteBranch } from './useBranchesQuery';
 
 interface UseBranchesActionsProps {
   onEdit?: (branch: Branch) => void;
+  onViewSchedule?: (branch: Branch) => void;
 }
 
-export function useBranchesActions({ onEdit }: UseBranchesActionsProps = {}) {
+export function useBranchesActions({
+  onEdit,
+  onViewSchedule,
+}: UseBranchesActionsProps = {}) {
   const { t } = useTranslation('admin');
   const deleteBranch = useMutationDeleteBranch();
 
@@ -45,6 +49,7 @@ export function useBranchesActions({ onEdit }: UseBranchesActionsProps = {}) {
       onCopyId,
       onEdit: handleEdit,
       onDeactivate: handleDeactivate,
+      onViewSchedule: (branch: Branch) => onViewSchedule?.(branch),
     } satisfies BranchesTableHandlers,
   };
 }

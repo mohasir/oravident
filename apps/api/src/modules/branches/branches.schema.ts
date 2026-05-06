@@ -7,6 +7,7 @@ import {
   paginationQuerySchema,
 } from '@common/schemas/common.schema.ts';
 import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
+import { scheduleInputSchema } from '@modules/branches/schedule/branch_schedules.schema.ts';
 
 // ==========================================
 // 1. CORE DOMAIN SCHEMAS
@@ -14,15 +15,26 @@ import { commonIdParamSchema, TypedRequest } from '@common/types/requests.ts';
 
 export const createBranchSchema = z
   .object({
-    name: z.string().min(2).max(DB_LIMITS.NAME),
-    slug: z.string().min(2).max(DB_LIMITS.SLUG),
-    address: z.string().min(1),
+    name: z.string().min(1).max(DB_LIMITS.NAME),
+    address: z.string().min(1).max(DB_LIMITS.ADDRESS),
     email: emailSchema.optional(),
     phone: z.string().max(DB_LIMITS.PHONE).optional(),
     latitude: z.string().optional(),
     longitude: z.string().optional(),
     color: z.string().max(DB_LIMITS.COLOR_HEX).optional(),
     settings: z.record(z.string(), z.unknown()).optional(),
+    schedules: z
+      .array(scheduleInputSchema)
+      .max(7)
+      .optional()
+      .refine(
+        (items) => {
+          if (!items) return true;
+          const days = items.map((s) => s.dayOfWeek);
+          return new Set(days).size === days.length;
+        },
+        { message: 'Each day of the week can only appear once' },
+      ),
   })
   .strict();
 

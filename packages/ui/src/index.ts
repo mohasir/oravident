@@ -160,6 +160,7 @@ export { Spinner } from './ui/spinner';
 // Components — Dialog
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -205,3 +206,5 @@ export { Calendar, CalendarDayButton } from './ui/calendar';
 // Components - DatePicker
 export { DatePicker } from './components/datePicker';
 
+// Components - TimePicker
+export { TimePicker } from './components/timePicker';

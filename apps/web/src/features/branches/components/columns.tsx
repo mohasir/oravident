@@ -80,6 +80,11 @@ export function useColumns(handlers: BranchesTableHandlers): ColumnDef<Branch>[]
               label={t('common.table.actions')}
               actions={[
                 { label: t('common.table.rowActions.copyId'), onAction: () => handlers.onCopyId(branch.id) },
+                {
+                  label: t('branch.index.actions.viewSchedule', 'View Schedule'),
+                  onAction: () => handlers.onViewSchedule(branch),
+                  disabled: !branch.schedules || branch.schedules.length === 0,
+                },
                 { separator: true },
                 { label: t('branch.index.actions.edit'), onAction: () => handlers.onEdit(branch) },
                 {

@@ -67,8 +67,8 @@ export function DataTableRowActions({
             return (
               <DropdownMenuItem
                 key={i}
-                onClick={() => handleClick(action, i)}
-                disabled={isLoading}
+                onClick={() => !action.disabled && handleClick(action, i)}
+                disabled={isLoading || action.disabled}
                 className={
                   action.variant === 'destructive' ? 'text-red-600' : ''
                 }

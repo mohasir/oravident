@@ -99,7 +99,8 @@
         "disableTitle": "Disable branch",
         "confirmDisable": "Are you sure you want to disable {{name}}?",
         "disableSuccess": "Branch disabled successfully",
-        "disableError": "Error disabling branch"
+        "disableError": "Error disabling branch",
+        "viewSchedule": "View Schedule"
       }
     },
     "create": {
@@ -121,11 +122,31 @@
         "phone": { "label": "Phone (Optional)", "placeholder": "+1 234 567 890" },
         "latitude": { "label": "Latitude", "placeholder": "0.0000" },
         "longitude": { "label": "Longitude", "placeholder": "0.0000" },
-        "color": { "label": "Color" }
+        "color": { "label": "Color" },
+        "day": { "label": "Day" },
+        "openTime": { "label": "Open Time" },
+        "closeTime": { "label": "Close Time" }
+      },
+      "schedules": {
+        "title": "Schedules",
+        "add": "Add Schedule"
       },
       "submit": "Create branch",
       "submitEdit": "Update branch",
       "error": "Something went wrong"
+    },
+    "schedule": {
+      "title": "Branch Schedule",
+      "empty": "No schedule defined for this branch."
+    },
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
     }
   },
   "service": {

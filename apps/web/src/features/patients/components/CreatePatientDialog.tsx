@@ -2,11 +2,12 @@
 
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogBody,
   Button,
+  DialogHeader,
+  DialogContent,
 } from '@repo/ui';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
@@ -25,13 +26,15 @@ export function CreatePatientDialog() {
           {t('patient.index.actions.create', 'Add Patient')}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-150 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-150">
         <DialogHeader>
           <DialogTitle>
             {t('patient.index.actions.create', 'Add Patient')}
           </DialogTitle>
         </DialogHeader>
-        <PatientForm onSuccess={() => setOpen(false)} />
+        <DialogBody>
+          <PatientForm onSuccess={() => setOpen(false)} />
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

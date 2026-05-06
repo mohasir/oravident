@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogBody,
 } from '@repo/ui';
 import { BranchForm } from './BranchForm';
 import { useTranslation } from 'react-i18next';
@@ -40,11 +41,12 @@ export function EditBranchDialog({
             )}
           </DialogDescription>
         </DialogHeader>
-        <BranchForm 
-          initialData={branch} 
-          onSuccess={() => onOpenChange(false)} 
-          className="py-4" 
-        />
+        <DialogBody>
+          <BranchForm 
+            initialData={branch} 
+            onSuccess={() => onOpenChange(false)} 
+          />
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

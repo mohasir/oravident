@@ -5,14 +5,14 @@ import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { es } from 'date-fns/locale';
 
-import { cn } from '../utils';
+import { cn } from '../../utils';
 import {
   Button,
   Calendar,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../index';
+} from '../../index';
 
 interface DatePickerProps {
   value?: Date;
@@ -35,7 +35,7 @@ export function DatePicker({
         <Button
           variant={'outline'}
           className={cn(
-            'w-full justify-start text-left font-normal h-10',
+            'w-full justify-start text-left font-normal',
             !value && 'text-muted-foreground',
             className,
           )}

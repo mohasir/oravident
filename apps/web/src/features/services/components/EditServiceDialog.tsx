@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogBody,
 } from '@repo/ui';
 import { ServiceForm } from './ServiceForm';
 import { useTranslation } from 'react-i18next';
@@ -39,11 +40,12 @@ export function EditServiceDialog({
           </DialogDescription>
         </DialogHeader>
         {service && (
-          <ServiceForm
-            initialData={service}
-            onSuccess={() => onOpenChange(false)}
-            className="py-4"
-          />
+          <DialogBody>
+            <ServiceForm
+              initialData={service}
+              onSuccess={() => onOpenChange(false)}
+            />
+          </DialogBody>
         )}
       </DialogContent>
     </Dialog>

@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import {
   useMutationCreateBranch,
   useMutationUpdateBranch,
-} from './useBranchesQuery';
+} from '@/features/branches/hooks/useBranchesQuery';
 import {
+  CreateBranchFormInput,
+  CreateBranchSchema,
   createBranchSchema,
-  type CreateBranchSchema,
-} from '../schemas/branch.schema';
+} from '@/features/branches/schemas/branch.schema';
 import { toast } from '@repo/ui';
-import type { Branch } from '../types';
+import type { Branch } from '@/features/branches/types';
 
 interface UseBranchFormProps {
   initialData?: Branch;
@@ -27,17 +28,22 @@ export function useBranchForm({
 
   const isEditing = !!initialData;
 
-  const form = useForm<CreateBranchSchema>({
+  const form = useForm<CreateBranchFormInput, unknown, CreateBranchSchema>({
     resolver: zodResolver(createBranchSchema),
     defaultValues: {
       name: initialData?.name ?? '',
-      slug: initialData?.slug ?? '',
       address: initialData?.address ?? '',
       email: initialData?.email ?? '',
       phone: initialData?.phone ?? '',
       latitude: initialData?.latitude ?? '',
       longitude: initialData?.longitude ?? '',
       color: initialData?.color ?? '#000000',
+      schedules:
+        initialData?.schedules?.map((s) => ({
+          dayOfWeek: s.dayOfWeek,
+          openTime: s.openTime,
+          closeTime: s.closeTime,
+        })) ?? [],
     },
   });
 
@@ -56,9 +62,7 @@ export function useBranchForm({
 
       if (isEditing) {
         await updateBranch.mutateAsync({ id: initialData.id, data: payload });
-        toast.success(
-          t('branch.edit.success', 'Branch updated successfully'),
-        );
+        toast.success(t('branch.edit.success', 'Branch updated successfully'));
       } else {
         await createBranch.mutateAsync(payload);
         toast.success(

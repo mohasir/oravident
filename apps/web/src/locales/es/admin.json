@@ -97,7 +97,8 @@
         "disableTitle": "Deshabilitar sucursal",
         "confirmDisable": "¿Estás seguro que deseas deshabilitar {{name}}?",
         "disableSuccess": "Sucursal deshabilitada con éxito",
-        "disableError": "Error al deshabilitar la sucursal"
+        "disableError": "Error al deshabilitar la sucursal",
+        "viewSchedule": "Ver Horario"
       }
     },
     "create": {
@@ -119,11 +120,42 @@
         "phone": { "label": "Teléfono (Opcional)", "placeholder": "+1 234 567 890" },
         "latitude": { "label": "Latitud", "placeholder": "0.0000" },
         "longitude": { "label": "Longitud", "placeholder": "0.0000" },
-        "color": { "label": "Color" }
+        "color": { "label": "Color" },
+        "day": { "label": "Día" },
+        "openTime": { "label": "Hora de apertura" },
+        "closeTime": { "label": "Hora de cierre" }
+      },
+      "schedules": {
+        "title": "Horarios",
+        "add": "Agregar Horario"
       },
       "submit": "Crear sucursal",
       "submitEdit": "Actualizar sucursal",
       "error": "Algo salió mal"
+    },
+    "schedule": {
+      "title": "Horario de la Sucursal",
+      "empty": "No hay horarios definidos para esta sucursal.",
+      "closed": "Cerrado"
+    },
+    "days": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles",
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    },
+    "validation": {
+      "nameRequired": "El nombre es requerido",
+      "nameMin": "El nombre debe tener al menos 2 caracteres",
+      "addressRequired": "La dirección es requerida",
+      "invalidEmail": "Correo electrónico inválido",
+      "phoneMax": "El teléfono no puede exceder los 20 caracteres",
+      "timeFormat": "El formato de hora debe ser HH:MM",
+      "timeRange": "La hora de apertura debe ser menor a la de cierre",
+      "dayRequired": "El día es requerido"
     }
   },
   "service": {
@@ -230,6 +262,13 @@
         "primaryBranchId": { "label": "Sucursal principal" },
         "address": { "label": "Dirección", "placeholder": "Dirección completa..." },
         "medicalNotes": { "label": "Notas médicas / Antecedentes", "placeholder": "Alergias, condiciones, etc..." }
+      },
+      "validation": {
+        "firstNameRequired": "El nombre es requerido",
+        "lastNameRequired": "El apellido es requerido",
+        "invalidEmail": "Correo electrónico inválido",
+        "phoneMin": "El teléfono debe tener al menos 7 dígitos",
+        "invalidBranchId": "ID de sucursal inválido"
       },
       "submit": "Registrar paciente",
       "submitEdit": "Actualizar paciente",

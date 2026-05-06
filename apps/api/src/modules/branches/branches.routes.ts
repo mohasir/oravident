@@ -12,6 +12,7 @@ import {
 } from '@modules/branches/branches.schema.ts';
 import { PERMISSIONS, ROLES } from '@repo/guards';
 import { idParamRequest } from '@common/types/requests.ts';
+import branchSchedulesRoutes from '@modules/branches/schedule/branch_schedules.routes.ts';
 
 const router: Router = Router();
 
@@ -58,5 +59,7 @@ router.delete(
   validateSchema(idParamRequest),
   branchesController.deleteBranch,
 );
+
+router.use('/:branchId/schedules', branchSchedulesRoutes);
 
 export default router;

@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogBody,
 } from '@repo/ui';
 import { ServiceForm } from './ServiceForm';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +36,9 @@ export function CreateServiceDialog({
             )}
           </DialogDescription>
         </DialogHeader>
-        <ServiceForm onSuccess={() => onOpenChange(false)} className="py-4" />
+        <DialogBody>
+          <ServiceForm onSuccess={() => onOpenChange(false)} />
+        </DialogBody>
       </DialogContent>
     </Dialog>
   );

@@ -17,6 +17,7 @@ export type ActionDef =
       confirmTitle?: string;
       confirmDescription?: string;
       confirmLabel?: string;
+      disabled?: boolean;
     }
   | { separator: true };
 

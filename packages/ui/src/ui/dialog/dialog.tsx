@@ -148,8 +148,22 @@ function DialogDescription({
   );
 }
 
+function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="dialog-body"
+      className={cn(
+        '-mx-4 no-scrollbar max-h-[50vh] overflow-y-auto px-4 py-4',
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,
