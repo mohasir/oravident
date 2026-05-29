@@ -17,7 +17,7 @@ import {
   verifyRefreshToken,
 } from '@/common/utils/jwt.ts';
 import { generateToken, hashToken } from '@/common/utils/hash.ts';
-import { PermissionType, ROLES, RoleType } from '@repo/guards';
+import { PermissionType, ROLES } from '@repo/guards';
 import { ITransactionManager } from '@/core/db/TransactionManager.ts';
 
 export class AuthService {

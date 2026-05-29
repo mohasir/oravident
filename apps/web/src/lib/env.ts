@@ -25,5 +25,4 @@ export const ENV = {
     'NEXT_PUBLIC_API_URL'
   ) || 'http://localhost:8080/api/v1',
   serverApiUrl: requireServerEnv('API_URL') || 'http://localhost:8080/api/v1',
-  authSecret: requireServerEnv('AUTH_SECRET') || 'build-time-secret-placeholder',
 } as const;

@@ -13,7 +13,7 @@ import {
 import { useLoginForm } from '@/features/auth/hooks/useLoginForm';
 
 export function LoginForm() {
-  const { form, register, onSubmit, errors, t } = useLoginForm();
+  const { form, register, onSubmit, errors, isSubmitting, t } = useLoginForm();
 
   return (
     <>
@@ -96,7 +96,7 @@ export function LoginForm() {
         </div>
 
         {/* Submit */}
-        <Button className="mt-10" type="submit" fullWidth>
+        <Button className="mt-10" type="submit" fullWidth isLoading={isSubmitting}>
           {t('auth.login.submitButton')}
         </Button>
       </form>

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { authService } from '@/features/auth/services/auth.service';
 import { useAuthStore } from '@/lib/auth/store/auth.store';
 import { clearAllStores } from '@/lib/store/clear-stores';
+import { ApiError } from '@/lib/http/ApiError';
 import Cookies from 'js-cookie';
 import type { LoginSchema } from '@/features/auth/schemas/login.schema';
 
@@ -22,7 +23,7 @@ export function useAuth() {
       useAuthStore.getState().setHydrated(true);
     } catch (err) {
       clearAllStores();
-      throw err;
+      throw ApiError.from(err);
     }
   }, []);
 
@@ -46,7 +47,7 @@ export function useAuth() {
       }
     } catch (err) {
       clearAllStores();
-      throw err;
+      throw ApiError.from(err);
     }
   }, []);
 

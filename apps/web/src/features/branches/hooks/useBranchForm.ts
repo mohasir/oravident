@@ -12,6 +12,7 @@ import {
 } from '@/features/branches/schemas/branch.schema';
 import { toast } from '@repo/ui';
 import type { Branch } from '@/features/branches/types';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 interface UseBranchFormProps {
   initialData?: Branch;
@@ -23,6 +24,7 @@ export function useBranchForm({
   onSuccess,
 }: UseBranchFormProps = {}) {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const createBranch = useMutationCreateBranch();
   const updateBranch = useMutationUpdateBranch();
 
@@ -72,12 +74,11 @@ export function useBranchForm({
 
       form.reset();
       onSuccess?.();
-    } catch (e: any) {
-      const errorMsg =
-        e.response?.data?.message ||
-        t('branch.form.error', 'Something went wrong');
-      form.setError('root', { message: errorMsg });
-      toast.error(errorMsg);
+    } catch (e) {
+      parseError(e, (message) => {
+        form.setError('root', { message });
+        toast.error(message);
+      });
     }
   };
 

@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth/hook/useAuth';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 import {
   loginSchema,
   type LoginSchema,
@@ -12,6 +13,7 @@ import type { Route } from 'next';
 
 export function useLoginForm() {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const { signIn } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -36,19 +38,9 @@ export function useLoginForm() {
         ? callbackUrl
         : DEFAULT_REDIRECT_HOME;
 
-      console.log({ destination });
-
       router.replace(destination as Route);
-    } catch (e: any) {
-      const isUnauthorized = e.response?.status === 401;
-      form.setError('root', {
-        message: isUnauthorized
-          ? t('login.errors.unauthorized', 'Unauthorized')
-          : t(
-              'auth.login.errors.generic',
-              'Something went wrong, please try again',
-            ),
-      });
+    } catch (e) {
+      parseError(e, (message) => form.setError('root', { message }));
     }
   };
 

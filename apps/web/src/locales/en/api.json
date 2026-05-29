@@ -1,0 +1,6 @@
+{
+  "errors": {
+    "generic": "Something went wrong, please try again",
+    "EMAIL_OR_PASSWORD_INCORRECT": "Incorrect email or password"
+  }
+}

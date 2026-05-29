@@ -17,7 +17,6 @@ const DISABLE_REFRESH_ON_RELOAD = true;
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const setHydrated = useAuthStore((state) => state.setHydrated);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const [isInitializing, setIsInitializing] = useState(true);
   const pathname = usePathname();
   const router = useRouter();

@@ -13,6 +13,7 @@ import {
 } from '../schemas/appointment.schema';
 import { toast } from '@repo/ui';
 import type { Appointment } from '../types';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 interface UseAppointmentFormProps {
   initialData?: Appointment;
@@ -24,6 +25,7 @@ export function useAppointmentForm({
   onSuccess,
 }: UseAppointmentFormProps = {}) {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const createAppointment = useMutationCreateAppointment();
   const updateAppointment = useMutationUpdateAppointment();
 
@@ -68,12 +70,11 @@ export function useAppointmentForm({
 
       form.reset();
       onSuccess?.();
-    } catch (e: any) {
-      const errorMsg =
-        e.response?.data?.message ||
-        t('appointment.form.error', 'Algo salió mal');
-      form.setError('root', { message: errorMsg });
-      toast.error(errorMsg);
+    } catch (e) {
+      parseError(e, (message) => {
+        form.setError('root', { message });
+        toast.error(message);
+      });
     }
   };
 
