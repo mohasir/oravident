@@ -13,6 +13,7 @@ import {
 } from '../schemas/patient.schema';
 import { toast } from '@repo/ui';
 import type { Patient } from '../types';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 interface UsePatientFormProps {
   initialData?: Patient;
@@ -24,6 +25,7 @@ export function usePatientForm({
   onSuccess,
 }: UsePatientFormProps = {}) {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const createPatient = useMutationCreatePatient();
   const updatePatient = useMutationUpdatePatient();
 
@@ -77,12 +79,11 @@ export function usePatientForm({
 
       form.reset();
       onSuccess?.();
-    } catch (e: any) {
-      const errorMsg =
-        e.response?.data?.message ||
-        t('patient.form.error', 'Something went wrong');
-      form.setError('root', { message: errorMsg });
-      toast.error(errorMsg);
+    } catch (e) {
+      parseError(e, (message) => {
+        form.setError('root', { message });
+        toast.error(message);
+      });
     }
   };
 

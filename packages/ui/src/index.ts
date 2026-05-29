@@ -208,3 +208,6 @@ export { DatePicker } from './components/datePicker';
 
 // Components - TimePicker
 export { TimePicker } from './components/timePicker';
+
+// Components - Separator
+export { Separator } from './ui/separator';

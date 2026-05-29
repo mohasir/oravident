@@ -7,7 +7,7 @@ import type { MeProfile, UpdateProfileDTO, LoginResponse } from './types';
 
 export const authService = {
   async login(data: LoginSchema): Promise<LoginResponse> {
-    const response = await SECURE_API.post<{ data: LoginResponse }>(
+    const response = await SECURE_API.post<ApiResponse<LoginResponse>>(
       '/auth/login',
       data,
     );
@@ -18,21 +18,24 @@ export const authService = {
     await SECURE_API.post('/auth/logout');
   },
 
-  async refreshToken(): Promise<string> {
+  async refreshToken() {
     const response = await SECURE_API.post<{ data: { accessToken: string } }>(
       '/auth/refresh',
     );
     return response.data.data.accessToken;
   },
 
-  async getMe(accessToken: string): Promise<ApiResponse<MeProfile>> {
-    const response = await PROTECTED_API.get<ApiResponse<MeProfile>>('/auth/me', {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+  async getMe(accessToken: string) {
+    const response = await PROTECTED_API.get<ApiResponse<MeProfile>>(
+      '/auth/me',
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
     return response.data;
   },
 
-  async updateProfile(data: UpdateProfileDTO): Promise<ApiResponse<MeProfile>> {
+  async updateProfile(data: UpdateProfileDTO) {
     const response = await PROTECTED_API.put<ApiResponse<MeProfile>>(
       '/auth/profile',
       data,

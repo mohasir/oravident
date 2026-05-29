@@ -6,9 +6,11 @@ import { resetPasswordSchema, type ResetPasswordSchema } from '@/features/auth/s
 import { authService } from '@/features/auth/services/auth.service';
 import { DEFAULT_REDIRECT_LOGIN } from '@/lib/auth/navigation';
 import type { Route } from 'next';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 export function useResetPasswordForm() {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams?.get('token') ?? '';
@@ -23,10 +25,8 @@ export function useResetPasswordForm() {
       form.clearErrors('root');
       await authService.resetPassword({ ...data, token });
       router.replace(DEFAULT_REDIRECT_LOGIN as Route);
-    } catch {
-      form.setError('root', {
-        message: t('auth.resetPassword.errors.generic', 'Algo salió mal, intenta de nuevo'),
-      });
+    } catch (e) {
+      parseError(e, (message) => form.setError('root', { message }));
     }
   };
 

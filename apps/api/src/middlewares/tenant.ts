@@ -12,10 +12,6 @@ export const tenantMiddleware = async (
   try {
     const user = req.user;
 
-    console.log('[middleware - TENANT]', {
-      user,
-    });
-
     if (user && isSuperAdmin(user.token.role)) {
       req.tenantId = null;
       return next();

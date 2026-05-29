@@ -11,6 +11,8 @@ import {
   getDoctorsRequestSchema,
 } from '@modules/workers/doctors/doctors.schema.ts';
 import { idParamRequest } from '@common/types/requests.ts';
+import workerSchedulesRoutes from '@modules/workers/schedule/worker_schedules.routes.ts';
+import scheduleBlocksRoutes from '@modules/workers/blocks/schedule_blocks.routes.ts';
 
 const router: Router = Router();
 
@@ -50,5 +52,8 @@ router.delete(
   validateSchema(idParamRequest),
   doctorsController.deleteDoctor,
 );
+
+router.use('/:workerId/schedules', workerSchedulesRoutes);
+router.use('/:workerId/blocks', scheduleBlocksRoutes);
 
 export default router;

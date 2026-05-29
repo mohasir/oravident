@@ -562,14 +562,20 @@ schedule_blocks donde:
 
 **b) Fuera del horario laboral del doctor**
 ```
-worker_schedules donde:
-  workerId = doctor seleccionado
-  branchId = sucursal seleccionada
-  dayOfWeek = día de la cita
-  
-Si no existe registro → doctor no trabaja ese día en esa sucursal
-Si existe → startTime <= nueva_cita_inicio AND endTime >= nueva_cita_fin
+Verificar si existen worker_schedules para el par (workerId, branchId):
+
+CASO A — El doctor tiene horarios configurados para esa sucursal:
+  Buscar registro para (workerId, branchId, dayOfWeek):
+  - Si no existe → el doctor no trabaja ese día en esa sucursal → rechazar
+  - Si existe → startTime <= nueva_cita_inicio AND endTime >= nueva_cita_fin
+
+CASO B — El doctor NO tiene horarios configurados para esa sucursal:
+  Heredar el horario operativo de la sucursal (branch_schedules):
+  - Si no existe registro para ese día → rechazar
+  - Si existe → openTime <= nueva_cita_inicio AND closeTime >= nueva_cita_fin
 ```
+
+> **Regla de negocio**: Si el doctor tiene al menos un `worker_schedule` para la combinación `workerId + branchId`, se usan esos horarios. Los días no configurados se tratan como no laborales. Si no existe ningún registro para ese par, el doctor hereda el horario de la sucursal (comportamiento por defecto para nuevos trabajadores sin calendario asignado).
 
 **c) Fuera del horario operativo de la sucursal**
 ```

@@ -1,7 +1,17 @@
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
-  data?: T;
+  data: T;
+}
+
+export interface ApiErrorResponse {
+  success: false;
+  message: string;
+  errors?: {
+    statusCode: number;
+    errorCode: string;
+    details?: Record<string, string[]>;
+  };
 }
 
 export interface PaginationMeta {

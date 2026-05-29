@@ -42,10 +42,16 @@
       "previous": "Anterior",
       "actions": "Acciones",
       "searchPlaceholder": "Filtrar...",
+      "select": {
+        "placeholder": "Seleccionar...",
+        "date": "Seleccionar fecha"
+      },
       "rowActions": {
         "copyId": "Copiar ID",
         "idCopied": "ID copiado al portapapeles"
-      }
+      },
+      "unknown": "Desconocido",
+      "not_specified": "No especificado"
     }
   },
   "user": {
@@ -321,6 +327,67 @@
       "submit": "Registrar paciente",
       "submitEdit": "Actualizar paciente",
       "error": "Algo salió mal"
+    }
+  },
+  "appointment": {
+    "index": {
+      "title": "Citas",
+      "description": "Administra la agenda de la clínica.",
+      "add": "Nueva cita",
+      "create": {
+        "title": "Nueva Cita",
+        "success": "Cita creada con éxito"
+      },
+      "edit": {
+        "success": "Cita actualizada con éxito"
+      },
+      "form": {
+        "fields": {
+          "branch": { "label": "Sucursal" },
+          "status": { "label": "Estado" },
+          "patient": { "label": "Paciente" },
+          "worker": { "label": "Doctor(a)" },
+          "service": { "label": "Servicio" },
+          "price": { "label": "Costo (Opcional)" },
+          "date": { "label": "Fecha" },
+          "startTime": { "label": "Hora Inicio" },
+          "endTime": { "label": "Hora Fin" },
+          "notes": { "label": "Notas", "placeholder": "Notas adicionales..." }
+        },
+        "sections": {
+          "schedule": "Horario de la cita"
+        },
+        "submit": "Crear Cita",
+        "submitEdit": "Actualizar Cita",
+        "error": "Algo salió mal"
+      },
+      "validation": {
+        "branchRequired": "La sucursal es requerida",
+        "patientRequired": "El paciente es requerido",
+        "workerRequired": "El doctor es requerido",
+        "serviceRequired": "El servicio es requerido",
+        "statusRequired": "El estado es requerido",
+        "startsAtRequired": "La fecha de inicio es requerida",
+        "endsAtRequired": "La fecha de fin es requerida",
+        "invalidPrice": "Precio inválido"
+      },
+      "detail": {
+        "title": "Detalle de la Cita",
+        "patient": "Paciente",
+        "service": "Servicio",
+        "date": "Fecha",
+        "time": "Horario",
+        "notes": "Notas",
+        "worker": "Doctor(a)",
+        "price": "Costo",
+        "cancelled_title": "Cita Cancelada",
+        "cancelled_at": "Fecha de cancelación",
+        "cancelled_by": "Cancelado por",
+        "cancel_reason": "Motivo",
+        "metadata": "Historial del registro",
+        "created_at": "Creado el",
+        "updated_at": "Última actualización"
+      }
     }
   },
   "auth": {

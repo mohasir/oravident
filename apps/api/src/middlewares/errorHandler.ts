@@ -11,8 +11,9 @@ export const errorHandlerMiddleware = (
   _next: NextFunction,
 ) => {
   if (err instanceof ApiError) {
-    if (err.originalError) {
-      console.error('   ↳ [Error Original]:', err.originalError);
+    if (err.originalError || err.statusCode >= 500) {
+      console.error(' [ApiError Handler]:', err.message);
+      if (err.originalError) console.error('   ↳ [Original Error]:', err.originalError);
     }
 
     return res.status(err.statusCode).json(errorResponse(err.message, err));
@@ -51,6 +52,9 @@ export const errorHandlerMiddleware = (
     }
   } else {
     console.error('Critical error not handled:', err);
+    if (err instanceof Error) {
+      console.error('   ↳ [Stack Trace]:', err.stack);
+    }
   }
 
   const fallbackError = new ApiError(

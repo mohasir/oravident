@@ -11,6 +11,7 @@ import {
 } from '../schemas/service.schema';
 import { toast } from '@repo/ui';
 import type { Service } from '../types';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 interface UseServiceFormProps {
   initialData?: Service;
@@ -22,6 +23,7 @@ export function useServiceForm({
   onSuccess,
 }: UseServiceFormProps = {}) {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const createService = useMutationCreateService();
   const updateService = useMutationUpdateService();
 
@@ -61,12 +63,11 @@ export function useServiceForm({
 
       form.reset();
       onSuccess?.();
-    } catch (e: any) {
-      const errorMsg =
-        e.response?.data?.message ||
-        t('service.form.error', 'Something went wrong');
-      form.setError('root', { message: errorMsg });
-      toast.error(errorMsg);
+    } catch (e) {
+      parseError(e, (message) => {
+        form.setError('root', { message });
+        toast.error(message);
+      });
     }
   };
 

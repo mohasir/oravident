@@ -1,6 +1,6 @@
 # DentSass — Estado de Implementación del Sistema
 
-> Versión 1.1 · Mayo 2026  
+> Versión 1.2 · Mayo 2026  
 > Leyenda: ✅ Completo · 🔶 Parcial · ❌ Faltante
 
 ## Decisiones técnicas adoptadas
@@ -9,6 +9,8 @@
 | --- | --- |
 | Calendario de citas | `react-big-calendar` + `date-fns` (ya instalado). shadcn `Calendar` para date pickers en formularios. |
 | Servicios por sucursal | Disponibilidad implícita (sin registro = disponible en todas). `branch_services` solo para `priceOverride` o `isActive: false`. Se agrega `isActive`. |
+| Módulo de trabajadores | Dividido en sub-módulos por rol: `/api/v1/doctor` y `/api/v1/receptionist`. El repositorio base (`WorkersRepository`) es compartido. |
+| Creación de usuarios (onboarding) | El flujo normal es vía invitación (`POST /invitations` → `POST /invitations/:token/accept`). `POST /users` queda exclusivo para superadmin (bootstrap de clínica). |
 
 ---
 
@@ -35,13 +37,13 @@
 | Autenticación | ✅ | ✅ |
 | Gestión de usuarios | ✅ | ✅ |
 | Gestión de clínicas | ✅ | ❌ |
-| Gestión de sucursales | 🔶 | ✅ |
-| Gestión de trabajadores | 🔶 | ❌ |
-| Calendarios / horarios | 🔶 | ❌ |
+| Gestión de sucursales | ✅ | ✅ |
+| Gestión de trabajadores | ✅ | ❌ |
+| Calendarios / horarios | ✅ | ❌ |
 | Gestión de pacientes | ✅ | ✅ |
-| Gestión de servicios | 🔶 | ✅ |
+| Gestión de servicios | ✅ | ✅ |
 | Gestión de citas | 🔶 | ❌ |
-| Invitaciones | 🔶 | ❌ |
+| Onboarding / Invitaciones | 🔶 | ❌ |
 | Roles y permisos | 🔶 | ❌ |
 | Notificaciones | 🔶 | ❌ |
 | Recordatorios automáticos | ❌ | ❌ |
@@ -120,28 +122,42 @@
 | `GET /:id` | ✅ | |
 | `PATCH /:id` | ✅ | |
 | `DELETE /:id` | ✅ | |
-| `GET /:id/schedules` | ❌ | Falta endpoint para listar horarios de sucursal |
-| `POST /:id/schedules` | ❌ | Falta crear/actualizar horario de sucursal |
-| `GET /:id/services` | ❌ | Falta listar servicios por sucursal |
+| `GET /:id/schedules` | ✅ | |
+| `POST /:id/schedules` | ✅ | |
+| `PATCH /:id/schedules/:scheduleId` | ✅ | |
+| `DELETE /:id/schedules/:scheduleId` | ✅ | |
+| `GET /:id/services` | ✅ | Lista overrides activos |
+| `PUT /:id/services/:serviceId` | ✅ | Upsert override (precio o desactivar) |
+| `DELETE /:id/services/:serviceId` | ✅ | Elimina override (restaura disponibilidad implícita) |
 
-##### Trabajadores (`/api/v1/workers`)
+##### Doctores (`/api/v1/doctor`)
 
 | Endpoint | Estado | Notas |
 |----------|:------:|-------|
 | `GET /` | ✅ | |
-| `POST /` | ✅ | |
+| `POST /` | ✅ | Requiere `userId` existente — onboarding vía invitación pendiente |
 | `GET /:id` | ✅ | |
 | `PATCH /:id` | ✅ | |
-| `DELETE /:id` | ✅ | |
-| `GET /:id/schedules` | ❌ | Falta endpoints de calendario del doctor |
-| `POST /:id/schedules` | ❌ | Falta crear horario de atención |
-| `PATCH /:id/schedules/:scheduleId` | ❌ | |
-| `DELETE /:id/schedules/:scheduleId` | ❌ | |
-| `GET /:id/schedule-blocks` | ❌ | Falta endpoints de bloqueos |
-| `POST /:id/schedule-blocks` | ❌ | |
-| `PATCH /:id/schedule-blocks/:blockId` | ❌ | |
-| `DELETE /:id/schedule-blocks/:blockId` | ❌ | |
-| `GET /:id/availability` | ❌ | Falta endpoint de disponibilidad en tiempo real |
+| `DELETE /:id` | ✅ | Soft delete |
+| `GET /:id/schedules` | ✅ | |
+| `POST /:id/schedules` | ✅ | |
+| `PATCH /:id/schedules/:scheduleId` | ✅ | |
+| `DELETE /:id/schedules/:scheduleId` | ✅ | Soft delete |
+| `GET /:id/blocks` | ✅ | |
+| `POST /:id/blocks` | ✅ | |
+| `PATCH /:id/blocks/:blockId` | ✅ | |
+| `DELETE /:id/blocks/:blockId` | ✅ | Hard delete |
+| `GET /:id/availability` | ❌ | Disponibilidad en tiempo real |
+
+##### Recepcionistas (`/api/v1/receptionist`)
+
+| Endpoint | Estado | Notas |
+|----------|:------:|-------|
+| `GET /` | ✅ | |
+| `POST /` | ✅ | Requiere `userId` existente — onboarding vía invitación pendiente |
+| `GET /:id` | ✅ | |
+| `PATCH /:id` | ✅ | |
+| `DELETE /:id` | ✅ | Soft delete |
 
 ##### Pacientes (`/api/v1/patients`)
 
@@ -158,12 +174,10 @@
 | Endpoint | Estado | Notas |
 |----------|:------:|-------|
 | `GET /` | ✅ | |
-| `POST /` | 🔶 | **Falta asignación automática a todas las sucursales** |
+| `POST /` | ✅ | Disponible en todas las sucursales por defecto |
 | `GET /:id` | ✅ | |
 | `PATCH /:id` | ✅ | |
 | `DELETE /:id` | ✅ | |
-| `GET /:id/branches` | ❌ | Falta listar asignaciones por sucursal |
-| `PATCH /:id/branches/:branchId` | ❌ | Falta gestionar precio y disponibilidad por sucursal |
 
 ##### Citas (`/api/v1/appointments`)
 
@@ -179,13 +193,12 @@
 | `GET /availability` | ❌ | Falta consulta de disponibilidad para agendar |
 | `GET /master-agenda` | ❌ | Falta endpoint de agenda maestra |
 
-**Validaciones de negocio FALTANTES en crear/actualizar cita:**
-- ❌ Verificación de `schedule_blocks` del doctor
-- ❌ Verificación del horario de trabajo del doctor (`worker_schedules`)
-- ❌ Verificación del horario operativo de la sucursal (`branch_schedules`)
-- ❌ Verificación de servicio disponible en la sucursal (`branch_services`)
-- ❌ Detección de conflictos de cita por traslape de rangos
-- ❌ Cálculo automático de `endTime` basado en la duración del servicio
+**Validaciones implementadas en crear/actualizar cita:**
+- ✅ Detección de conflictos por traslape (doctor y paciente)
+- ✅ Verificación de `schedule_blocks` del doctor
+- ✅ Verificación del horario del doctor (`worker_schedules`) con fallback a `branch_schedules`
+- ✅ Verificación de servicio disponible en la sucursal (`branch_services`)
+- ❌ Cálculo automático de `endTime` basado en `service.durationMinutes`
 
 ##### Roles (`/api/v1/roles`)
 
@@ -204,8 +217,8 @@
 | Endpoint | Estado | Notas |
 |----------|:------:|-------|
 | `GET /:token` | ✅ | Validar token (público) |
-| `POST /:token/accept` | ✅ | Aceptar invitación (público) |
-| `POST /` | ✅ | Crear invitación |
+| `POST /:token/accept` | ❌ | **Implementación vacía** — crea user + worker en tx, pendiente |
+| `POST /` | ✅ | Crear invitación (requiere auth) |
 | `GET /` | ❌ | **Falta listar invitaciones** |
 | `DELETE /:id` | ❌ | **Falta cancelar invitación** |
 | Envío de email al crear | ❌ | Sin integración de email |
@@ -353,10 +366,12 @@
 
 | Funcionalidad | Backend | Frontend |
 |---------------|:-------:|:--------:|
-| CRUD trabajadores | ✅ | ❌ |
+| CRUD doctores | ✅ | ❌ |
+| CRUD recepcionistas | ✅ | ❌ |
+| Onboarding vía invitación (user + worker en tx) | ❌ | ❌ |
 | Asignación a sucursales | 🔶 | ❌ |
-| Calendario de atención (horarios regulares) | ❌ | ❌ |
-| Bloqueos de horario | ❌ | ❌ |
+| Calendario de atención (horarios regulares) | ✅ | ❌ |
+| Bloqueos de horario | ✅ | ❌ |
 | Consulta de disponibilidad en tiempo real | ❌ | ❌ |
 
 ### Módulo: Pacientes
@@ -372,32 +387,33 @@
 | Funcionalidad | Backend | Frontend |
 |---------------|:-------:|:--------:|
 | CRUD servicios | ✅ | ✅ |
-| Asignación automática a sucursales | ❌ | ❌ |
-| Precio diferente por sucursal | ❌ | ❌ |
-| Activar/desactivar por sucursal | ❌ | ❌ |
+| Disponibilidad implícita en todas las sucursales | ✅ | — |
+| Precio override por sucursal | ✅ | ❌ |
+| Desactivar servicio en sucursal específica | ✅ | ❌ |
 
 ### Módulo: Citas
 
 | Funcionalidad | Backend | Frontend |
 |---------------|:-------:|:--------:|
-| CRUD básico de citas | 🔶 | ❌ |
+| CRUD básico de citas | ✅ | ❌ |
+| Detección de conflictos (traslape doctor y paciente) | ✅ | ❌ |
+| Validación horario doctor / fallback a sucursal | ✅ | ❌ |
+| Validación bloqueos de agenda | ✅ | ❌ |
+| Validación servicio disponible en sucursal | ✅ | ❌ |
+| Cancelación con auditoría (cancelledBy, reason) | ✅ | ❌ |
+| Cálculo automático de `endTime` desde `durationMinutes` | ❌ | ❌ |
 | Vista de calendario | ❌ | ❌ |
 | Agenda Maestra (todos los doctores) | ❌ | ❌ |
-| Validaciones de negocio al crear | ❌ | ❌ |
-| Detección de conflictos (traslape) | ❌ | ❌ |
-| Línea de tiempo de la cita | ❌ | ❌ |
-| Cancelación con auditoría | 🔶 | ❌ |
-| Historial de estados | 🔶 | ❌ |
+| Línea de tiempo / historial de estados | ❌ | ❌ |
 | Recordatorios automáticos | ❌ | ❌ |
-| Configurar cuándo enviar recordatorio | ❌ | ❌ |
 
-### Módulo: Invitaciones
+### Módulo: Invitaciones / Onboarding
 
 | Funcionalidad | Backend | Frontend |
 |---------------|:-------:|:--------:|
 | Crear invitación | ✅ | ❌ |
 | Validar token | ✅ | — |
-| Aceptar invitación | ✅ | ❌ |
+| Aceptar invitación (crear user + worker) | ❌ | ❌ |
 | Listar invitaciones | ❌ | ❌ |
 | Cancelar invitación | ❌ | ❌ |
 | Envío de email | ❌ | — |
@@ -464,8 +480,8 @@
 | Desactivar sucursal | ✅ | ✅ | |
 | Gestionar horario de sucursal | ❌ | ❌ | |
 | **Gestión de Trabajadores** | | | |
-| Listar trabajadores | ✅ | ❌ | |
-| Crear trabajador | ✅ | ❌ | |
+| Listar doctores / recepcionistas | ✅ | ❌ | |
+| Crear trabajador (onboarding vía invitación) | ❌ | ❌ | `acceptInvitation` pendiente |
 | Actualizar trabajador | ✅ | ❌ | |
 | Dar de baja trabajador | ✅ | ❌ | |
 | Gestionar calendario doctor | ❌ | ❌ | |
@@ -496,8 +512,8 @@
 | Listar / CRUD | ✅ | ✅ | |
 | Gestionar horario de sucursal | ❌ | ❌ | |
 | **Trabajadores** | | | |
-| Listar trabajadores | ✅ | ❌ | |
-| Crear trabajador (con rol) | ✅ | ❌ | |
+| Listar doctores / recepcionistas | ✅ | ❌ | |
+| Invitar trabajador (onboarding completo) | ❌ | ❌ | `acceptInvitation` pendiente |
 | Actualizar / suspender trabajador | ✅ | ❌ | |
 | Asignar trabajador a sucursales | 🔶 | ❌ | |
 | Definir calendario de doctor | ❌ | ❌ | |
@@ -580,28 +596,21 @@
 
 Estas funcionalidades son necesarias para que el sistema sea operativo:
 
-1. **Backend: Validaciones de negocio en citas** (RF-AD-07)
-   - Detección de conflictos de traslape de horario
-   - Verificación de disponibilidad del doctor (horario + bloqueos)
-   - Verificación del horario operativo de la sucursal
-   - Verificación de servicio disponible en la sucursal
-   - Cálculo automático de `endTime`
+1. **Backend: `acceptInvitation` — onboarding completo** (RF-AD-08)
+   - Crear `user` + `worker` en una sola transacción
+   - Agregar `password` al schema de aceptación
+   - Marcar invitación como `acceptedAt`
+   - Soportar campos opcionales por rol (doctor: `prefix`, `specialty`, `licenseNumber`)
 
-2. **Backend: Endpoints de calendario de doctores** (RF-AD-04, RF-DR-02)
-   - CRUD de `worker_schedules`
-   - CRUD de `schedule_blocks`
+2. **Frontend: Módulo de trabajadores** (RF-AD-03, RF-AD-04)
+   - Tabla con CRUD (doctores + recepcionistas)
+   - Flujo de invitación desde el frontend
+   - Gestión de calendario (`/doctor/:id/schedules`) y bloqueos (`/doctor/:id/blocks`)
 
-3. **Backend: Endpoints de horario de sucursales** (RF-AD-02)
-   - CRUD de `branch_schedules`
-
-4. **Frontend: Módulo de citas con vista de calendario** (RF-AD-07, RF-RC-01)
-   - Calendario (día/semana/mes)
+3. **Frontend: Módulo de citas con vista de calendario** (RF-AD-07, RF-RC-01)
+   - Calendario (día/semana/mes) con `react-big-calendar`
    - Formulario de creación/edición de cita
    - Vista de cancelación con motivo
-
-5. **Frontend: Módulo de trabajadores** (RF-AD-03)
-   - Tabla con CRUD
-   - Gestión de calendario y bloqueos
 
 ---
 
@@ -674,8 +683,8 @@ Estas funcionalidades son necesarias para que el sistema sea operativo:
 
 | Prioridad | Funcionalidades | Estado estimado |
 |-----------|:--------------:|:---------------:|
-| Crítico | 5 bloques | 0% → MVP |
-| Alta | 6 bloques | 20% hecho |
+| Crítico | 3 bloques | ~33% → MVP |
+| Alta | 6 bloques | 40% hecho |
 | Media | 5 bloques | 5% hecho |
 | Baja | 4 bloques | 0% hecho |
-| **Total** | **20 bloques** | **~15% del sistema completo** |
+| **Total** | **18 bloques** | **~35% del sistema completo** |

@@ -5,7 +5,7 @@ import { testDatabaseConnection } from '@/core/db/index.ts';
 async function startServer() {
   await testDatabaseConnection();
 
-  app.listen(ENV.PORT, () => {
+  app.listen(ENV.PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${ENV.PORT}`);
     console.log(`Docs available at http://localhost:${ENV.PORT}/docs`);
   });

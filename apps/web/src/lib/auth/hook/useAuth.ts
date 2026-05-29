@@ -2,12 +2,17 @@ import { useCallback } from 'react';
 import { authService } from '@/features/auth/services/auth.service';
 import { useAuthStore } from '@/lib/auth/store/auth.store';
 import { clearAllStores } from '@/lib/store/clear-stores';
+import { ApiError } from '@/lib/http/ApiError';
+import Cookies from 'js-cookie';
 import type { LoginSchema } from '@/features/auth/schemas/login.schema';
 
 export function useAuth() {
   const signIn = useCallback(async (data: LoginSchema) => {
     try {
       const { accessToken } = await authService.login(data);
+
+      Cookies.set('auth-session', 'true', { expires: 7 });
+
       useAuthStore.getState().setAuth(accessToken);
 
       const meResponse = await authService.getMe(accessToken);
@@ -18,7 +23,7 @@ export function useAuth() {
       useAuthStore.getState().setHydrated(true);
     } catch (err) {
       clearAllStores();
-      throw err;
+      throw ApiError.from(err);
     }
   }, []);
 
@@ -26,6 +31,7 @@ export function useAuth() {
     try {
       await authService.logout();
     } finally {
+      Cookies.remove('auth-session');
       clearAllStores();
     }
   }, []);
@@ -41,7 +47,7 @@ export function useAuth() {
       }
     } catch (err) {
       clearAllStores();
-      throw err;
+      throw ApiError.from(err);
     }
   }, []);
 

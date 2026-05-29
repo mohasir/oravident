@@ -1,22 +1,128 @@
-import { and, eq, gt, gte, isNull, lt, lte, ne, or, SQL } from 'drizzle-orm';
-import { PgSelect } from 'drizzle-orm/pg-core';
+import {
+  and,
+  count,
+  eq,
+  getTableColumns,
+  gt,
+  gte,
+  isNull,
+  lt,
+  lte,
+  ne,
+  or,
+  SQL,
+} from 'drizzle-orm';
 import { Database } from '@core/db/index.ts';
 import {
   appointments,
   AppointmentInsert,
   AppointmentSelect,
   AppointmentUpdate,
-  AppointmentTable,
 } from '@core/db/schema/appointments.ts';
-import { BaseRepository } from '@core/shared/BaseRepository.ts';
+import { patients } from '@core/db/schema/patients.ts';
+import { workers } from '@core/db/schema/workers.ts';
+import { services } from '@core/db/schema/services.ts';
+import { appointmentStatuses } from '@core/db/schema/appointment_statuses.ts';
 import { AppointmentFiltersDTO } from '@modules/appointments/appointments.schema.ts';
 
-export class AppointmentsRepository extends BaseRepository<
-  AppointmentTable,
-  AppointmentFiltersDTO
-> {
-  constructor(db: Database) {
-    super(db, appointments);
+export class AppointmentsRepository {
+  constructor(private readonly db: Database) {}
+
+  private getBaseSelect() {
+    return this.db
+      .select({
+        appointment: appointments,
+        patient: patients,
+        worker: workers,
+        service: services,
+        status: appointmentStatuses,
+      })
+      .from(appointments)
+      .leftJoin(patients, eq(appointments.patientId, patients.id))
+      .leftJoin(workers, eq(appointments.workerId, workers.id))
+      .leftJoin(services, eq(appointments.serviceId, services.id))
+      .leftJoin(
+        appointmentStatuses,
+        eq(appointments.statusId, appointmentStatuses.id),
+      );
+  }
+
+  private applyFilters(filters: AppointmentFiltersDTO) {
+    const { startDate, endDate, ...rest } = filters;
+    const conditions: SQL[] = [];
+    const columns = getTableColumns(appointments);
+
+    const clinicId = filters?.clinicId;
+
+    if (clinicId) {
+      conditions.push(eq(appointments.clinicId, clinicId));
+    }
+
+    for (const key in rest) {
+      const value = rest[key as keyof typeof rest];
+      if (value === undefined) continue;
+
+      const column = columns[key as keyof typeof columns];
+      if (!column) continue;
+
+      if (value === null) {
+        conditions.push(isNull(column));
+      } else {
+        conditions.push(eq(column, value));
+      }
+    }
+
+    if (rest.isActive === undefined) {
+      conditions.push(eq(appointments.isActive, true));
+    }
+
+    if (startDate) {
+      conditions.push(gte(appointments.startsAt, new Date(startDate)));
+    }
+    if (endDate) {
+      conditions.push(lte(appointments.startsAt, new Date(endDate)));
+    }
+
+    return conditions;
+  }
+
+  async findOne(filters: AppointmentFiltersDTO) {
+    const conditions = this.applyFilters(filters);
+    const [result] = await this.getBaseSelect()
+      .where(and(...conditions))
+      .limit(1);
+
+    return result || null;
+  }
+
+  async findAll(
+    filters: AppointmentFiltersDTO,
+    pagination?: { page?: number; limit?: number },
+  ) {
+    const conditions = this.applyFilters(filters);
+
+    const dataQuery = this.getBaseSelect()
+      .where(and(...conditions))
+      .orderBy(appointments.startsAt)
+      .$dynamic();
+
+    if (pagination?.page && pagination?.limit) {
+      dataQuery
+        .limit(pagination.limit)
+        .offset((pagination.page - 1) * pagination.limit);
+    }
+
+    const countQuery = this.db
+      .select({ count: count() })
+      .from(appointments)
+      .where(and(...conditions));
+
+    const [data, [totalResult]] = await Promise.all([dataQuery, countQuery]);
+
+    return {
+      data,
+      total: Number(totalResult?.count ?? 0),
+    };
   }
 
   async create(
@@ -72,9 +178,10 @@ export class AppointmentsRepository extends BaseRepository<
       conditions.push(ne(appointments.id, excludeId));
     }
 
-    return this.select().where(and(...conditions)) as unknown as Promise<
-      AppointmentSelect[]
-    >;
+    return this.db
+      .select()
+      .from(appointments)
+      .where(and(...conditions)) as unknown as Promise<AppointmentSelect[]>;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -86,21 +193,7 @@ export class AppointmentsRepository extends BaseRepository<
     return !!deletedAppointment;
   }
 
-  protected override applyFilters<T extends PgSelect>(
-    qb: T,
-    filters: AppointmentFiltersDTO,
-  ) {
-    const { startDate, endDate, ...rest } = filters;
-
-    super.applyFilters(qb, rest);
-
-    if (startDate) {
-      qb.where(gte(appointments.startsAt, new Date(startDate)));
-    }
-    if (endDate) {
-      qb.where(lte(appointments.startsAt, new Date(endDate)));
-    }
-
-    return qb;
+  async findStatuses() {
+    return this.db.select().from(appointmentStatuses);
   }
 }

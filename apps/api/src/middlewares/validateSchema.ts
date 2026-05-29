@@ -8,23 +8,40 @@ import {
   InferBody,
 } from '@/common/types/requests.ts';
 import { isSuperAdmin } from '@repo/guards';
-import z from 'zod';
+import { z } from 'zod';
 
 export const validateSchema = <T extends RequestValidationSchema>(
   schemas?: T,
 ) => {
   return async (req: TypedRequest<T>, _res: Response, next: NextFunction) => {
     try {
-      const roleName = req.user?.token.role;
+      const roleName = req.user?.token?.role;
       const baseBody = schemas?.body;
 
       const resolvedBody: z.ZodTypeAny | undefined = (() => {
         if (!baseBody || isSuperAdmin(roleName ?? '')) return baseBody;
-        if (!(baseBody instanceof z.ZodObject)) return baseBody;
-        if (!('clinicId' in baseBody.shape)) return baseBody;
-        return (baseBody as z.ZodObject<z.ZodRawShape>).omit({
-          clinicId: true,
-        });
+
+        let currentSchema: z.ZodTypeAny = baseBody;
+
+        // Unwrap ZodEffects to find the underlying ZodObject
+        while ((currentSchema as any)._def?.typeName === 'ZodEffects') {
+          currentSchema = (currentSchema as any)._def.schema;
+        }
+
+        if (
+          (currentSchema as any)._def?.typeName === 'ZodObject' &&
+          'clinicId' in (currentSchema as any).shape
+        ) {
+          // If the original was a ZodObject, we can just omit
+          if ((baseBody as any)._def?.typeName === 'ZodObject') {
+            return (baseBody as any).omit({ clinicId: true });
+          }
+
+          // If the original was a ZodEffects, return unwrapped and omitted schema
+          return (currentSchema as any).omit({ clinicId: true });
+        }
+
+        return baseBody;
       })();
 
       const details: Record<string, string[]> = {};
@@ -104,6 +121,7 @@ export const validateSchema = <T extends RequestValidationSchema>(
       next();
     } catch (error) {
       if (!(error instanceof ApiError)) {
+        console.error(' [ValidateSchema Error]:', error);
         return next(
           new ApiError(
             'Internal validation error',

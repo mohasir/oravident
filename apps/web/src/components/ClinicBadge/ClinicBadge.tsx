@@ -1,19 +1,29 @@
 'use client';
 
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import { cn } from '@repo/ui';
 import { useAuthStore } from '@/lib/auth';
 
-export function ClinicBadge() {
+interface ClinicBadgeProps {
+  name?: string;
+  imageSrc?: string | StaticImageData;
+  slug?: string;
+}
+
+export function ClinicBadge({
+  name: propName,
+  imageSrc: propImageSrc,
+  slug: propSlug,
+}: ClinicBadgeProps) {
   const session = useAuthStore((s) => s.session);
 
-  if (!session?.clinic) {
+  const clinicName = propName ?? session?.clinic?.name;
+  const clinicSlug = propSlug ?? session?.clinic?.slug;
+  const imageSrc = propImageSrc ?? session?.clinic?.logoUrl;
+
+  if (!clinicName && !session?.clinic) {
     return null;
   }
-
-  const clinicName = session?.clinic?.name;
-  const clinicSlug = session?.clinic?.slug;
-  const imageSrc = session?.clinic?.logoUrl;
 
   const initial = clinicName ? clinicName[0]?.toUpperCase() : '?';
 
@@ -39,9 +49,11 @@ export function ClinicBadge() {
             {clinicName}
           </p>
         </div>
-        <p className="hidden max-w-30 truncate text-xs text-left text-muted-foreground font-medium m-0 sm:block">
-          {clinicSlug}
-        </p>
+        {clinicSlug && (
+          <p className="hidden max-w-30 truncate text-xs text-left text-muted-foreground font-medium m-0 sm:block">
+            {clinicSlug}
+          </p>
+        )}
       </div>
     </div>
   );

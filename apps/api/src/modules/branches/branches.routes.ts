@@ -13,6 +13,7 @@ import {
 import { PERMISSIONS, ROLES } from '@repo/guards';
 import { idParamRequest } from '@common/types/requests.ts';
 import branchSchedulesRoutes from '@modules/branches/schedule/branch_schedules.routes.ts';
+import branchServicesRoutes from '@modules/branches/services/branch_services.routes.ts';
 
 const router: Router = Router();
 
@@ -61,5 +62,6 @@ router.delete(
 );
 
 router.use('/:branchId/schedules', branchSchedulesRoutes);
+router.use('/:branchId/services', branchServicesRoutes);
 
 export default router;

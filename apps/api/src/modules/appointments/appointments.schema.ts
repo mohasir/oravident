@@ -14,7 +14,7 @@ const MAX_DURATION_HOURS = 8;
 
 const appointmentInputSchema = z
   .object({
-    clinicId: createIdSchema('clinicId'),
+    clinicId: createIdSchema('clinicId').optional(),
     branchId: createIdSchema('branchId'),
     patientId: createIdSchema('patientId'),
     workerId: createIdSchema('workerId'),
@@ -154,9 +154,22 @@ export const appointmentFiltersSchema = z
   })
   .strict();
 
-export const getAppointmentsQuerySchema = paginationQuerySchema.extend(
-  appointmentFiltersSchema.shape,
-);
+export const getAppointmentsQuerySchema = paginationQuerySchema
+  .extend({
+    limit: z.coerce
+      .number()
+      .min(1, 'Limit must be at least 1')
+      .max(1000, 'Limit cannot exceed 1000')
+      .optional(),
+    pageSize: z.coerce.number().optional(),
+  })
+  .extend(appointmentFiltersSchema.shape)
+  .transform((data) => {
+    if (data.pageSize && !data.limit) {
+      return { ...data, limit: data.pageSize };
+    }
+    return data;
+  });
 
 // ==========================================
 // 2. API REQUEST SCHEMAS

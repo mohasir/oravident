@@ -4,9 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { forgotPasswordSchema, type ForgotPasswordSchema } from '@/features/auth/schemas/forgotPassword.schema';
 import { authService } from '@/features/auth/services/auth.service';
+import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
 
 export function useForgotPasswordForm() {
   const { t } = useTranslation('admin');
+  const parseError = useApiErrorParser();
   const [emailSent, setEmailSent] = useState(false);
 
   const form = useForm<ForgotPasswordSchema>({
@@ -19,10 +21,8 @@ export function useForgotPasswordForm() {
       form.clearErrors('root');
       await authService.forgotPassword(data);
       setEmailSent(true);
-    } catch {
-      form.setError('root', {
-        message: t('auth.forgotPassword.errors.generic', 'Algo salió mal, intenta de nuevo'),
-      });
+    } catch (e) {
+      parseError(e, (message) => form.setError('root', { message }));
     }
   };
 

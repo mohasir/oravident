@@ -29,18 +29,13 @@ export async function proxy(request: NextRequest) {
   }
 
   // Auth guards
-
-  const hasSession = request.cookies.has('refreshToken');
+  const hasSession = 
+    request.cookies.has('refreshToken') || 
+    request.cookies.has('auth-session');
 
   const guards = middlewareGuards(hasSession, pathname);
   const origin = request.nextUrl.origin;
   const homeUrl = createAbsoluteUrl(origin, DEFAULT_REDIRECT_HOME);
-
-  console.log({
-    hasSession,
-    origin,
-    homeUrl,
-  });
 
   if (guards.shouldRedirectToLogin()) {
     const loginUrl = createAbsoluteUrl(origin, DEFAULT_REDIRECT_LOGIN);

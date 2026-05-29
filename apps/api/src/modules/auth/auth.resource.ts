@@ -29,12 +29,12 @@ type MeData = {
     name: string;
     slug: string;
     email: string;
-    phone: string;
+    phone: string | null;
     logoUrl: string | null;
     timeZone: string;
     createdAt: Date;
     updatedAt: Date;
-  };
+  } | null;
   role: {
     id: string;
     name: string;
