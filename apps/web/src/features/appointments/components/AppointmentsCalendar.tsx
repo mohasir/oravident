@@ -1,4 +1,5 @@
-import { Calendar, dateFnsLocalizer, View } from 'react-big-calendar';
+import { Calendar, dateFnsLocalizer, View, SlotInfo } from 'react-big-calendar';
+import type { CalendarEvent } from '../types';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -17,14 +18,14 @@ const localizer = dateFnsLocalizer({
 });
 
 interface AppointmentsCalendarProps {
-  events: any[];
+  events: CalendarEvent[];
   date: Date;
   view: View;
   isLoading: boolean;
   onNavigate: (newDate: Date) => void;
   onView: (newView: View) => void;
-  onSelectEvent: (event: any) => void;
-  onSelectSlot: (slotInfo: any) => void;
+  onSelectEvent: (event: CalendarEvent) => void;
+  onSelectSlot: (slotInfo: SlotInfo) => void;
 }
 
 export function AppointmentsCalendar({

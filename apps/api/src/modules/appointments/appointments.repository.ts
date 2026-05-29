@@ -24,6 +24,8 @@ import { workers } from '@core/db/schema/workers.ts';
 import { services } from '@core/db/schema/services.ts';
 import { appointmentStatuses } from '@core/db/schema/appointment_statuses.ts';
 import { AppointmentFiltersDTO } from '@modules/appointments/appointments.schema.ts';
+import { branches } from '@/core/db/schema/branches.ts';
+import { clinics } from '@/core/db/schema/clinics.ts';
 
 export class AppointmentsRepository {
   constructor(private readonly db: Database) {}
@@ -32,12 +34,16 @@ export class AppointmentsRepository {
     return this.db
       .select({
         appointment: appointments,
+        clinic: clinics,
+        branch: branches,
         patient: patients,
         worker: workers,
         service: services,
         status: appointmentStatuses,
       })
       .from(appointments)
+      .leftJoin(clinics, eq(appointments.clinicId, clinics.id))
+      .leftJoin(branches, eq(appointments.branchId, branches.id))
       .leftJoin(patients, eq(appointments.patientId, patients.id))
       .leftJoin(workers, eq(appointments.workerId, workers.id))
       .leftJoin(services, eq(appointments.serviceId, services.id))

@@ -1,20 +1,29 @@
-import { useState, useMemo } from 'react';
-import { View, Views } from 'react-big-calendar';
+import { useState, useMemo, useEffect } from 'react';
+import { View, Views, SlotInfo } from 'react-big-calendar';
 import { useAppointmentsQuery } from './useAppointmentsQuery';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
+import type { CalendarEvent } from '../types';
+import { toast } from '@repo/ui';
 
 export function useAppointmentsCalendar() {
   const [date, setDate] = useState(new Date());
   const [view, setView] = useState<View>(Views.MONTH);
 
   // For now, we fetch the whole month based on the current date
-  const params = useMemo(() => ({
-    startDate: format(startOfMonth(date), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    endDate: format(endOfMonth(date), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
-    pageSize: 1000, // Large enough to get all appointments for the month
-  }), [date]);
+  const params = useMemo(
+    () => ({
+      startDate: format(startOfMonth(date), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      endDate: format(endOfMonth(date), "yyyy-MM-dd'T'HH:mm:ss'Z'"),
+      pageSize: 1000, // Large enough to get all appointments for the month
+    }),
+    [date],
+  );
 
   const { data, isLoading, error } = useAppointmentsQuery(params);
+
+  useEffect(() => {
+    if (error) toast.error(error.name);
+  }, [error]);
 
   const events = useMemo(() => {
     if (!data?.data?.items) return [];
@@ -28,7 +37,9 @@ export function useAppointmentsCalendar() {
     }));
   }, [data]);
 
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    string | null
+  >(null);
 
   const onNavigate = (newDate: Date) => {
     setDate(newDate);
@@ -38,11 +49,11 @@ export function useAppointmentsCalendar() {
     setView(newView);
   };
 
-  const onSelectEvent = (event: any) => {
+  const onSelectEvent = (event: CalendarEvent) => {
     setSelectedAppointmentId(event.id);
   };
 
-  const onSelectSlot = (slotInfo: any) => {
+  const onSelectSlot = (slotInfo: SlotInfo) => {
     console.log('Selected slot:', slotInfo);
     // Here we would typically open a create dialog
   };

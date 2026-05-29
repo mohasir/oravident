@@ -34,11 +34,11 @@ export function useAppointmentForm({
   const form = useForm<CreateAppointmentSchema>({
     resolver: zodResolver(createAppointmentSchema),
     defaultValues: {
-      branchId: initialData?.branchId ?? '',
-      patientId: initialData?.patientId ?? '',
-      workerId: initialData?.workerId ?? '',
-      serviceId: initialData?.serviceId ?? '',
-      statusId: initialData?.statusId ?? '',
+      branchId: initialData?.branch?.id ?? '',
+      patientId: initialData?.patient?.id ?? '',
+      workerId: initialData?.worker?.id ?? '',
+      serviceId: initialData?.service?.id ?? '',
+      statusId: initialData?.status?.id ?? '',
       startsAt: initialData?.startsAt ?? '',
       endsAt: initialData?.endsAt ?? '',
       notes: initialData?.notes ?? '',
