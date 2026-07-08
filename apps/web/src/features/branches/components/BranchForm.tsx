@@ -12,6 +12,7 @@ interface BranchFormProps {
 }
 
 import { BranchScheduleFields } from './BranchScheduleFields';
+import { BRANCH_COLORS } from '@/features/branches/constants';
 
 export function BranchForm({
   initialData,
@@ -101,7 +102,7 @@ export function BranchForm({
           </FormField>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             label={t('branch.form.fields.latitude.label', 'Latitude')}
             htmlFor="latitude"
@@ -131,28 +132,33 @@ export function BranchForm({
               placeholder="0.0000"
             />
           </FormField>
-
-          <FormField
-            label={t('branch.form.fields.color.label', 'Color')}
-            htmlFor="color"
-            error={errors.color?.message ? t(errors.color.message) : undefined}
-          >
-            <div className="flex gap-2">
-              <Input
-                id="color"
-                {...register('color')}
-                type="color"
-                className="w-12 p-1 h-10"
-              />
-              <Input
-                value={form.watch('color')}
-                onChange={(e) => form.setValue('color', e.target.value)}
-                placeholder="#000000"
-                className="flex-1"
-              />
-            </div>
-          </FormField>
         </div>
+
+        <FormField
+          label={t('branch.form.fields.color.label', 'Color')}
+          htmlFor="color"
+          error={errors.color?.message ? t(errors.color.message) : undefined}
+        >
+          <div className="flex flex-wrap gap-2 pt-1">
+            {BRANCH_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                onClick={() =>
+                  form.setValue('color', color, { shouldValidate: true })
+                }
+                className={cn(
+                  'w-8 h-8 rounded-full border-2 transition-all hover:scale-110',
+                  form.watch('color') === color
+                    ? 'border-gray-700 ring-2 ring-offset-2 ring-gray-400 scale-110'
+                    : 'border-transparent',
+                )}
+                style={{ backgroundColor: color }}
+                title={color}
+              />
+            ))}
+          </div>
+        </FormField>
 
         <BranchScheduleFields />
 

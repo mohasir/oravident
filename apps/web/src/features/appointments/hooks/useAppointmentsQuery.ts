@@ -19,6 +19,8 @@ export function useAppointmentsQuery(params?: GetAppointmentsParams) {
   return useQuery({
     queryKey: APPOINTMENT_KEYS.list(params),
     queryFn: () => appointmentsService.getAll(params),
+    staleTime: 0,
+    gcTime: 0,
   });
 }
 

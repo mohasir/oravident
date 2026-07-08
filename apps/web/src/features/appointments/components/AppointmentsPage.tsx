@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/shared/PageHeader';
-import { AppointmentsCalendar } from './AppointmentsCalendar';
+import { AppointmentsCalendar } from './calendar';
 import { useAppointmentsCalendar } from '../hooks/useAppointmentsCalendar';
 import { AppointmentDetailDialog } from './AppointmentDetailDialog';
 import { CreateAppointmentDialog } from './CreateAppointmentDialog';
@@ -12,11 +12,26 @@ import { useQueryAppointment } from '../hooks/useAppointmentsQuery';
 export function AppointmentsPage() {
   const { t } = useTranslation('admin');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const { selectedAppointmentId, setSelectedAppointmentId, ...calendarProps } =
-    useAppointmentsCalendar();
+  const {
+    selectedAppointmentId,
+    setSelectedAppointmentId,
+    selectedSlotDate,
+    setSelectedSlotDate,
+    ...calendarProps
+  } = useAppointmentsCalendar();
 
   const { data: appointmentDetail, isLoading: isDetailLoading } =
     useQueryAppointment(selectedAppointmentId || '');
+
+  const createDialogOpen = isCreateDialogOpen || !!selectedSlotDate;
+  const createDialogInitialDate = selectedSlotDate ?? undefined;
+
+  const handleCreateDialogClose = (open: boolean) => {
+    if (!open) {
+      setIsCreateDialogOpen(false);
+      setSelectedSlotDate(null);
+    }
+  };
 
   return (
     <div>
@@ -39,8 +54,10 @@ export function AppointmentsPage() {
 
       {/* Crear Nueva Cita */}
       <CreateAppointmentDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
+        key={selectedSlotDate?.toISOString() ?? 'manual'}
+        open={createDialogOpen}
+        onOpenChange={handleCreateDialogClose}
+        initialDate={createDialogInitialDate}
       />
     </div>
   );

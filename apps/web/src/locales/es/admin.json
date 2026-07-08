@@ -128,12 +128,16 @@
         "longitude": { "label": "Longitud", "placeholder": "0.0000" },
         "color": { "label": "Color" },
         "day": { "label": "Día" },
+        "days": { "label": "Días" },
         "openTime": { "label": "Hora de apertura" },
         "closeTime": { "label": "Hora de cierre" }
       },
       "schedules": {
         "title": "Horarios",
-        "add": "Agregar Horario"
+        "description": "Define los horarios de atención de la sucursal",
+        "add": "Agregar Horario",
+        "sundayClosed": "Domingo cerrado",
+        "empty": "No hay horarios agregados aún."
       },
       "submit": "Crear sucursal",
       "submitEdit": "Actualizar sucursal",

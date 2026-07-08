@@ -1,11 +1,5 @@
 export interface Appointment {
   id: string;
-  clinicId: string;
-  branchId: string;
-  patientId: string;
-  workerId: string;
-  serviceId: string;
-  statusId: string;
   startsAt: string;
   endsAt: string;
   notes?: string;
@@ -18,6 +12,15 @@ export interface Appointment {
   cancelReason?: string;
   createdAt: string;
   updatedAt: string;
+  clinic?: {
+    id: string;
+    name: string;
+  };
+  branch?: {
+    id: string;
+    name: string;
+    color: string;
+  };
   patient?: {
     id: string;
     fullName: string;
@@ -78,4 +81,18 @@ export interface UpdateAppointmentDTO {
   endsAt: string;
   notes?: string;
   price?: string;
+}
+
+export interface AppointmentStatus {
+  id: string;
+  name: string;
+  color?: string;
+}
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  resource: Appointment;
 }

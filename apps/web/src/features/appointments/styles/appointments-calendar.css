@@ -1,0 +1,401 @@
+/* ============================================================
+   Google Calendar-like overrides for react-big-calendar
+   ============================================================ */
+
+/* === GENERAL === */
+.rbc-calendar {
+  font-family: inherit;
+  color: var(--foreground);
+}
+
+/* === TOOLBAR === */
+.rbc-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 16px;
+  margin-bottom: 0;
+  border: none;
+  gap: 8px;
+}
+
+.rbc-toolbar-label {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--foreground);
+  padding: 0 8px;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.rbc-btn-group > button {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground);
+  background-color: transparent;
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  letter-spacing: 0.01em;
+}
+
+.rbc-btn-group > button:hover,
+.rbc-btn-group > button:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  z-index: 1;
+  outline: none;
+}
+
+.rbc-btn-group > button.rbc-active,
+.rbc-btn-group > button.rbc-active:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* === MONTH VIEW CONTAINER === */
+.rbc-month-view {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+/* === DAY NAME HEADERS === */
+.rbc-month-header {
+  border-bottom: 1px solid var(--border);
+}
+
+.rbc-header {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  padding: 10px 4px;
+  text-align: center;
+  background-color: transparent;
+  border-bottom: none;
+}
+
+.rbc-header + .rbc-header {
+  border-left: 1px solid var(--border);
+}
+
+.rbc-header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* === WEEK ROWS === */
+.rbc-month-row {
+  overflow: visible;
+  min-height: 100px;
+}
+
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid var(--border);
+}
+
+/* === DAY CELL BACKGROUNDS === */
+.rbc-day-bg {
+  background-color: transparent;
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid var(--border);
+}
+
+.rbc-off-range-bg {
+  background-color: transparent;
+}
+
+.rbc-today {
+  background-color: transparent !important;
+}
+
+/* === DATE NUMBER === */
+.rbc-date-cell {
+  padding: 6px 10px 2px;
+  text-align: right;
+}
+
+.rbc-button-link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.rbc-button-link:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+/* Today's date — blue circle */
+.rbc-now .rbc-button-link {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.rbc-now .rbc-button-link:hover {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+/* Off-range dates (previous/next month) */
+.rbc-off-range .rbc-button-link {
+  color: var(--muted-foreground);
+  opacity: 0.4;
+}
+
+/* Past dates — visually disabled (month view background) */
+.rbc-month-view .rbc-day-bg.rbc-day-past {
+  background-color: color-mix(in srgb, var(--muted) 12%, transparent);
+  cursor: not-allowed;
+}
+
+/* Past time slots — week/day view */
+.rbc-time-slot.rbc-slot-past {
+  background-color: color-mix(in srgb, var(--muted) 12%, transparent);
+  cursor: not-allowed;
+}
+
+/* === EVENTS (MONTH VIEW) === */
+.rbc-month-view .rbc-event {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin: 1px 2px;
+  min-height: 20px;
+  cursor: pointer;
+}
+
+.rbc-month-view .rbc-event:focus {
+  outline: none;
+}
+
+.rbc-month-view .rbc-event.rbc-selected {
+  background-color: var(--accent) !important;
+}
+
+.rbc-month-view .rbc-event-content {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* === "X MORE" LINK === */
+.rbc-show-more {
+  background-color: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  padding: 1px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  margin: 1px 2px;
+  display: block;
+}
+
+.rbc-show-more:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+  text-decoration: none;
+}
+
+/* === ROW CONTENT === */
+.rbc-row-content {
+  z-index: 4;
+}
+
+.rbc-row-segment {
+  padding: 1px 1px 0;
+}
+
+/* === TIME VIEW (WEEK / DAY) === */
+.rbc-time-view {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.rbc-time-header {
+  background-color: transparent;
+}
+
+.rbc-time-header-content {
+  border-left: 1px solid var(--border);
+}
+
+.rbc-time-content {
+  border-top: 1px solid var(--border);
+  background-color: transparent;
+}
+
+.rbc-time-content > * + * > * {
+  border-left: 1px solid var(--border);
+}
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid var(--border);
+  min-height: 40px;
+}
+
+.rbc-time-gutter {
+  background-color: transparent;
+}
+
+.rbc-time-slot {
+  color: var(--muted-foreground);
+}
+
+.rbc-label {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  padding: 0 8px;
+}
+
+.rbc-current-time-indicator {
+  background-color: var(--primary);
+  height: 2px;
+}
+
+.rbc-current-time-indicator::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary);
+}
+
+/* Week/day view events — use colored background */
+.rbc-time-view .rbc-event {
+  border: none !important;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.rbc-time-view .rbc-event:focus {
+  outline: none;
+}
+
+.rbc-time-view .rbc-event {
+  border-style: solid !important;
+  border-width: 1px !important;
+}
+
+/* Hide RBC's default time label in both time views (WeekEvent/DayEvent render their own) */
+.rbc-time-view .rbc-event-label {
+  display: none;
+}
+
+.rbc-time-view .rbc-event-content {
+  font-size: 12px;
+}
+
+/* All-day row in week/day view */
+.rbc-allday-cell {
+  height: auto;
+}
+
+/* === AGENDA VIEW - Google Calendar style === */
+.rbc-agenda-view {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rbc-agenda-view table.rbc-agenda-table {
+  border: none;
+}
+
+/* Hide the default header row */
+.rbc-agenda-view table.rbc-agenda-table thead {
+  display: none;
+}
+
+/* All td cells */
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+/* Date cell — fixed width, centered, right border */
+.rbc-agenda-view table.rbc-agenda-table .rbc-agenda-date-cell {
+  width: 80px;
+  min-width: 80px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+
+/* Time cell — compact, no wrap */
+.rbc-agenda-view table.rbc-agenda-table .rbc-agenda-time-cell {
+  width: 160px;
+  min-width: 160px;
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+}
+
+/* Event cell — takes remaining width */
+.rbc-agenda-view table.rbc-agenda-table .rbc-agenda-event-cell {
+  width: 100%;
+  cursor: pointer;
+}
+
+/* Row hover */
+.rbc-agenda-view table.rbc-agenda-table tbody > tr:hover {
+  background-color: color-mix(in srgb, var(--muted) 40%, transparent);
+  cursor: pointer;
+}
+
+.rbc-agenda-empty {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  padding: 24px 16px;
+  text-align: center;
+}
+
+/* === POPUP OVERLAY === */
+.rbc-overlay {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  z-index: 100;
+}
+
+.rbc-overlay-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  padding: 4px 8px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}

@@ -200,6 +200,26 @@ export {
   PopoverTrigger,
 } from './ui/popover';
 
+// Components - Combobox
+export {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxList,
+  ComboboxItem,
+  ComboboxGroup,
+  ComboboxLabel,
+  ComboboxCollection,
+  ComboboxEmpty,
+  ComboboxSeparator,
+  ComboboxChips,
+  ComboboxChip,
+  ComboboxChipsInput,
+  ComboboxTrigger,
+  ComboboxValue,
+  useComboboxAnchor,
+} from './ui/combobox';
+
 // Components - Calendar
 export { Calendar, CalendarDayButton } from './ui/calendar';
 
@@ -209,5 +229,11 @@ export { DatePicker } from './components/datePicker';
 // Components - TimePicker
 export { TimePicker } from './components/timePicker';
 
+// Components - TimeSlotPicker
+export { TimeSlotPicker } from './components/timeSlotPicker';
+
 // Components - Separator
 export { Separator } from './ui/separator';
+
+// Components - Switch
+export { Switch } from './ui/switch';

@@ -24,5 +24,6 @@
   },
   "nls.allLabels": true,
   "prettier.requireConfig": true,
-  "cSpell.words": ["Topbar"]
+  "cSpell.words": ["Topbar"],
+  "typescript.tsserver.maxTsServerMemory": 4096
 }

@@ -1,5 +1,5 @@
 import { BranchScheduleSelect } from '@core/db/schema/branch_schedules.ts';
-import { formatDate } from '@common/utils/date.ts';
+import { formatDate, formatTime } from '@common/utils/date.ts';
 
 const DAY_NAMES: Record<number, string> = {
   1: 'Monday',
@@ -17,8 +17,8 @@ export const branchScheduleResource = (schedule: BranchScheduleSelect) => ({
   clinicId: schedule.clinicId,
   dayOfWeek: schedule.dayOfWeek,
   dayName: DAY_NAMES[schedule.dayOfWeek] ?? null,
-  openTime: schedule.openTime,
-  closeTime: schedule.closeTime,
+  openTime: formatTime(schedule.openTime),
+  closeTime: formatTime(schedule.closeTime),
   createdAt: formatDate(schedule.createdAt),
 });
 

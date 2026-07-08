@@ -13,12 +13,14 @@ import { AppointmentForm } from './AppointmentForm';
 interface CreateAppointmentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialDate?: Date;
   onSuccess?: () => void;
 }
 
 export function CreateAppointmentDialog({
   open,
   onOpenChange,
+  initialDate,
   onSuccess,
 }: CreateAppointmentDialogProps) {
   const { t } = useTranslation('admin');
@@ -33,6 +35,7 @@ export function CreateAppointmentDialog({
         </DialogHeader>
         <DialogBody>
           <AppointmentForm
+            initialDate={initialDate}
             onSuccess={() => {
               onSuccess?.();
               onOpenChange(false);

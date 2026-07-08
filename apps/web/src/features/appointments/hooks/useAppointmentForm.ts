@@ -14,14 +14,20 @@ import {
 import { toast } from '@repo/ui';
 import type { Appointment } from '../types';
 import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
+import { set, format, parseISO } from 'date-fns';
+import { useAppointmentFormData } from './useAppointmentFormData';
+import { isAppointmentDateDisabled, getScheduleForDate, getDefaultDates } from '../helpers';
 
 interface UseAppointmentFormProps {
   initialData?: Appointment;
+  initialDate?: Date;
   onSuccess?: () => void;
 }
 
+
 export function useAppointmentForm({
   initialData,
+  initialDate,
   onSuccess,
 }: UseAppointmentFormProps = {}) {
   const { t } = useTranslation('admin');
@@ -30,17 +36,21 @@ export function useAppointmentForm({
   const updateAppointment = useMutationUpdateAppointment();
 
   const isEditing = !!initialData;
+  const { startsAt: defaultStartsAt, endsAt: defaultEndsAt } =
+    getDefaultDates(initialDate);
+
+  const { branches, patients, doctors, services, statuses } = useAppointmentFormData();
 
   const form = useForm<CreateAppointmentSchema>({
     resolver: zodResolver(createAppointmentSchema),
     defaultValues: {
-      branchId: initialData?.branchId ?? '',
-      patientId: initialData?.patientId ?? '',
-      workerId: initialData?.workerId ?? '',
-      serviceId: initialData?.serviceId ?? '',
-      statusId: initialData?.statusId ?? '',
-      startsAt: initialData?.startsAt ?? '',
-      endsAt: initialData?.endsAt ?? '',
+      branchId: initialData?.branch?.id ?? '',
+      patientId: initialData?.patient?.id ?? '',
+      workerId: initialData?.worker?.id ?? '',
+      serviceId: initialData?.service?.id ?? '',
+      statusId: initialData?.status?.id ?? '',
+      startsAt: initialData?.startsAt ?? defaultStartsAt,
+      endsAt: initialData?.endsAt ?? defaultEndsAt,
       notes: initialData?.notes ?? '',
       price: initialData?.price ?? '',
     },
@@ -78,6 +88,30 @@ export function useAppointmentForm({
     }
   };
 
+  const branchId = form.watch('branchId');
+  const startsAt = form.watch('startsAt');
+  const endsAt = form.watch('endsAt');
+  const selectedBranch = branches.find((b) => b.id === branchId);
+  const selectedDateSchedule = getScheduleForDate(startsAt, selectedBranch);
+
+  const isDateDisabled = (date: Date) => isAppointmentDateDisabled(date, selectedBranch);
+  const isTimeDisabled = !branchId || !startsAt;
+
+  const handleDateChange = (date: Date | undefined, fieldName: 'startsAt' | 'endsAt') => {
+    if (!date) return;
+    const currentVal = form.getValues(fieldName);
+    const currentTime = currentVal ? format(parseISO(currentVal), 'HH:mm') : '09:00';
+    const [hours, minutes] = currentTime.split(':').map(Number);
+    form.setValue(fieldName, set(date, { hours, minutes, seconds: 0, milliseconds: 0 }).toISOString());
+  };
+
+  const handleTimeChange = (time: string, fieldName: 'startsAt' | 'endsAt') => {
+    const currentVal = form.getValues(fieldName);
+    const currentDate = currentVal ? parseISO(currentVal) : new Date();
+    const [hours, minutes] = time.split(':').map(Number);
+    form.setValue(fieldName, set(currentDate, { hours, minutes, seconds: 0, milliseconds: 0 }).toISOString());
+  };
+
   return {
     form,
     onSubmit: form.handleSubmit(onSubmit),
@@ -85,5 +119,18 @@ export function useAppointmentForm({
     isDirty: form.formState.isDirty,
     isEditing,
     t,
+    branches,
+    patients,
+    doctors,
+    services,
+    statuses,
+    isDateDisabled,
+    scheduleMin: selectedDateSchedule?.openTime,
+    scheduleMax: selectedDateSchedule?.closeTime,
+    isTimeDisabled,
+    startsAt,
+    endsAt,
+    handleDateChange,
+    handleTimeChange,
   };
 }
