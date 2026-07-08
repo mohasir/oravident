@@ -14,73 +14,56 @@ import {
   SelectTrigger,
   SelectValue,
   DatePicker,
-  TimePicker,
+  TimeSlotPicker,
 } from '@repo/ui';
 import { Controller } from 'react-hook-form';
-import { format, parseISO, set, isValid } from 'date-fns';
-import { useBranchesQuery } from '@/features/branches/hooks/useBranchesQuery';
-import { usePatientsQuery } from '@/features/patients/hooks/usePatientsQuery';
-import { useDoctorsQuery } from '@/features/doctors/hooks/useDoctorsQuery';
-import { useServicesQuery } from '@/features/services/hooks/useServicesQuery';
-import { useAppointmentStatusesQuery } from '../hooks/useAppointmentsQuery';
-import type { Appointment } from '../types';
+import { parseISO, isValid, format } from 'date-fns';
+import type { Appointment, AppointmentStatus } from '../types';
 
 interface AppointmentFormProps {
   initialData?: Appointment;
+  initialDate?: Date;
   onSuccess?: () => void;
   className?: string;
 }
 
 export function AppointmentForm({
   initialData,
+  initialDate,
   onSuccess,
   className,
 }: AppointmentFormProps) {
-  const { form, onSubmit, isSubmitting, isDirty, isEditing, t } = useAppointmentForm({
+  const {
+    form,
+    onSubmit,
+    isSubmitting,
+    isDirty,
+    isEditing,
+    t,
+    branches,
+    patients,
+    doctors,
+    services,
+    statuses,
+    isDateDisabled,
+    isTimeDisabled,
+    scheduleMin,
+    scheduleMax,
+    startsAt,
+    endsAt,
+    handleDateChange,
+    handleTimeChange,
+  } = useAppointmentForm({
     initialData,
+    initialDate,
     onSuccess,
   });
 
   const {
     register,
     control,
-    watch,
-    setValue,
     formState: { errors },
   } = form;
-
-  const { data: branchesData } = useBranchesQuery();
-  const { data: patientsData } = usePatientsQuery({ limit: 100 });
-  const { data: doctorsData } = useDoctorsQuery({ limit: 100 });
-  const { data: servicesData } = useServicesQuery({ limit: 100 });
-  const { data: statusesData } = useAppointmentStatusesQuery();
-
-  const branches = branchesData?.data?.items ?? [];
-  const patients = patientsData?.data?.items ?? [];
-  const doctors = doctorsData?.data?.items ?? [];
-  const services = servicesData?.data?.items ?? [];
-  const statuses = statusesData?.data ?? [];
-
-  const startsAt = watch('startsAt');
-  const endsAt = watch('endsAt');
-
-  // Helper to handle date and time combined
-  const handleDateChange = (date: Date | undefined, fieldName: 'startsAt' | 'endsAt') => {
-    if (!date) return;
-    const currentVal = watch(fieldName);
-    const currentTime = currentVal ? format(parseISO(currentVal), 'HH:mm') : '09:00';
-    const [hours, minutes] = currentTime.split(':').map(Number);
-    const newDate = set(date, { hours, minutes, seconds: 0, milliseconds: 0 });
-    setValue(fieldName, newDate.toISOString());
-  };
-
-  const handleTimeChange = (time: string, fieldName: 'startsAt' | 'endsAt') => {
-    const currentVal = watch(fieldName);
-    const currentDate = currentVal ? parseISO(currentVal) : new Date();
-    const [hours, minutes] = time.split(':').map(Number);
-    const newDate = set(currentDate, { hours, minutes, seconds: 0, milliseconds: 0 });
-    setValue(fieldName, newDate.toISOString());
-  };
 
   return (
     <form onSubmit={onSubmit} className={cn('grid gap-6', className)}>
@@ -135,7 +118,7 @@ export function AppointmentForm({
                 </SelectTrigger>
                 <SelectContent>
                   {statuses.length > 0 ? (
-                    statuses.map((status: any) => (
+                    statuses.map((status: AppointmentStatus) => (
                       <SelectItem key={status.id} value={status.id}>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: status.color }} />
@@ -286,6 +269,7 @@ export function AppointmentForm({
                 handleDateChange(date, 'endsAt');
               }}
               placeholder={t('common.select.date', 'Seleccionar fecha')}
+              disabledDays={isDateDisabled}
             />
           </FormField>
 
@@ -294,9 +278,13 @@ export function AppointmentForm({
             required
             htmlFor="startTime"
           >
-            <TimePicker
-              value={startsAt && isValid(parseISO(startsAt)) ? format(parseISO(startsAt), 'HH:mm') : ''}
-              onChange={(e) => handleTimeChange(e.target.value, 'startsAt')}
+            <TimeSlotPicker
+              value={startsAt && isValid(parseISO(startsAt)) ? format(parseISO(startsAt), 'HH:mm') : undefined}
+              onChange={(value) => handleTimeChange(value, 'startsAt')}
+              min={scheduleMin}
+              max={scheduleMax}
+              placeholder={t('common.select.time', 'Seleccionar hora')}
+              disabled={isTimeDisabled}
             />
           </FormField>
 
@@ -306,9 +294,13 @@ export function AppointmentForm({
             htmlFor="endTime"
             error={errors.endsAt?.message ? t(errors.endsAt.message) : undefined}
           >
-            <TimePicker
-              value={endsAt && isValid(parseISO(endsAt)) ? format(parseISO(endsAt), 'HH:mm') : ''}
-              onChange={(e) => handleTimeChange(e.target.value, 'endsAt')}
+            <TimeSlotPicker
+              value={endsAt && isValid(parseISO(endsAt)) ? format(parseISO(endsAt), 'HH:mm') : undefined}
+              onChange={(value) => handleTimeChange(value, 'endsAt')}
+              min={scheduleMin}
+              max={scheduleMax}
+              placeholder={t('common.select.time', 'Seleccionar hora')}
+              disabled={isTimeDisabled}
             />
           </FormField>
         </div>

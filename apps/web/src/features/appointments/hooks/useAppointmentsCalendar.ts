@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Views, SlotInfo } from 'react-big-calendar';
 import { useAppointmentsQuery } from './useAppointmentsQuery';
-import { startOfMonth, endOfMonth, format } from 'date-fns';
+import { startOfMonth, endOfMonth, format, startOfDay } from 'date-fns';
 import type { CalendarEvent } from '../types';
 import { toast } from '@repo/ui';
 
@@ -40,23 +40,33 @@ export function useAppointmentsCalendar() {
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     string | null
   >(null);
+  const [selectedSlotDate, setSelectedSlotDate] = useState<Date | null>(null);
 
-  const onNavigate = (newDate: Date) => {
+  const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate);
-  };
+  }, []);
 
-  const onView = (newView: View) => {
+  const onView = useCallback((newView: View) => {
     setView(newView);
-  };
+  }, []);
 
-  const onSelectEvent = (event: CalendarEvent) => {
+  const onSelectEvent = useCallback((event: CalendarEvent) => {
     setSelectedAppointmentId(event.id);
-  };
+  }, []);
 
-  const onSelectSlot = (slotInfo: SlotInfo) => {
-    console.log('Selected slot:', slotInfo);
-    // Here we would typically open a create dialog
-  };
+  const onSelectSlot = useCallback((slotInfo: SlotInfo) => {
+    const now = new Date();
+    const start = slotInfo.start;
+    const isMonthView = start.getHours() === 0 && start.getMinutes() === 0;
+
+    const isPast = isMonthView
+      ? startOfDay(start) < startOfDay(now)
+      : start < now;
+
+    if (isPast) return;
+
+    setSelectedSlotDate(start);
+  }, []);
 
   return {
     events,
@@ -66,6 +76,8 @@ export function useAppointmentsCalendar() {
     error,
     selectedAppointmentId,
     setSelectedAppointmentId,
+    selectedSlotDate,
+    setSelectedSlotDate,
     onNavigate,
     onView,
     onSelectEvent,

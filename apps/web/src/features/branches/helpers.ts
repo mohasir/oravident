@@ -7,3 +7,17 @@ export const DAYS = [
   { value: 6, label: 'Saturday', key: 'branch.days.saturday' },
   { value: 7, label: 'Sunday', key: 'branch.days.sunday' },
 ];
+
+export function groupSchedulesByTime(
+  schedules: Array<{ dayOfWeek: number; openTime: string; closeTime: string }>,
+): Array<{ days: number[]; openTime: string; closeTime: string }> {
+  const map = new Map<string, { days: number[]; openTime: string; closeTime: string }>();
+  for (const s of schedules) {
+    const key = `${s.openTime}-${s.closeTime}`;
+    if (!map.has(key)) {
+      map.set(key, { days: [], openTime: s.openTime, closeTime: s.closeTime });
+    }
+    map.get(key)!.days.push(s.dayOfWeek);
+  }
+  return Array.from(map.values());
+}

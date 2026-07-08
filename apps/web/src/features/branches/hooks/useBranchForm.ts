@@ -10,6 +10,7 @@ import {
   CreateBranchSchema,
   createBranchSchema,
 } from '@/features/branches/schemas/branch.schema';
+import { groupSchedulesByTime } from '@/features/branches/helpers';
 import { toast } from '@repo/ui';
 import type { Branch } from '@/features/branches/types';
 import { useApiErrorParser } from '@/lib/http/useApiErrorParser';
@@ -39,13 +40,10 @@ export function useBranchForm({
       phone: initialData?.phone ?? '',
       latitude: initialData?.latitude ?? '',
       longitude: initialData?.longitude ?? '',
-      color: initialData?.color ?? '#000000',
-      schedules:
-        initialData?.schedules?.map((s) => ({
-          dayOfWeek: s.dayOfWeek,
-          openTime: s.openTime,
-          closeTime: s.closeTime,
-        })) ?? [],
+      color: initialData?.color ?? '#0D9488',
+      schedules: initialData?.schedules
+        ? groupSchedulesByTime(initialData.schedules)
+        : [],
     },
   });
 

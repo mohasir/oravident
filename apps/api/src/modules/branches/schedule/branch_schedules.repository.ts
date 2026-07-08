@@ -25,6 +25,23 @@ export class BranchSchedulesRepository extends BaseRepository<
     return schedule;
   }
 
+  async upsert(values: BranchScheduleInsert) {
+    const [schedule] = await this.db
+      .insert(branchSchedules)
+      .values(values)
+      .onConflictDoUpdate({
+        target: [branchSchedules.branchId, branchSchedules.dayOfWeek],
+        set: {
+          openTime: values.openTime,
+          closeTime: values.closeTime,
+          isActive: true,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return schedule;
+  }
+
   async update(id: string, values: BranchScheduleUpdate) {
     const [schedule] = await this.db
       .update(branchSchedules)

@@ -130,12 +130,16 @@
         "longitude": { "label": "Longitude", "placeholder": "0.0000" },
         "color": { "label": "Color" },
         "day": { "label": "Day" },
+        "days": { "label": "Days" },
         "openTime": { "label": "Open Time" },
         "closeTime": { "label": "Close Time" }
       },
       "schedules": {
         "title": "Schedules",
-        "add": "Add Schedule"
+        "description": "Define the branch opening hours",
+        "add": "Add Schedule",
+        "sundayClosed": "Sunday closed",
+        "empty": "No schedules added yet."
       },
       "submit": "Create branch",
       "submitEdit": "Update branch",

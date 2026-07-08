@@ -195,7 +195,7 @@ export class BranchesService {
         if (schedules.length > 0) {
           await Promise.all(
             schedules.map((s) =>
-              scheduleRepo.create({
+              scheduleRepo.upsert({
                 ...s,
                 branchId: id,
                 clinicId: branch.clinicId,
